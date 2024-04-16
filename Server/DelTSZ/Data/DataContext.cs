@@ -16,4 +16,27 @@ public class DataContext : IdentityDbContext<User, IdentityRole, string>
         : base(options)
     {
     }
+
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        base.OnModelCreating(builder);
+
+        builder.Entity<Product>()
+            .HasOne(p => p.User)
+            .WithMany(u => u.Products)
+            .HasForeignKey(p => p.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<User>()
+            .HasOne(u => u.Address)
+            .WithOne(a => a.User)
+            .HasForeignKey<Address>(a => a.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<User>()
+            .HasMany(u => u.Products)
+            .WithOne(p => p.User)
+            .HasForeignKey(p => p.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+    }
 }
