@@ -22,6 +22,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.MapControllers();
 
+await app.Services.InitializeDbAsync();
 AddRoles();
 AddOwner();
 
