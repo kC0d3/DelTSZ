@@ -4,10 +4,9 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = DbConnection.GetDockerConnectionString();
 
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 AddDbContext();
+AddServices();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -22,6 +21,13 @@ app.MapControllers();
 app.Run();
 
 //Application methods
+
+void AddServices()
+{
+    builder.Services.AddControllers();
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddSwaggerGen();
+}
 
 void AddDbContext()
 {
