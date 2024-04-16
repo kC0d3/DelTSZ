@@ -21,8 +21,9 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.MapControllers();
 
-app.Run();
+AddRoles();
 
+app.Run();
 //Application methods
 
 void AddServices()
@@ -46,3 +47,32 @@ void AddIdentity()
         .AddEntityFrameworkStores<DataContext>();
 }
 
+void AddRoles()
+{
+    using var scope = app.Services.CreateScope();
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+    var tOwner = CreateOwnerRole(roleManager);
+    tOwner.Wait();
+
+    var tProducer = CreateProducerRole(roleManager);
+    tProducer.Wait();
+
+    var tCostumer = CreateCostumerRole(roleManager);
+    tCostumer.Wait();
+}
+
+async Task CreateOwnerRole(RoleManager<IdentityRole> roleManager)
+{
+    await roleManager.CreateAsync(new IdentityRole("Owner"));
+}
+
+async Task CreateProducerRole(RoleManager<IdentityRole> roleManager)
+{
+    await roleManager.CreateAsync(new IdentityRole("Producer"));
+}
+
+async Task CreateCostumerRole(RoleManager<IdentityRole> roleManager)
+{
+    await roleManager.CreateAsync(new IdentityRole("Costumer"));
+}
