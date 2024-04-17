@@ -1,6 +1,7 @@
 using DelTSZ.Data;
 using DelTSZ.Models.Addresses;
 using DelTSZ.Models.Users;
+using DelTSZ.Services.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,6 +28,7 @@ AddRoles();
 AddOwner();
 
 app.Run();
+
 //Application methods
 
 void AddServices()
@@ -34,6 +36,7 @@ void AddServices()
     builder.Services.AddControllers();
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
+    builder.Services.AddScoped<IAuthService, AuthService>();
 }
 
 void AddDbContext()
@@ -45,7 +48,16 @@ void AddDbContext()
 void AddIdentity()
 {
     builder.Services
-        .AddIdentityCore<User>()
+        .AddIdentityCore<User>(options =>
+        {
+            options.SignIn.RequireConfirmedAccount = false;
+            options.User.RequireUniqueEmail = true;
+            options.Password.RequireDigit = true;
+            options.Password.RequiredLength = 6;
+            options.Password.RequireNonAlphanumeric = true;
+            options.Password.RequireUppercase = true;
+            options.Password.RequireLowercase = true;
+        })
         .AddRoles<IdentityRole>()
         .AddEntityFrameworkStores<DataContext>();
 }
