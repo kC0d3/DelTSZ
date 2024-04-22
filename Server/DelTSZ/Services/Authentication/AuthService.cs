@@ -44,4 +44,9 @@ public class AuthService(UserManager<User> userManager, SignInManager<User> sign
     {
         return await signInManager.PasswordSignInAsync(user, password, false, false);
     }
+
+    public async void Logout()
+    {
+        await signInManager.SignOutAsync();
+    }
 }
