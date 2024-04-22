@@ -1,4 +1,5 @@
 using DelTSZ.Models.Addresses;
+using DelTSZ.Models.Enums;
 using DelTSZ.Models.Users;
 using Microsoft.AspNetCore.Identity;
 
@@ -6,14 +7,14 @@ namespace DelTSZ.Services.Authentication;
 
 public class AuthService(UserManager<User> userManager) : IAuthService
 {
-    public async Task<IdentityResult> RegisterCostumerAsync(RegistrationRequest request)
+    public async Task<IdentityResult> RegisterCostumerAsync(Registration request)
     {
         var user = new User()
         {
             UserName = request.Username,
             Email = request.Email,
             CompanyName = request.Companyname,
-            Role = "Costumer",
+            Role = Roles.Costumer.ToString(),
             Address = new Address
             {
                 ZipCode = request.Address.ZipCode,
@@ -32,5 +33,10 @@ public class AuthService(UserManager<User> userManager) : IAuthService
 
         await userManager.AddToRoleAsync(user, user.Role);
         return result;
+    }
+
+    public async Task<User?> FindUserByEmail(string email)
+    {
+        return await userManager.FindByEmailAsync(email);
     }
 }
