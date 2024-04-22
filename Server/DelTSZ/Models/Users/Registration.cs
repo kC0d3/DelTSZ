@@ -2,7 +2,7 @@ using DelTSZ.Models.Addresses;
 
 namespace DelTSZ.Models.Users;
 
-public record RegistrationRequest(
+public record Registration(
     string Email,
     string Username,
     string Companyname,
