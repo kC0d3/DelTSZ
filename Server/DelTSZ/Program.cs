@@ -1,5 +1,6 @@
 using DelTSZ.Data;
 using DelTSZ.Models.Addresses;
+using DelTSZ.Models.Enums;
 using DelTSZ.Models.Users;
 using DelTSZ.Services.Authentication;
 using Microsoft.AspNetCore.Identity;
@@ -37,6 +38,7 @@ void AddServices()
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
     builder.Services.AddScoped<IAuthService, AuthService>();
+    builder.Services.AddIdentityApiEndpoints<User>();
 }
 
 void AddDbContext()
@@ -48,6 +50,7 @@ void AddDbContext()
 void AddIdentity()
 {
     builder.Services
+        .ConfigureApplicationCookie(options => options.ExpireTimeSpan = TimeSpan.FromMinutes(10))
         .AddIdentityCore<User>(options =>
         {
             options.SignIn.RequireConfirmedAccount = false;
@@ -67,29 +70,19 @@ void AddRoles()
     using var scope = app.Services.CreateScope();
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-    var tOwner = CreateOwnerRole(roleManager);
-    tOwner.Wait();
-
-    var tProducer = CreateProducerRole(roleManager);
-    tProducer.Wait();
-
-    var tCostumer = CreateCostumerRole(roleManager);
-    tCostumer.Wait();
+    if (roleManager.Roles.FirstOrDefault(r => r.Name == Roles.Owner.ToString()) == null)
+    {
+        foreach (Roles role in Enum.GetValues(typeof(Roles)))
+        {
+            var tRole = CreateRole(roleManager, role);
+            tRole.Wait();
+        }
+    }
 }
 
-async Task CreateOwnerRole(RoleManager<IdentityRole> roleManager)
+async Task CreateRole(RoleManager<IdentityRole> roleManager, Roles role)
 {
-    await roleManager.CreateAsync(new IdentityRole("Owner"));
-}
-
-async Task CreateProducerRole(RoleManager<IdentityRole> roleManager)
-{
-    await roleManager.CreateAsync(new IdentityRole("Producer"));
-}
-
-async Task CreateCostumerRole(RoleManager<IdentityRole> roleManager)
-{
-    await roleManager.CreateAsync(new IdentityRole("Costumer"));
+    await roleManager.CreateAsync(new IdentityRole(role.ToString()));
 }
 
 void AddOwner()
@@ -114,7 +107,7 @@ async Task CreateOwnerIfNotExists()
 
         if (ownerCreated.Succeeded)
         {
-            await userManager.AddToRoleAsync(owner, "Owner");
+            await userManager.AddToRoleAsync(owner, Roles.Owner.ToString());
         }
     }
 }
