@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace DelTSZ.Services.Authentication;
 
-public class AuthService(UserManager<User> userManager) : IAuthService
+public class AuthService(UserManager<User> userManager, SignInManager<User> signInManager) : IAuthService
 {
     public async Task<IdentityResult> RegisterCostumerAsync(Registration request)
     {
@@ -38,5 +38,10 @@ public class AuthService(UserManager<User> userManager) : IAuthService
     public async Task<User?> FindUserByEmail(string email)
     {
         return await userManager.FindByEmailAsync(email);
+    }
+
+    public async Task<SignInResult> Login(User user, string password)
+    {
+        return await signInManager.PasswordSignInAsync(user, password, false, false);
     }
 }
