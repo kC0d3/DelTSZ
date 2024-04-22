@@ -1,5 +1,6 @@
 using DelTSZ.Models.Users;
 using DelTSZ.Services.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -57,4 +58,21 @@ public class AuthController(IAuthService authService) : ControllerBase
 
         return Ok(new { message = "Login successful." });
     }
+    
+    [Authorize]
+    [HttpGet("logout")]
+    public ActionResult Logout()
+    {
+        try
+        {
+            authService.Logout();
+        }
+        catch (Exception)
+        {
+            return BadRequest("Something went wrong, please try again.");
+        }
+
+        return Ok(new { message = "Logout successful." });
+    }
+
 }
