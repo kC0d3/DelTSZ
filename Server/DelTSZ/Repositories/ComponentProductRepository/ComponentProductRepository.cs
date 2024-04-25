@@ -39,4 +39,10 @@ public class ComponentProductRepository(DataContext dataContext) : IComponentPro
             .OrderBy(p => p.Received)
             .FirstOrDefaultAsync();
     }
+    
+    public void UpdateComponentProduct(ComponentProduct product)
+    {
+        dataContext.Update(product);
+        dataContext.SaveChanges();
+    }
 }

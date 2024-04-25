@@ -8,4 +8,5 @@ public interface IComponentProductRepository
     Task<IEnumerable<ComponentProductResponse?>> GetAllOwnerComponentProducts();
     void AddComponentProductToUser(ComponentProductRequest product, string id);
     Task<ComponentProduct?> GetOldestComponentProduct(ComponentProductType type);
+    void UpdateComponentProduct(ComponentProduct product);
 }
