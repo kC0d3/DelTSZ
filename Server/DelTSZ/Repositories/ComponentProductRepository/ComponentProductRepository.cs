@@ -19,4 +19,17 @@ public class ComponentProductRepository(DataContext dataContext) : IComponentPro
             UserId = p.UserId
         }).Where(p => p.UserId == user!.Id).ToListAsync()!;
     }
+    
+    public void AddComponentProductToUser(ComponentProductRequest product, string id)
+    {
+        dataContext.Add(new ComponentProduct
+        {
+            ProductType = product.ProductType,
+            Received = product.Received,
+            Amount = product.Amount,
+            UserId = id
+        });
+        dataContext.SaveChanges();
+    }
+
 }
