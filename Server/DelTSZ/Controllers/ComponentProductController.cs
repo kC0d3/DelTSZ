@@ -1,4 +1,6 @@
-﻿using DelTSZ.Models.Products.ComponentProducts;
+﻿using System.ComponentModel.DataAnnotations;
+using DelTSZ.Models.Enums;
+using DelTSZ.Models.Products.ComponentProducts;
 using DelTSZ.Repositories.ComponentProductRepository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,4 +23,26 @@ public class ComponentProductController(IComponentProductRepository componentPro
             return NotFound("Error getting products.");
         }
     }
+    
+    [HttpPost, Authorize]
+    public ActionResult<ComponentProductRequest> CreateComponentProduct([Required] ComponentProductRequest product)
+    {
+        try
+        {
+            var id = HttpContext.User.Claims.FirstOrDefault(c => c.Type.Contains("identifier"))!.Value;
+
+            if (id == null || !Enum.IsDefined(typeof(ComponentProductType), product.ProductType))
+            {
+                return Conflict("Wrong user id or product type.");
+            }
+
+            componentProductRepository.AddComponentProductToUser(product, id);
+            return Ok(product);
+        }
+        catch (Exception)
+        {
+            return BadRequest("Error create product.");
+        }
+    }
+
 }
