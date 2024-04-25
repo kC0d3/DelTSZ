@@ -12,7 +12,7 @@ namespace DelTSZ.Controllers;
 public class ComponentProductController(IComponentProductRepository componentProductRepository) : ControllerBase
 {
     [HttpGet, Authorize(Roles = "Costumer")]
-    public async Task<ActionResult<IEnumerable<ComponentProductRequest>>> GetAllOwnerSingleProducts()
+    public async Task<ActionResult<IEnumerable<ComponentProductRequest>>> GetAllOwnerComponentProducts()
     {
         try
         {
@@ -45,4 +45,31 @@ public class ComponentProductController(IComponentProductRepository componentPro
         }
     }
 
+    [HttpPut("{type}"), Authorize(Roles = "Owner, Costumer")]
+    public async Task<IActionResult> UpdateComponentProductByType(ComponentProductType type, double amount)
+    {
+        try
+        {
+            var product = await componentProductRepository.GetOldestComponentProduct(type);
+            if (product == null)
+            {
+                return NotFound("Product not found.");
+            }
+
+            if (product.Amount - amount <= 0)
+            {
+                componentProductRepository.DeleteComponentProduct(product);
+                return Conflict(new { message = "Leftover: ", leftover = +product.Amount - amount });
+            }
+
+            product.Amount -= amount;
+
+            componentProductRepository.UpdateComponentProduct(product);
+            return Ok("Product update successful.");
+        }
+        catch (Exception)
+        {
+            return BadRequest("Error update product.");
+        }
+    }
 }
