@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using DelTSZ.Models.Enums;
+using DelTSZ.Models.Products;
 using DelTSZ.Models.Products.ComponentProducts;
 using DelTSZ.Repositories.ComponentProductRepository;
 using Microsoft.AspNetCore.Authorization;
@@ -70,6 +71,34 @@ public class ComponentProductController(IComponentProductRepository componentPro
         catch (Exception)
         {
             return BadRequest("Error update product.");
+        }
+    }
+    
+    [HttpDelete("{id}"), Authorize(Roles = "Owner, Grower")]
+    public async Task<ActionResult<IProductResponse>> DeleteComponentProductById(int id)
+    {
+        try
+        {
+            var product = await componentProductRepository.GetComponentProductById(id);
+            componentProductRepository.DeleteComponentProduct(product!);
+
+            if (product == null)
+            {
+                return NotFound("Product not found.");
+            }
+
+            return Ok(new ComponentProductResponse
+            {
+                Id = product.Id,
+                Amount = product.Amount,
+                ProductType = product.ProductType,
+                Received = product.Received,
+                UserId = product.UserId
+            });
+        }
+        catch (Exception)
+        {
+            return NotFound("Error getting product.");
         }
     }
 }
