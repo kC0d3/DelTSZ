@@ -7,7 +7,7 @@ namespace DelTSZ.Repositories.ComponentProductRepository;
 
 public class ComponentProductRepository(DataContext dataContext) : IComponentProductRepository
 {
-    public async Task<IEnumerable<ComponentProductResponse?>> GetAllOwnerSingleProducts()
+    public async Task<IEnumerable<ComponentProductResponse?>> GetAllOwnerComponentProducts()
     {
         var user = await dataContext.Users.FirstOrDefaultAsync(u => u.Role == Roles.Owner.ToString());
         return await dataContext.ComponentProducts?.Select(p => new ComponentProductResponse()

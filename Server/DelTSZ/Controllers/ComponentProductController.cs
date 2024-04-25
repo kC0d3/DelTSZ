@@ -14,7 +14,7 @@ public class ComponentProductController(IComponentProductRepository componentPro
     {
         try
         {
-            return Ok(await componentProductRepository.GetAllOwnerSingleProducts());
+            return Ok(await componentProductRepository.GetAllOwnerComponentProducts());
         }
         catch (Exception)
         {
