@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DelTSZ.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240415153719_Initial")]
+    [Migration("20240424133955_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -34,34 +34,30 @@ namespace DelTSZ.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("City")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("HouseNumber")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Street")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ZipCode")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("UserId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[UserId] IS NOT NULL");
 
                     b.ToTable("Addresses");
                 });
 
-            modelBuilder.Entity("DelTSZ.Models.Products.Product", b =>
+            modelBuilder.Entity("DelTSZ.Models.Products.ComponentProducts.ComponentProduct", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -72,6 +68,9 @@ namespace DelTSZ.Migrations
                     b.Property<double>("Amount")
                         .HasColumnType("float");
 
+                    b.Property<int?>("CompositeProductId")
+                        .HasColumnType("int");
+
                     b.Property<int>("ProductType")
                         .HasColumnType("int");
 
@@ -79,14 +78,42 @@ namespace DelTSZ.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompositeProductId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ComponentProducts");
+                });
+
+            modelBuilder.Entity("DelTSZ.Models.Products.CompositeProducts.CompositeProduct", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Amount")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Packed")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ProductType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Products");
+                    b.ToTable("CompositeProducts");
                 });
 
             modelBuilder.Entity("DelTSZ.Models.Users.User", b =>
@@ -98,7 +125,6 @@ namespace DelTSZ.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("CompanyName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -136,7 +162,6 @@ namespace DelTSZ.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Role")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SecurityStamp")
@@ -300,19 +325,31 @@ namespace DelTSZ.Migrations
                     b.HasOne("DelTSZ.Models.Users.User", "User")
                         .WithOne("Address")
                         .HasForeignKey("DelTSZ.Models.Addresses.Address", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("DelTSZ.Models.Products.Product", b =>
+            modelBuilder.Entity("DelTSZ.Models.Products.ComponentProducts.ComponentProduct", b =>
+                {
+                    b.HasOne("DelTSZ.Models.Products.CompositeProducts.CompositeProduct", null)
+                        .WithMany("Components")
+                        .HasForeignKey("CompositeProductId");
+
+                    b.HasOne("DelTSZ.Models.Users.User", "User")
+                        .WithMany("ComponentProducts")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("DelTSZ.Models.Products.CompositeProducts.CompositeProduct", b =>
                 {
                     b.HasOne("DelTSZ.Models.Users.User", "User")
-                        .WithMany("Products")
+                        .WithMany("CompositeProducts")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("User");
                 });
@@ -368,12 +405,18 @@ namespace DelTSZ.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("DelTSZ.Models.Products.CompositeProducts.CompositeProduct", b =>
+                {
+                    b.Navigation("Components");
+                });
+
             modelBuilder.Entity("DelTSZ.Models.Users.User", b =>
                 {
-                    b.Navigation("Address")
-                        .IsRequired();
+                    b.Navigation("Address");
 
-                    b.Navigation("Products");
+                    b.Navigation("ComponentProducts");
+
+                    b.Navigation("CompositeProducts");
                 });
 #pragma warning restore 612, 618
         }
