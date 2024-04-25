@@ -32,4 +32,11 @@ public class ComponentProductRepository(DataContext dataContext) : IComponentPro
         dataContext.SaveChanges();
     }
 
+    public async Task<ComponentProduct?> GetOldestComponentProduct(ComponentProductType type)
+    {
+        return await dataContext.ComponentProducts!
+            .Where(p => p.ProductType == type)
+            .OrderBy(p => p.Received)
+            .FirstOrDefaultAsync();
+    }
 }
