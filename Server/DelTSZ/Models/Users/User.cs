@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using DelTSZ.Models.Addresses;
-using DelTSZ.Models.Products;
+using DelTSZ.Models.Products.ComponentProducts;
+using DelTSZ.Models.Products.CompositeProducts;
 
 namespace DelTSZ.Models.Users;
 
@@ -12,5 +13,6 @@ public class User : IdentityUser
 
     //Navigation Properties
     public Address? Address { get; init; }
-    public ICollection<Product>? Products { get; init; }
+    public ICollection<ComponentProduct>? ComponentProducts { get; init; }
+    public ICollection<CompositeProduct>? CompositeProducts { get; init; }
 }
