@@ -19,7 +19,7 @@ public class ComponentProductRepository(DataContext dataContext) : IComponentPro
             UserId = p.UserId
         }).Where(p => p.UserId == user!.Id).ToListAsync()!;
     }
-    
+
     public void AddComponentProductToUser(ComponentProductRequest product, string id)
     {
         dataContext.Add(new ComponentProduct
@@ -32,6 +32,11 @@ public class ComponentProductRepository(DataContext dataContext) : IComponentPro
         dataContext.SaveChanges();
     }
 
+    public async Task<ComponentProduct?> GetComponentProductById(int id)
+    {
+        return await dataContext.ComponentProducts!.FirstOrDefaultAsync(p => p.Id == id);
+    }
+
     public async Task<ComponentProduct?> GetOldestComponentProduct(ComponentProductType type)
     {
         return await dataContext.ComponentProducts!
@@ -39,13 +44,13 @@ public class ComponentProductRepository(DataContext dataContext) : IComponentPro
             .OrderBy(p => p.Received)
             .FirstOrDefaultAsync();
     }
-    
+
     public void UpdateComponentProduct(ComponentProduct product)
     {
         dataContext.Update(product);
         dataContext.SaveChanges();
     }
-    
+
     public void DeleteComponentProduct(ComponentProduct product)
     {
         dataContext.Remove(product);
