@@ -45,4 +45,10 @@ public class ComponentProductRepository(DataContext dataContext) : IComponentPro
         dataContext.Update(product);
         dataContext.SaveChanges();
     }
+    
+    public void DeleteComponentProduct(ComponentProduct product)
+    {
+        dataContext.Remove(product);
+        dataContext.SaveChanges();
+    }
 }

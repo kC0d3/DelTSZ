@@ -9,4 +9,5 @@ public interface IComponentProductRepository
     void AddComponentProductToUser(ComponentProductRequest product, string id);
     Task<ComponentProduct?> GetOldestComponentProduct(ComponentProductType type);
     void UpdateComponentProduct(ComponentProduct product);
+    void DeleteComponentProduct(ComponentProduct product);
 }
