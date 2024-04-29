@@ -1,43 +1,42 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using DelTSZ.Models.Components;
 using DelTSZ.Models.Enums;
-using DelTSZ.Models.Products;
-using DelTSZ.Models.Products.ComponentProducts;
-using DelTSZ.Repositories.ComponentProductRepository;
+using DelTSZ.Repositories.ComponentRepository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DelTSZ.Controllers;
 
-[Route("api/component-products")]
+[Route("api/components")]
 [ApiController]
-public class ComponentProductController(IComponentProductRepository componentProductRepository) : ControllerBase
+public class ComponentController(IComponentRepository componentRepository) : ControllerBase
 {
     [HttpGet, Authorize(Roles = "Costumer")]
-    public async Task<ActionResult<IEnumerable<ComponentProductRequest>>> GetAllOwnerComponentProducts()
+    public async Task<ActionResult<IEnumerable<ComponentRequest>>> GetAllOwnerComponents()
     {
         try
         {
-            return Ok(await componentProductRepository.GetAllOwnerComponentProducts());
+            return Ok(await componentRepository.GetAllOwnerComponents());
         }
         catch (Exception)
         {
             return NotFound("Error getting products.");
         }
     }
-    
-    [HttpPost, Authorize]
-    public ActionResult<ComponentProductRequest> CreateComponentProduct([Required] ComponentProductRequest product)
+
+    [HttpPost, Authorize] //Authorize Roles should be Grower
+    public ActionResult<ComponentRequest> CreateComponent([Required] ComponentRequest product)
     {
         try
         {
             var id = HttpContext.User.Claims.FirstOrDefault(c => c.Type.Contains("identifier"))!.Value;
 
-            if (id == null || !Enum.IsDefined(typeof(ComponentProductType), product.ProductType))
+            if (id == null || !Enum.IsDefined(typeof(ComponentType), product.Type))
             {
                 return Conflict("Wrong user id or product type.");
             }
 
-            componentProductRepository.AddComponentProductToUser(product, id);
+            componentRepository.AddComponentToUser(product, id);
             return Ok(product);
         }
         catch (Exception)
@@ -47,11 +46,11 @@ public class ComponentProductController(IComponentProductRepository componentPro
     }
 
     [HttpPut("{type}"), Authorize(Roles = "Owner, Costumer")]
-    public async Task<IActionResult> UpdateComponentProductByType(ComponentProductType type, double amount)
+    public async Task<IActionResult> UpdateComponentByType(ComponentType type, double amount)
     {
         try
         {
-            var product = await componentProductRepository.GetOldestComponentProduct(type);
+            var product = await componentRepository.GetOldestComponent(type);
             if (product == null)
             {
                 return NotFound("Product not found.");
@@ -59,13 +58,13 @@ public class ComponentProductController(IComponentProductRepository componentPro
 
             if (product.Amount - amount <= 0)
             {
-                componentProductRepository.DeleteComponentProduct(product);
+                componentRepository.DeleteComponent(product);
                 return Conflict(new { message = "Leftover: ", leftover = +product.Amount - amount });
             }
 
             product.Amount -= amount;
 
-            componentProductRepository.UpdateComponentProduct(product);
+            componentRepository.UpdateComponent(product);
             return Ok("Product update successful.");
         }
         catch (Exception)
@@ -73,25 +72,25 @@ public class ComponentProductController(IComponentProductRepository componentPro
             return BadRequest("Error update product.");
         }
     }
-    
-    [HttpDelete("{id}"), Authorize(Roles = "Owner, Grower")]
-    public async Task<ActionResult<IProductResponse>> DeleteComponentProductById(int id)
+
+    [HttpDelete("{id}"), Authorize(Roles = "Owner, Producer")]
+    public async Task<ActionResult<ComponentResponse>> DeleteComponentById(int id)
     {
         try
         {
-            var product = await componentProductRepository.GetComponentProductById(id);
-            componentProductRepository.DeleteComponentProduct(product!);
+            var product = await componentRepository.GetComponentById(id);
+            componentRepository.DeleteComponent(product!);
 
             if (product == null)
             {
                 return NotFound("Product not found.");
             }
 
-            return Ok(new ComponentProductResponse
+            return Ok(new ComponentResponse
             {
                 Id = product.Id,
                 Amount = product.Amount,
-                ProductType = product.ProductType,
+                Type = product.Type,
                 Received = product.Received,
                 UserId = product.UserId
             });
