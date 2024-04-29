@@ -2,7 +2,7 @@ using DelTSZ.Data;
 using DelTSZ.Models.Addresses;
 using DelTSZ.Models.Enums;
 using DelTSZ.Models.Users;
-using DelTSZ.Repositories.ComponentProductRepository;
+using DelTSZ.Repositories.ComponentRepository;
 using DelTSZ.Services.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -40,7 +40,7 @@ void AddServices()
     builder.Services.AddSwaggerGen();
     builder.Services.AddScoped<IAuthService, AuthService>();
     builder.Services.AddIdentityApiEndpoints<User>();
-    builder.Services.AddScoped<IComponentProductRepository, ComponentProductRepository>();
+    builder.Services.AddScoped<IComponentRepository, ComponentRepository>();
 }
 
 void AddDbContext()
