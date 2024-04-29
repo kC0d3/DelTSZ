@@ -1,6 +1,6 @@
 ﻿namespace DelTSZ.Models.Enums;
 
-public enum CompositeProductType
+public enum ProductType
 {
     Paprika400G,
     Tomato200G,
