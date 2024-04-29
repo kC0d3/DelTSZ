@@ -1,8 +1,8 @@
 ﻿namespace DelTSZ.Models.Enums;
 
-public enum ComponentProductType
+public enum ComponentType
 {
-    Cabbage,
+    Carrot,
     Celery,
     Cucumber,
     Mushroom,
