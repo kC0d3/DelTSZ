@@ -24,20 +24,20 @@ public class ComponentController(IComponentRepository componentRepository) : Con
         }
     }
 
-    [HttpPost, Authorize] //Authorize Roles should be Grower
-    public ActionResult<ComponentRequest> CreateComponent([Required] ComponentRequest product)
+    [HttpPost, Authorize(Roles = "Producer")]
+    public ActionResult<ComponentRequest> CreateComponent([Required] ComponentRequest component)
     {
         try
         {
             var id = HttpContext.User.Claims.FirstOrDefault(c => c.Type.Contains("identifier"))!.Value;
 
-            if (id == null || !Enum.IsDefined(typeof(ComponentType), product.Type))
+            if (id == null || !Enum.IsDefined(typeof(ComponentType), component.Type))
             {
                 return Conflict("Wrong user id or product type.");
             }
 
-            componentRepository.AddComponentToUser(product, id);
-            return Ok(product);
+            componentRepository.AddComponentToUser(component, id);
+            return Ok(component);
         }
         catch (Exception)
         {
@@ -50,21 +50,21 @@ public class ComponentController(IComponentRepository componentRepository) : Con
     {
         try
         {
-            var product = await componentRepository.GetOldestComponent(type);
-            if (product == null)
+            var component = await componentRepository.GetOldestComponent(type);
+            if (component == null)
             {
                 return NotFound("Product not found.");
             }
 
-            if (product.Amount - amount <= 0)
+            if (component.Amount - amount <= 0)
             {
-                componentRepository.DeleteComponent(product);
-                return Conflict(new { message = "Leftover: ", leftover = +product.Amount - amount });
+                componentRepository.DeleteComponent(component);
+                return Conflict(new { message = "Leftover: ", leftover = +component.Amount - amount });
             }
 
-            product.Amount -= amount;
+            component.Amount -= amount;
 
-            componentRepository.UpdateComponent(product);
+            componentRepository.UpdateComponent(component);
             return Ok("Product update successful.");
         }
         catch (Exception)
@@ -78,21 +78,21 @@ public class ComponentController(IComponentRepository componentRepository) : Con
     {
         try
         {
-            var product = await componentRepository.GetComponentById(id);
-            componentRepository.DeleteComponent(product!);
+            var component = await componentRepository.GetComponentById(id);
+            componentRepository.DeleteComponent(component!);
 
-            if (product == null)
+            if (component == null)
             {
                 return NotFound("Product not found.");
             }
 
             return Ok(new ComponentResponse
             {
-                Id = product.Id,
-                Amount = product.Amount,
-                Type = product.Type,
-                Received = product.Received,
-                UserId = product.UserId
+                Id = component.Id,
+                Amount = component.Amount,
+                Type = component.Type,
+                Received = component.Received,
+                UserId = component.UserId
             });
         }
         catch (Exception)
