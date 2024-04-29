@@ -1,6 +1,6 @@
 using DelTSZ.Models.Addresses;
-using DelTSZ.Models.Products.ComponentProducts;
-using DelTSZ.Models.Products.CompositeProducts;
+using DelTSZ.Models.Components;
+using DelTSZ.Models.Products;
 using DelTSZ.Models.Users;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -10,8 +10,8 @@ namespace DelTSZ.Data;
 
 public class DataContext : IdentityDbContext<User, IdentityRole, string>
 {
-    public DbSet<ComponentProduct>? ComponentProducts { get; set; }
-    public DbSet<CompositeProduct>? CompositeProducts { get; set; }
+    public DbSet<Component>? Components { get; set; }
+    public DbSet<Product>? Products { get; set; }
     public DbSet<Address>? Addresses { get; set; }
 
     public DataContext(DbContextOptions<DataContext> options)
@@ -23,21 +23,30 @@ public class DataContext : IdentityDbContext<User, IdentityRole, string>
     {
         base.OnModelCreating(builder);
 
-        builder.Entity<ComponentProduct>()
+        builder.Entity<Product>()
             .HasOne(p => p.User)
-            .WithMany(u => u.ComponentProducts)
+            .WithMany(u => u.Products)
             .HasForeignKey(p => p.UserId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.Entity<CompositeProduct>()
-            .HasOne(p => p.User)
-            .WithMany(u => u.CompositeProducts)
-            .HasForeignKey(p => p.UserId)
+        builder.Entity<Product>()
+            .HasMany(p => p.Components)
+            .WithOne(c => c.Product)
+            .HasForeignKey(c => c.ProductId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.Entity<CompositeProduct>()
-            .HasMany(p => p.Components);
-        
+        builder.Entity<Component>()
+            .HasOne(c => c.Product)
+            .WithMany(p => p.Components)
+            .HasForeignKey(c => c.ProductId)
+            .OnDelete(DeleteBehavior.ClientCascade);
+
+        builder.Entity<Component>()
+            .HasOne(c => c.User)
+            .WithMany(u=> u.Components)
+            .HasForeignKey(c=> c.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
         builder.Entity<User>()
             .HasOne(u => u.Address)
             .WithOne(a => a.User)
@@ -45,15 +54,15 @@ public class DataContext : IdentityDbContext<User, IdentityRole, string>
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.Entity<User>()
-            .HasMany(u => u.ComponentProducts)
+            .HasMany(u => u.Products)
             .WithOne(p => p.User)
             .HasForeignKey(p => p.UserId)
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.Entity<User>()
-            .HasMany(u => u.CompositeProducts)
-            .WithOne(p => p.User)
-            .HasForeignKey(p => p.UserId)
+            .HasMany(u => u.Components)
+            .WithOne(c => c.User)
+            .HasForeignKey(c => c.UserId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }
