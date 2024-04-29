@@ -182,21 +182,21 @@ namespace DelTSZ.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CompositeProducts",
+                name: "Products",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ProductType = table.Column<int>(type: "int", nullable: false),
+                    Type = table.Column<int>(type: "int", nullable: false),
                     Packed = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Amount = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CompositeProducts", x => x.Id);
+                    table.PrimaryKey("PK_Products", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CompositeProducts_AspNetUsers_UserId",
+                        name: "FK_Products_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -204,30 +204,30 @@ namespace DelTSZ.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ComponentProducts",
+                name: "Components",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ProductType = table.Column<int>(type: "int", nullable: false),
+                    Type = table.Column<int>(type: "int", nullable: false),
                     Received = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Amount = table.Column<double>(type: "float", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    CompositeProductId = table.Column<int>(type: "int", nullable: true)
+                    ProductId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ComponentProducts", x => x.Id);
+                    table.PrimaryKey("PK_Components", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ComponentProducts_AspNetUsers_UserId",
+                        name: "FK_Components_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ComponentProducts_CompositeProducts_CompositeProductId",
-                        column: x => x.CompositeProductId,
-                        principalTable: "CompositeProducts",
+                        name: "FK_Components_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
                         principalColumn: "Id");
                 });
 
@@ -278,18 +278,18 @@ namespace DelTSZ.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ComponentProducts_CompositeProductId",
-                table: "ComponentProducts",
-                column: "CompositeProductId");
+                name: "IX_Components_ProductId",
+                table: "Components",
+                column: "ProductId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ComponentProducts_UserId",
-                table: "ComponentProducts",
+                name: "IX_Components_UserId",
+                table: "Components",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CompositeProducts_UserId",
-                table: "CompositeProducts",
+                name: "IX_Products_UserId",
+                table: "Products",
                 column: "UserId");
         }
 
@@ -315,13 +315,13 @@ namespace DelTSZ.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "ComponentProducts");
+                name: "Components");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "CompositeProducts");
+                name: "Products");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

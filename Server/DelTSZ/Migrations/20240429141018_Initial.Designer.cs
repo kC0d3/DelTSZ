@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DelTSZ.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240424133955_Initial")]
+    [Migration("20240429141018_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -57,7 +57,7 @@ namespace DelTSZ.Migrations
                     b.ToTable("Addresses");
                 });
 
-            modelBuilder.Entity("DelTSZ.Models.Products.ComponentProducts.ComponentProduct", b =>
+            modelBuilder.Entity("DelTSZ.Models.Components.Component", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -68,28 +68,28 @@ namespace DelTSZ.Migrations
                     b.Property<double>("Amount")
                         .HasColumnType("float");
 
-                    b.Property<int?>("CompositeProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductType")
+                    b.Property<int?>("ProductId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("Received")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompositeProductId");
+                    b.HasIndex("ProductId");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ComponentProducts");
+                    b.ToTable("Components");
                 });
 
-            modelBuilder.Entity("DelTSZ.Models.Products.CompositeProducts.CompositeProduct", b =>
+            modelBuilder.Entity("DelTSZ.Models.Products.Product", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -103,7 +103,7 @@ namespace DelTSZ.Migrations
                     b.Property<DateTime>("Packed")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("ProductType")
+                    b.Property<int>("Type")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
@@ -113,7 +113,7 @@ namespace DelTSZ.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("CompositeProducts");
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("DelTSZ.Models.Users.User", b =>
@@ -330,24 +330,27 @@ namespace DelTSZ.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("DelTSZ.Models.Products.ComponentProducts.ComponentProduct", b =>
+            modelBuilder.Entity("DelTSZ.Models.Components.Component", b =>
                 {
-                    b.HasOne("DelTSZ.Models.Products.CompositeProducts.CompositeProduct", null)
+                    b.HasOne("DelTSZ.Models.Products.Product", "Product")
                         .WithMany("Components")
-                        .HasForeignKey("CompositeProductId");
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.ClientCascade);
 
                     b.HasOne("DelTSZ.Models.Users.User", "User")
-                        .WithMany("ComponentProducts")
+                        .WithMany("Components")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Product");
 
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("DelTSZ.Models.Products.CompositeProducts.CompositeProduct", b =>
+            modelBuilder.Entity("DelTSZ.Models.Products.Product", b =>
                 {
                     b.HasOne("DelTSZ.Models.Users.User", "User")
-                        .WithMany("CompositeProducts")
+                        .WithMany("Products")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
 
@@ -405,7 +408,7 @@ namespace DelTSZ.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("DelTSZ.Models.Products.CompositeProducts.CompositeProduct", b =>
+            modelBuilder.Entity("DelTSZ.Models.Products.Product", b =>
                 {
                     b.Navigation("Components");
                 });
@@ -414,9 +417,9 @@ namespace DelTSZ.Migrations
                 {
                     b.Navigation("Address");
 
-                    b.Navigation("ComponentProducts");
+                    b.Navigation("Components");
 
-                    b.Navigation("CompositeProducts");
+                    b.Navigation("Products");
                 });
 #pragma warning restore 612, 618
         }
