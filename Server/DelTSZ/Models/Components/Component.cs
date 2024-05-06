@@ -11,12 +11,10 @@ public class Component
     public int Id { get; init; }
     public ComponentType Type { get; init; }
     public DateTime Received { get; init; }
-    public double Amount { get; set; }
+    public decimal Amount { get; set; }
 
     //Navigation properties
 
-    public string? UserId { get; init; }
+    public string? UserId { get; set; }
     public User? User { get; init; }
-    public int? ProductId { get; init; }
-    public Product? Product { get; init; }
 }
