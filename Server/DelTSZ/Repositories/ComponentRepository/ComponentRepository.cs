@@ -35,6 +35,14 @@ public class ComponentRepository(DataContext dataContext) : IComponentRepository
             }).ToListAsync()!;
     }
     
+    public async Task<decimal> GetAllOwnerComponentAmountsByType(ComponentType type)
+    {
+        var user = await dataContext.Users.FirstOrDefaultAsync(u => u.Role == Roles.Owner.ToString());
+        return await dataContext.Components?
+            .Where(c => c.UserId == user!.Id && c.Type == type)
+            .SumAsync(c => c.Amount)!;
+    }
+    
     public async Task<Component?> GetOwnerOldestComponentByType(ComponentType type)
     {
         var user = await dataContext.Users.FirstOrDefaultAsync(u => u.Role == Roles.Owner.ToString());
