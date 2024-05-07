@@ -76,6 +76,63 @@ public class ComponentRepository(DataContext dataContext) : IComponentRepository
         dataContext.SaveChanges();
     }
 
+    public async void ComponentUpdateByRequestAmount(ComponentType type, string id, decimal amount)
+    {
+        var demandAmount = amount;
+        var balance = 0m;
+
+        do
+        {
+            var component = await GetOwnerOldestComponentByType(type);
+
+            if (component!.Amount - demandAmount <= 0)
+            {
+                demandAmount -= component.Amount;
+                balance += component.Amount;
+
+                var userComp =
+                    await GetComponentByUserIdTypeReceivedDate(type, id, component.Received);
+
+                if (userComp == null)
+                {
+                    CreateComponentToUser(
+                        new ComponentUpdateRequest
+                            { Type = type, Amount = component.Amount, Received = component.Received },
+                        id);
+                }
+                else
+                {
+                    userComp.Amount += balance;
+                    UpdateComponent(userComp);
+                }
+
+                DeleteComponent(component);
+            }
+            else
+            {
+                var userComp =
+                    await GetComponentByUserIdTypeReceivedDate(type, id, component.Received);
+
+                if (userComp == null)
+                {
+                    CreateComponentToUser(
+                        new ComponentUpdateRequest
+                            { Type = type, Amount = demandAmount, Received = component.Received },
+                        id);
+                }
+                else
+                {
+                    userComp.Amount += amount;
+                    UpdateComponent(userComp);
+                }
+
+                demandAmount -= amount - balance;
+                component.Amount -= amount - balance;
+                UpdateComponent(component);
+            }
+        } while (demandAmount > 0);
+    }
+    
     public void UpdateComponent(Component component)
     {
         dataContext.Update(component);
