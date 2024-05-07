@@ -20,56 +20,67 @@ public class ComponentController(IComponentRepository componentRepository) : Con
         }
         catch (Exception)
         {
-            return NotFound("Error getting products.");
+            return NotFound("Error getting components.");
         }
     }
 
-    [HttpPost, Authorize(Roles = "Producer")]
-    public ActionResult<ComponentRequest> CreateComponent([Required] ComponentRequest component)
+    [HttpPost, Authorize]
+    public async Task<ActionResult<ComponentRequest>> CreateComponent([Required] ComponentRequest componentRequest,
+        int days)
     {
         try
         {
-            var id = HttpContext.User.Claims.FirstOrDefault(c => c.Type.Contains("identifier"))!.Value;
+            var id = HttpContext.User.Claims?.FirstOrDefault(c => c.Type.Contains("identifier"))!.Value;
 
-            if (id == null || !Enum.IsDefined(typeof(ComponentType), component.Type))
+            if (id == null || !Enum.IsDefined(typeof(ComponentType), componentRequest.Type))
             {
-                return Conflict("Wrong user id or product type.");
+                return Conflict("Wrong user id or component type.");
             }
 
-            componentRepository.AddComponentToUser(component, id);
-            return Ok(component);
+            var component = await componentRepository.GetComponentByUserIdTypeReceivedDate(componentRequest.Type, id, days);
+
+            if (component == null)
+            {
+                componentRepository.CreateComponentToUser(componentRequest, id, days);
+            }
+            else
+            {
+                component.Amount += componentRequest.Amount;
+                componentRepository.UpdateComponent(component);
+            }
+
+            return Ok(componentRequest);
         }
         catch (Exception)
         {
-            return BadRequest("Error create product.");
+            return BadRequest("Error create component.");
         }
     }
 
     [HttpPut("{type}"), Authorize(Roles = "Owner, Costumer")]
-    public async Task<IActionResult> UpdateComponentByType(ComponentType type, double amount)
+    public async Task<IActionResult> UpdateComponentByType(ComponentType type, decimal amount)
     {
         try
         {
-            var component = await componentRepository.GetOldestComponent(type);
-            if (component == null)
+            var id = HttpContext.User.Claims?.FirstOrDefault(c => c.Type.Contains("identifier"))!.Value;
+
+            if (id == null || !Enum.IsDefined(typeof(ComponentType), type) || amount < 0)
             {
-                return NotFound("Product not found.");
+                return Conflict("Wrong user id, component type or amount.");
             }
 
-            if (component.Amount - amount <= 0)
+            var ownerComponentAmount = await componentRepository.GetAllOwnerComponentAmountsByType(type);
+            if (ownerComponentAmount < amount)
             {
-                componentRepository.DeleteComponent(component);
-                return Conflict(new { message = "Leftover: ", leftover = +component.Amount - amount });
+                return Conflict(new { message = "Not enough components." });
             }
 
-            component.Amount -= amount;
-
-            componentRepository.UpdateComponent(component);
-            return Ok("Product update successful.");
+            componentRepository.ComponentUpdateByRequestAmount(type, id, amount);
+            return Ok("Component update successful.");
         }
         catch (Exception)
         {
-            return BadRequest("Error update product.");
+            return BadRequest("Error update component.");
         }
     }
 
@@ -79,25 +90,18 @@ public class ComponentController(IComponentRepository componentRepository) : Con
         try
         {
             var component = await componentRepository.GetComponentById(id);
-            componentRepository.DeleteComponent(component!);
 
             if (component == null)
             {
-                return NotFound("Product not found.");
+                return NotFound("Component not found.");
             }
 
-            return Ok(new ComponentResponse
-            {
-                Id = component.Id,
-                Amount = component.Amount,
-                Type = component.Type,
-                Received = component.Received,
-                UserId = component.UserId
-            });
+            componentRepository.DeleteComponent(component!);
+            return Ok("Component delete successful.");
         }
         catch (Exception)
         {
-            return NotFound("Error getting product.");
+            return NotFound("Error getting component.");
         }
     }
 }
