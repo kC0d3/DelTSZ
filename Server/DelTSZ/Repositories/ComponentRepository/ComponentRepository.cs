@@ -21,6 +21,20 @@ public class ComponentRepository(DataContext dataContext) : IComponentRepository
             }).ToListAsync()!;
     }
 
+    public async Task<IEnumerable<ComponentResponse?>> GetAllOwnerComponentsByType(ComponentType type)
+    {
+        var user = await dataContext.Users.FirstOrDefaultAsync(u => u.Role == Roles.Owner.ToString());
+        return await dataContext.Components?
+            .Where(c => c.UserId == user!.Id && c.Type == type)
+            .Select(c => new ComponentResponse
+            {
+                Id = c.Id,
+                Type = c.Type,
+                Received = c.Received,
+                Amount = c.Amount,
+            }).ToListAsync()!;
+    }
+    
     public async Task<Component?> GetOwnerOldestComponentByType(ComponentType type)
     {
         var user = await dataContext.Users.FirstOrDefaultAsync(u => u.Role == Roles.Owner.ToString());
