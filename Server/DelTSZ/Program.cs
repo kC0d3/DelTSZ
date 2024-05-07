@@ -3,6 +3,7 @@ using DelTSZ.Models.Addresses;
 using DelTSZ.Models.Enums;
 using DelTSZ.Models.Users;
 using DelTSZ.Repositories.ComponentRepository;
+using DelTSZ.Repositories.ProductRepository;
 using DelTSZ.Services.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -43,6 +44,7 @@ void AddServices()
     builder.Services.AddScoped<IAuthService, AuthService>();
     builder.Services.AddIdentityApiEndpoints<User>();
     builder.Services.AddScoped<IComponentRepository, ComponentRepository>();
+    builder.Services.AddScoped<IProductRepository, ProductRepository>();
 }
 
 void AddDbContext()
