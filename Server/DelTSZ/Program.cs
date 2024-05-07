@@ -29,6 +29,7 @@ await app.Services.InitializeDbAsync();
 AddRoles();
 AddOwner();
 AddProducer();
+AddCostumer();
 
 app.Run();
 
@@ -138,6 +139,35 @@ async Task CreateProducerIfNotExists()
         if (producerCreated.Succeeded)
         {
             await userManager.AddToRoleAsync(producer, Roles.Producer.ToString());
+        }
+    }
+}
+
+void AddCostumer()
+{
+    var tCostumer = CreateCostumerIfNotExists();
+    tCostumer.Wait();
+}
+
+async Task CreateCostumerIfNotExists()
+{
+    using var scope = app.Services.CreateScope();
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+    var costumerInDb = await userManager.FindByEmailAsync("aldi@aldi.com");
+    if (costumerInDb == null)
+    {
+        var costumer = new User
+        {
+            UserName = "ALDI", Email = "aldi@aldi.com", CompanyName = "ALDI Magyarország Élelmiszer Bt.",
+            Role = Roles.Costumer.ToString(),
+            Address = new Address
+                { ZipCode = "2051", City = "Biatorbágy", Street = "Mészárosok útja", HouseNumber = "2" }
+        };
+        var costumerCreated = await userManager.CreateAsync(costumer, "Aldi!123");
+
+        if (costumerCreated.Succeeded)
+        {
+            await userManager.AddToRoleAsync(costumer, Roles.Costumer.ToString());
         }
     }
 }
