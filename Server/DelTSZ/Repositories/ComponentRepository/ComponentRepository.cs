@@ -88,6 +88,14 @@ public class ComponentRepository(DataContext dataContext) : IComponentRepository
         dataContext.SaveChanges();
     }
     
+    private async Task<Component?> GetComponentByUserIdTypeReceivedDate(ComponentType type, string id,
+        DateTime received)
+    {
+        return await dataContext.Components!
+            .Where(c => c.UserId == id && c.Type == type && c.Received == received)
+            .FirstOrDefaultAsync();
+    }
+    
     private void CreateComponentToUser(ComponentUpdateRequest component, string id)
     {
         dataContext.Add(new Component
