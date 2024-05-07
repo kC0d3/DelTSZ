@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DelTSZ.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240429141018_Initial")]
+    [Migration("20240506072948_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -65,11 +65,8 @@ namespace DelTSZ.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<double>("Amount")
-                        .HasColumnType("float");
-
-                    b.Property<int?>("ProductId")
-                        .HasColumnType("int");
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("Received")
                         .HasColumnType("datetime2");
@@ -82,11 +79,36 @@ namespace DelTSZ.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductId");
-
                     b.HasIndex("UserId");
 
                     b.ToTable("Components");
+                });
+
+            modelBuilder.Entity("DelTSZ.Models.ProductComponents.ProductComponent", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Received")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductComponents");
                 });
 
             modelBuilder.Entity("DelTSZ.Models.Products.Product", b =>
@@ -332,19 +354,22 @@ namespace DelTSZ.Migrations
 
             modelBuilder.Entity("DelTSZ.Models.Components.Component", b =>
                 {
-                    b.HasOne("DelTSZ.Models.Products.Product", "Product")
-                        .WithMany("Components")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.ClientCascade);
-
                     b.HasOne("DelTSZ.Models.Users.User", "User")
                         .WithMany("Components")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.Navigation("Product");
-
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("DelTSZ.Models.ProductComponents.ProductComponent", b =>
+                {
+                    b.HasOne("DelTSZ.Models.Products.Product", "Product")
+                        .WithMany("Components")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("DelTSZ.Models.Products.Product", b =>
