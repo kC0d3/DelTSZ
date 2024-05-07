@@ -6,4 +6,5 @@ namespace DelTSZ.Repositories.ProductRepository;
 
 public interface IProductRepository
 {
+    Task<IEnumerable<ProductResponse?>> GetAllOwnerProducts();
 }
