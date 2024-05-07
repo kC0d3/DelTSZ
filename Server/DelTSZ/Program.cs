@@ -28,6 +28,7 @@ app.MapControllers();
 await app.Services.InitializeDbAsync();
 AddRoles();
 AddOwner();
+AddProducer();
 
 app.Run();
 
@@ -102,7 +103,7 @@ async Task CreateOwnerIfNotExists()
     {
         var owner = new User
         {
-            UserName = "DelTSZ", Email = "deltsz@deltsz.com", CompanyName = "DelTSZ", Role = "Owner",
+            UserName = "DelTSZ", Email = "deltsz@deltsz.com", CompanyName = "DelTSZ", Role = Roles.Owner.ToString(),
             Address = new Address { ZipCode = "6600", City = "Szentes", Street = "Szarvasi út", HouseNumber = "3" }
         };
         var ownerCreated = await userManager.CreateAsync(owner, "DelTSZ!123");
@@ -110,6 +111,33 @@ async Task CreateOwnerIfNotExists()
         if (ownerCreated.Succeeded)
         {
             await userManager.AddToRoleAsync(owner, Roles.Owner.ToString());
+        }
+    }
+}
+
+void AddProducer()
+{
+    var tProducer = CreateProducerIfNotExists();
+    tProducer.Wait();
+}
+
+async Task CreateProducerIfNotExists()
+{
+    using var scope = app.Services.CreateScope();
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+    var producerInDb = await userManager.FindByEmailAsync("arpad@arpad.com");
+    if (producerInDb == null)
+    {
+        var producer = new User
+        {
+            UserName = "Arpad", Email = "arpad@arpad.com", CompanyName = "Árpád Zrt.", Role = Roles.Producer.ToString(),
+            Address = new Address { ZipCode = "6600", City = "Szentes", Street = "Apponyi tér", HouseNumber = "12" }
+        };
+        var producerCreated = await userManager.CreateAsync(producer, "Arpad!123");
+
+        if (producerCreated.Succeeded)
+        {
+            await userManager.AddToRoleAsync(producer, Roles.Producer.ToString());
         }
     }
 }
