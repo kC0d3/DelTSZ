@@ -56,6 +56,13 @@ public class ComponentRepository(DataContext dataContext) : IComponentRepository
     {
         return await dataContext.Components!.FirstOrDefaultAsync(c => c.Id == id);
     }
+    
+    public async Task<Component?> GetComponentByUserIdTypeReceivedDate(ComponentType type, string id, int days)
+    {
+        return await dataContext.Components!
+            .Where(c => c.UserId == id && c.Type == type && c.Received == DateTime.Today.AddDays(days))
+            .FirstOrDefaultAsync();
+    }
 
     public void CreateComponentToUser(ComponentRequest component, string id, int days)
     {
