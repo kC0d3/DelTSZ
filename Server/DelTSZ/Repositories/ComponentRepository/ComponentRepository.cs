@@ -87,4 +87,16 @@ public class ComponentRepository(DataContext dataContext) : IComponentRepository
         dataContext.Remove(component);
         dataContext.SaveChanges();
     }
+    
+    private void CreateComponentToUser(ComponentUpdateRequest component, string id)
+    {
+        dataContext.Add(new Component
+        {
+            Type = component.Type,
+            Amount = component.Amount,
+            Received = component.Received,
+            UserId = id
+        });
+        dataContext.SaveChanges();
+    }
 }
