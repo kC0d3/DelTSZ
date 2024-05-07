@@ -6,9 +6,9 @@ namespace DelTSZ.Repositories.ComponentRepository;
 public interface IComponentRepository
 {
     Task<IEnumerable<ComponentResponse?>> GetAllOwnerComponents();
-    void AddComponentToUser(ComponentRequest product, string id);
-    Task<Component?> GetOldestComponent(ComponentType type);
+    Task<Component?> GetOwnerOldestComponentByType(ComponentType type);
+    void CreateComponentToUser(ComponentRequest component, string id, int days);
     Task<Component?> GetComponentById(int id);
-    void UpdateComponent(Component product);
-    void DeleteComponent(Component product);
+    void UpdateComponent(Component component);
+    void DeleteComponent(Component component);
 }

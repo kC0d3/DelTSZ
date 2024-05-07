@@ -11,7 +11,7 @@ public class ComponentRepository(DataContext dataContext) : IComponentRepository
     {
         var user = await dataContext.Users.FirstOrDefaultAsync(u => u.Role == Roles.Owner.ToString());
         return await dataContext.Components?
-            .Where(c => c.UserId == user!.Id && c.ProductId == null)
+            .Where(c => c.UserId == user!.Id)
             .Select(c => new ComponentResponse
             {
                 Id = c.Id,
@@ -21,40 +21,41 @@ public class ComponentRepository(DataContext dataContext) : IComponentRepository
             }).ToListAsync()!;
     }
 
-    public void AddComponentToUser(ComponentRequest product, string id)
+    public async Task<Component?> GetOwnerOldestComponentByType(ComponentType type)
+    {
+        var user = await dataContext.Users.FirstOrDefaultAsync(u => u.Role == Roles.Owner.ToString());
+        return await dataContext.Components!
+            .Where(c => c.UserId == user!.Id && c.Type == type)
+            .OrderBy(c => c.Received)
+            .FirstOrDefaultAsync();
+    }
+
+    public async Task<Component?> GetComponentById(int id)
+    {
+        return await dataContext.Components!.FirstOrDefaultAsync(c => c.Id == id);
+    }
+
+    public void CreateComponentToUser(ComponentRequest component, string id, int days)
     {
         dataContext.Add(new Component
         {
-            Type = product.Type,
-            Received = product.Received,
-            Amount = product.Amount,
+            Type = component.Type,
+            Amount = component.Amount,
+            Received = DateTime.Today.AddDays(days),
             UserId = id
         });
         dataContext.SaveChanges();
     }
 
-    public async Task<Component?> GetComponentById(int id)
+    public void UpdateComponent(Component component)
     {
-        return await dataContext.Components!.FirstOrDefaultAsync(p => p.Id == id);
-    }
-
-    public async Task<Component?> GetOldestComponent(ComponentType type)
-    {
-        return await dataContext.Components!
-            .Where(p => p.Type == type)
-            .OrderBy(p => p.Received)
-            .FirstOrDefaultAsync();
-    }
-
-    public void UpdateComponent(Component product)
-    {
-        dataContext.Update(product);
+        dataContext.Update(component);
         dataContext.SaveChanges();
     }
 
-    public void DeleteComponent(Component product)
+    public void DeleteComponent(Component component)
     {
-        dataContext.Remove(product);
+        dataContext.Remove(component);
         dataContext.SaveChanges();
     }
 }
