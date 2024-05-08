@@ -11,4 +11,6 @@ public interface IProductRepository
 
     Task<List<ProductComponent>> CreateProductComponents(ComponentType type, decimal amount,
         decimal demandAmount);
+
+    Task<Product?> GetProductById(int id);
 }

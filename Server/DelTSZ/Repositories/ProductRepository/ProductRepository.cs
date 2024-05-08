@@ -95,4 +95,9 @@ public class ProductRepository(DataContext dataContext, IComponentRepository com
 
         return components;
     }
+    
+    public async Task<Product?> GetProductById(int id)
+    {
+        return await dataContext.Products!.FirstOrDefaultAsync(c => c.Id == id);
+    }
 }
