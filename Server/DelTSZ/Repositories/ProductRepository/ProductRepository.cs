@@ -23,6 +23,14 @@ public class ProductRepository(DataContext dataContext, IComponentRepository com
             }).ToListAsync()!;
     }
 
+    public async Task<decimal> GetAllOwnerProductsAmountsByType(ProductType type)
+    {
+        var user = await dataContext.Users.FirstOrDefaultAsync(u => u.Role == Roles.Owner.ToString());
+        return await dataContext.Products?
+            .Where(c => c.UserId == user!.Id && c.Type == type)
+            .SumAsync(c => c.Amount)!;
+    }
+
     public void CreateProductToUser(ProductRequest product, string id, IEnumerable<ProductComponent> components)
     {
         dataContext.Add(new Product
@@ -40,7 +48,7 @@ public class ProductRepository(DataContext dataContext, IComponentRepository com
         });
         dataContext.SaveChanges();
     }
-    
+
     public async Task<List<ProductComponent>> CreateProductComponents(ComponentType type, decimal amount,
         decimal demandAmount)
     {
@@ -95,12 +103,12 @@ public class ProductRepository(DataContext dataContext, IComponentRepository com
 
         return components;
     }
-    
+
     public async Task<Product?> GetProductById(int id)
     {
         return await dataContext.Products!.FirstOrDefaultAsync(c => c.Id == id);
     }
-    
+
     public void UpdateProduct(Product product)
     {
         dataContext.Update(product);
