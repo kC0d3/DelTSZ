@@ -5,8 +5,7 @@ namespace DelTSZ.Repositories.ComponentRepository;
 
 public interface IComponentRepository
 {
-    Task<IEnumerable<ComponentResponse?>> GetAllOwnerComponents();
-    Task<IEnumerable<ComponentResponse?>> GetAllOwnerComponentsByType(ComponentType type);
+    Task<IEnumerable<ComponentSumResponse?>> GetAllOwnerComponentsSumByType();
     Task<decimal> GetAllOwnerComponentAmountsByType(ComponentType type);
     Task<Component?> GetOwnerOldestComponentByType(ComponentType type);
     Task<Component?> GetComponentById(int id);
