@@ -22,4 +22,22 @@ public class ProductRepository(DataContext dataContext, IComponentRepository com
                 Amount = p.Amount,
             }).ToListAsync()!;
     }
+
+    public void CreateProductToUser(ProductRequest product, string id, IEnumerable<ProductComponent> components)
+    {
+        dataContext.Add(new Product
+        {
+            Type = product.Type,
+            Packed = DateTime.Today,
+            Amount = product.Amount,
+            Components = components.Select(c => new ProductComponent
+            {
+                Type = c.Type,
+                Received = c.Received,
+                Amount = c.Amount,
+            }).ToList(),
+            UserId = id
+        });
+        dataContext.SaveChanges();
+    }
 }
