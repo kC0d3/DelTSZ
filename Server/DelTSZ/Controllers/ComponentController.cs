@@ -12,11 +12,11 @@ namespace DelTSZ.Controllers;
 public class ComponentController(IComponentRepository componentRepository) : ControllerBase
 {
     [HttpGet, Authorize(Roles = "Costumer")]
-    public async Task<ActionResult<IEnumerable<ComponentRequest>>> GetAllOwnerComponents()
+    public async Task<ActionResult<IEnumerable<ComponentSumResponse>>> GetAllOwnerComponents()
     {
         try
         {
-            return Ok(await componentRepository.GetAllOwnerComponents());
+            return Ok(await componentRepository.GetAllOwnerComponentsSumByType());
         }
         catch (Exception)
         {
@@ -25,7 +25,7 @@ public class ComponentController(IComponentRepository componentRepository) : Con
     }
 
     [HttpPost, Authorize]
-    public async Task<ActionResult<ComponentRequest>> CreateComponent([Required] ComponentRequest componentRequest,
+    public async Task<IActionResult> CreateComponent([Required] ComponentRequest componentRequest,
         int days)
     {
         try
@@ -49,7 +49,7 @@ public class ComponentController(IComponentRepository componentRepository) : Con
                 componentRepository.UpdateComponent(component);
             }
 
-            return Ok(componentRequest);
+            return Ok("Component create successful.");
         }
         catch (Exception)
         {
@@ -86,7 +86,7 @@ public class ComponentController(IComponentRepository componentRepository) : Con
     }
 
     [HttpDelete("{id}"), Authorize(Roles = "Owner, Producer")]
-    public async Task<ActionResult<ComponentResponse>> DeleteComponentById(int id)
+    public async Task<IActionResult> DeleteComponentById(int id)
     {
         try
         {
