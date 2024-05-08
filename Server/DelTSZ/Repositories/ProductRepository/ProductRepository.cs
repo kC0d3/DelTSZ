@@ -114,4 +114,10 @@ public class ProductRepository(DataContext dataContext, IComponentRepository com
         dataContext.Update(product);
         dataContext.SaveChanges();
     }
+    
+    public void DeleteProduct(Product product)
+    {
+        dataContext.Remove(product);
+        dataContext.SaveChanges();
+    }
 }
