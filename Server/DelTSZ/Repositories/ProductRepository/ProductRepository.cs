@@ -114,10 +114,19 @@ public class ProductRepository(DataContext dataContext, IComponentRepository com
         dataContext.Update(product);
         dataContext.SaveChanges();
     }
-    
+
     public void DeleteProduct(Product product)
     {
         dataContext.Remove(product);
         dataContext.SaveChanges();
+    }
+
+    private async Task<Product?> GetOwnerOldestProductByType(ProductType type)
+    {
+        var user = await dataContext.Users.FirstOrDefaultAsync(u => u.Role == Roles.Owner.ToString());
+        return await dataContext.Products!
+            .Where(c => c.UserId == user!.Id && c.Type == type)
+            .OrderBy(c => c.Packed)
+            .FirstOrDefaultAsync();
     }
 }
