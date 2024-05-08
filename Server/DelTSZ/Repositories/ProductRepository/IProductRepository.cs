@@ -13,4 +13,5 @@ public interface IProductRepository
         decimal demandAmount);
 
     Task<Product?> GetProductById(int id);
+    void UpdateProduct(Product product);
 }

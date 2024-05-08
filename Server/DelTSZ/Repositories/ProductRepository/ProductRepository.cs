@@ -100,4 +100,10 @@ public class ProductRepository(DataContext dataContext, IComponentRepository com
     {
         return await dataContext.Products!.FirstOrDefaultAsync(c => c.Id == id);
     }
+    
+    public void UpdateProduct(Product product)
+    {
+        dataContext.Update(product);
+        dataContext.SaveChanges();
+    }
 }
