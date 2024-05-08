@@ -40,4 +40,59 @@ public class ProductRepository(DataContext dataContext, IComponentRepository com
         });
         dataContext.SaveChanges();
     }
+    
+    public async Task<List<ProductComponent>> CreateProductComponents(ComponentType type, decimal amount,
+        decimal demandAmount)
+    {
+        var componentAmount = 0m;
+        var components = new List<ProductComponent>();
+
+        do
+        {
+            var oldest = await componentRepository.GetOwnerOldestComponentByType(type);
+            if (oldest!.Amount - amount <= 0)
+            {
+                if (components.Exists(c => c.Received == oldest.Received && c.Type == oldest.Type))
+                {
+                    components.FirstOrDefault(c => c.Received == oldest.Received && c.Type == oldest.Type)!
+                        .Amount += amount;
+                }
+                else
+                {
+                    components.Add(new ProductComponent
+                    {
+                        Amount = oldest.Amount,
+                        Received = oldest.Received,
+                        Type = oldest.Type
+                    });
+                }
+
+                componentAmount += oldest.Amount;
+                componentRepository.DeleteComponent(oldest);
+            }
+            else
+            {
+                if (components.Exists(c => c.Received == oldest.Received && c.Type == oldest.Type))
+                {
+                    components.FirstOrDefault(c => c.Received == oldest.Received && c.Type == oldest.Type)!
+                        .Amount += amount;
+                }
+                else
+                {
+                    components.Add(new ProductComponent
+                    {
+                        Amount = amount,
+                        Received = oldest.Received,
+                        Type = oldest.Type
+                    });
+                }
+
+                componentAmount += amount;
+                oldest.Amount -= amount;
+                componentRepository.UpdateComponent(oldest);
+            }
+        } while (componentAmount < demandAmount);
+
+        return components;
+    }
 }
