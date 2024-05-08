@@ -70,6 +70,7 @@ public class ComponentController(IComponentRepository componentRepository) : Con
             }
 
             var ownerComponentAmount = await componentRepository.GetAllOwnerComponentAmountsByType(type);
+            
             if (ownerComponentAmount < amount)
             {
                 return Conflict(new { message = "Not enough components." });
