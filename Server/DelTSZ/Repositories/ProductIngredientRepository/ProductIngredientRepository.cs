@@ -137,6 +137,69 @@ public class ProductIngredientRepository(DataContext dataContext, IIngredientRep
         return ingredients;
     }
 
+    public async Task<List<ProductIngredient>> CreateProductIngredients(Product product, int amount,
+        Product userProduct)
+    {
+        var ingredients = await GetProductIngredientsByProductId(userProduct.Id);
+        var productDetails = product.Type.GetProductDetails().ToList();
+
+        foreach (var pd in productDetails)
+        {
+            var productIngredients = await GetProductIngredientsByProductId_Type(product.Id, pd.Item2);
+            var demandAmount = pd.Item1 * amount;
+
+            foreach (var productIngredient in productIngredients)
+            {
+                if (productIngredient.Amount <= demandAmount)
+                {
+                    var existingIngredient = ingredients.FirstOrDefault(pi =>
+                        pi.Received == productIngredient.Received && pi.Type == productIngredient.Type);
+                    if (existingIngredient != null)
+                    {
+                        existingIngredient.Amount += productIngredient.Amount;
+                    }
+                    else
+                    {
+                        ingredients.Add(new ProductIngredient
+                        {
+                            Amount = productIngredient.Amount,
+                            Received = productIngredient.Received,
+                            Type = productIngredient.Type
+                        });
+                    }
+
+                    demandAmount -= productIngredient.Amount;
+                    await DeleteProductIngredient(productIngredient);
+                }
+                else
+                {
+                    var existingIngredient = ingredients.FirstOrDefault(pi =>
+                        pi.Received == productIngredient.Received && pi.Type == productIngredient.Type);
+                    if (existingIngredient != null)
+                    {
+                        existingIngredient.Amount += demandAmount;
+                    }
+                    else
+                    {
+                        ingredients.Add(new ProductIngredient
+                        {
+                            Amount = demandAmount,
+                            Received = productIngredient.Received,
+                            Type = productIngredient.Type
+                        });
+                    }
+
+                    productIngredient.Amount -= demandAmount;
+                    await UpdateProductIngredient(productIngredient);
+                    demandAmount = 0;
+                }
+
+                if (demandAmount <= 0) break;
+            }
+        }
+
+        return ingredients;
+    }
 
     public async Task IncreaseProductIngredientsFromOwnerIngredients(Product product, int amount)
     {
