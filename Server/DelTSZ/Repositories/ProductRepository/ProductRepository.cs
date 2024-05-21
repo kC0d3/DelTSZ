@@ -84,12 +84,31 @@ public class ProductRepository(DataContext dataContext, IIngredientRepository in
             .OrderBy(p => p.Packed)
             .FirstOrDefaultAsync();
     }
-    
+
     private async Task<Product?> GetProductByUserId_Type_PackedDate(ProductType type, string id,
         DateTime packed)
     {
         return await dataContext.Products
             .Where(p => p.UserId == id && p.Type == type && p.Packed == packed)
             .FirstOrDefaultAsync();
+    }
+
+    private async Task CreateProductToUser(ProductRequest product, string id, DateTime packed,
+        IEnumerable<ProductIngredient> components)
+    {
+        dataContext.Add(new Product
+        {
+            Type = product.Type,
+            Packed = packed,
+            Amount = product.Amount,
+            Components = components.Select(pc => new ProductIngredient
+            {
+                Type = pc.Type,
+                Received = pc.Received,
+                Amount = pc.Amount,
+            }).ToList(),
+            UserId = id
+        });
+        await dataContext.SaveChangesAsync();
     }
 }
