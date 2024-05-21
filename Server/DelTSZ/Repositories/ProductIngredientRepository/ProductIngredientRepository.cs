@@ -144,13 +144,13 @@ public class ProductIngredientRepository(DataContext dataContext, IIngredientRep
         dataContext.Update(productIngredient);
         await dataContext.SaveChangesAsync();
     }
-    
+
     public async Task DeleteProductIngredient(ProductIngredient productIngredient)
     {
         dataContext.Remove(productIngredient);
         await dataContext.SaveChangesAsync();
     }
-    
+
     //Private methods
 
     private async Task<ProductIngredient?> GetProductIngredientByProductId_Type_Received(int id, IngredientType type,
@@ -160,6 +160,14 @@ public class ProductIngredientRepository(DataContext dataContext, IIngredientRep
             .Where(pi => pi.ProductId == id)
             .Where(pi => pi.Type == type && pi.Received == received)
             .FirstOrDefaultAsync();
+    }
+
+    private async Task<List<ProductIngredient>> GetProductIngredientsByProductId_Type(int id, IngredientType type)
+    {
+        return await dataContext.ProductIngredients
+            .Where(pc => pc.ProductId == id && pc.Type == type)
+            .OrderBy(pc => pc.Received)
+            .ToListAsync();
     }
 
     private async Task CreateProductIngredient(ProductIngredient productIngredient)
