@@ -14,6 +14,6 @@ public class Product
     public ICollection<ProductIngredient>? Ingredients { get; set; }
 
     //Navigation properties
-    public string? UserId { get; set; }
+    public string? UserId { get; init; }
     public User? User { get; init; }
 }

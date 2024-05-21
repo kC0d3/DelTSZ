@@ -14,6 +14,6 @@ public class Ingredient
 
     //Navigation properties
 
-    public string? UserId { get; init; }
+    public string? UserId { get; set; }
     public User? User { get; init; }
 }
