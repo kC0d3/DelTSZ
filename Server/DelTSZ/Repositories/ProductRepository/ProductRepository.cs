@@ -31,6 +31,18 @@ public class ProductRepository(DataContext dataContext, IIngredientRepository in
             .SumAsync(c => c.Amount);
     }
 
+    public async Task<Product?> GetProductByUserId_Type_PackedDate(ProductType type, string id, int days)
+    {
+        return await dataContext.Products
+            .Where(p => p.UserId == id && p.Type == type && p.Packed == DateTime.Today.AddDays(days))
+            .FirstOrDefaultAsync();
+    }
+
+    public async Task<Product?> GetProductById(int id)
+    {
+        return await dataContext.Products.FirstOrDefaultAsync(p => p.Id == id);
+    }
+
     public async Task CreateProductToUser(ProductRequest product, string id, IEnumerable<ProductIngredient> components,
         int days)
     {
@@ -49,18 +61,6 @@ public class ProductRepository(DataContext dataContext, IIngredientRepository in
         });
         await dataContext.SaveChangesAsync();
     }
-    
-    public async Task<Product?> GetProductByUserId_Type_PackedDate(ProductType type, string id, int days)
-    {
-        return await dataContext.Products
-            .Where(p => p.UserId == id && p.Type == type && p.Packed == DateTime.Today.AddDays(days))
-            .FirstOrDefaultAsync();
-    }
-    
-    public async Task<Product?> GetProductById(int id)
-    {
-        return await dataContext.Products.FirstOrDefaultAsync(p => p.Id == id);
-    }
 
     public async Task UpdateProduct(Product product)
     {
@@ -72,5 +72,16 @@ public class ProductRepository(DataContext dataContext, IIngredientRepository in
     {
         dataContext.Remove(product);
         await dataContext.SaveChangesAsync();
+    }
+
+    //Private methods
+
+    private async Task<Product?> GetOwnerOldestProductByType(ProductType type)
+    {
+        var user = await dataContext.Users.FirstOrDefaultAsync(u => u.Role == Roles.Owner.ToString());
+        return await dataContext.Products
+            .Where(p => p.UserId == user!.Id && p.Type == type)
+            .OrderBy(p => p.Packed)
+            .FirstOrDefaultAsync();
     }
 }
