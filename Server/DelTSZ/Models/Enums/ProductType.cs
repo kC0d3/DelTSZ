@@ -12,52 +12,52 @@ public enum ProductType
 public static class ProductTypeExtensions
 {
     private static readonly
-        Dictionary<ProductType, ICollection<(decimal Amount, ComponentType Component)>>
+        Dictionary<ProductType, ICollection<(decimal Amount, IngredientType Ingredient)>>
         ProductMap =
             new()
             {
                 {
                     ProductType.Paprika400G,
-                    new List<(decimal, ComponentType)>
+                    new List<(decimal, IngredientType)>
                     {
-                        (0.4m, ComponentType.Paprika)
+                        (0.4m, IngredientType.Paprika)
                     }
                 },
                 {
                     ProductType.Tomato200G,
-                    new List<(decimal, ComponentType)>
+                    new List<(decimal, IngredientType)>
                     {
-                        (0.2m, ComponentType.Tomato)
+                        (0.2m, IngredientType.Tomato)
                     }
                 },
                 {
                     ProductType.Tomato500G,
-                    new List<(decimal, ComponentType)>
+                    new List<(decimal, IngredientType)>
                     {
-                        (0.5m, ComponentType.Tomato)
+                        (0.5m, IngredientType.Tomato)
                     }
                 },
                 {
                     ProductType.RatatouilleMix500G,
-                    new List<(decimal, ComponentType)>
+                    new List<(decimal, IngredientType)>
                     {
-                        (0.25m, ComponentType.Paprika),
-                        (0.25m, ComponentType.Tomato)
+                        (0.25m, IngredientType.Paprika),
+                        (0.25m, IngredientType.Tomato)
                     }
                 },
                 {
                     ProductType.SoupMix750G,
-                    new List<(decimal, ComponentType)>
+                    new List<(decimal, IngredientType)>
                     {
-                        (0.25m, ComponentType.Carrot),
-                        (0.25m, ComponentType.ParsleyRoot),
-                        (0.15m, ComponentType.Celery),
-                        (0.1m, ComponentType.Onion)
+                        (0.25m, IngredientType.Carrot),
+                        (0.25m, IngredientType.ParsleyRoot),
+                        (0.15m, IngredientType.Celery),
+                        (0.1m, IngredientType.Onion)
                     }
                 },
             };
 
-    public static IEnumerable<(decimal, ComponentType)> GetProductDetails(this ProductType type)
+    public static IEnumerable<(decimal, IngredientType)> GetProductDetails(this ProductType type)
     {
         return ProductMap[type];
     }

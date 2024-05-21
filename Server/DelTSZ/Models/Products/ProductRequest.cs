@@ -1,5 +1,4 @@
-﻿using DelTSZ.Models.Components;
-using DelTSZ.Models.Enums;
+﻿using DelTSZ.Models.Enums;
 
 namespace DelTSZ.Models.Products;
 

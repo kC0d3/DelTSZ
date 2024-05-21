@@ -1,10 +1,10 @@
 ﻿using DelTSZ.Models.Enums;
 
-namespace DelTSZ.Models.Components;
+namespace DelTSZ.Models.Ingredients;
 
-public class ComponentUpdateRequest
+public class IngredientUpdateRequest
 {
-    public ComponentType Type { get; init; }
+    public IngredientType Type { get; init; }
     public DateTime Received { get; init; }
     public decimal Amount { get; init; }
 }

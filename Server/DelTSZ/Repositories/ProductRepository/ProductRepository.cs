@@ -1,18 +1,19 @@
 ﻿using DelTSZ.Data;
 using DelTSZ.Models.Enums;
-using DelTSZ.Models.ProductComponents;
+using DelTSZ.Models.ProductIngredients;
 using DelTSZ.Models.Products;
-using DelTSZ.Repositories.ComponentRepository;
+using DelTSZ.Repositories.ProductIngredientRepository;
 using Microsoft.EntityFrameworkCore;
 
 namespace DelTSZ.Repositories.ProductRepository;
 
-public class ProductRepository(DataContext dataContext, IComponentRepository componentRepository) : IProductRepository
+public class ProductRepository(DataContext dataContext, IProductIngredientRepository productIngredientRepository)
+    : IProductRepository
 {
     public async Task<IEnumerable<ProductResponse?>> GetAllOwnerProducts()
     {
         var user = await dataContext.Users.FirstOrDefaultAsync(u => u.Role == Roles.Owner.ToString());
-        return await dataContext.Products?
+        return await dataContext.Products
             .Where(p => p.UserId == user!.Id)
             .Select(p => new ProductResponse
             {
@@ -20,113 +21,161 @@ public class ProductRepository(DataContext dataContext, IComponentRepository com
                 Type = p.Type,
                 Received = p.Packed,
                 Amount = p.Amount,
-            }).ToListAsync()!;
+            }).ToListAsync();
     }
 
-    public async Task<decimal> GetAllOwnerProductsAmountsByType(ProductType type)
+    public async Task<int> GetAllOwnerProductsAmountsByType(ProductType type)
     {
         var user = await dataContext.Users.FirstOrDefaultAsync(u => u.Role == Roles.Owner.ToString());
-        return await dataContext.Products?
+        return await dataContext.Products
             .Where(c => c.UserId == user!.Id && c.Type == type)
-            .SumAsync(c => c.Amount)!;
+            .SumAsync(c => c.Amount);
     }
 
-    public void CreateProductToUser(ProductRequest product, string id, IEnumerable<ProductComponent> components)
+    public async Task<Product?> GetProductByUserId_Type_PackedDate(ProductType type, string id, int days)
     {
-        dataContext.Add(new Product
-        {
-            Type = product.Type,
-            Packed = DateTime.Today,
-            Amount = product.Amount,
-            Components = components.Select(c => new ProductComponent
-            {
-                Type = c.Type,
-                Received = c.Received,
-                Amount = c.Amount,
-            }).ToList(),
-            UserId = id
-        });
-        dataContext.SaveChanges();
-    }
-
-    public async Task<List<ProductComponent>> CreateProductComponents(ComponentType type, decimal amount,
-        decimal demandAmount)
-    {
-        var componentAmount = 0m;
-        var components = new List<ProductComponent>();
-
-        do
-        {
-            var oldest = await componentRepository.GetOwnerOldestComponentByType(type);
-            if (oldest!.Amount - amount <= 0)
-            {
-                if (components.Exists(c => c.Received == oldest.Received && c.Type == oldest.Type))
-                {
-                    components.FirstOrDefault(c => c.Received == oldest.Received && c.Type == oldest.Type)!
-                        .Amount += amount;
-                }
-                else
-                {
-                    components.Add(new ProductComponent
-                    {
-                        Amount = oldest.Amount,
-                        Received = oldest.Received,
-                        Type = oldest.Type
-                    });
-                }
-
-                componentAmount += oldest.Amount;
-                componentRepository.DeleteComponent(oldest);
-            }
-            else
-            {
-                if (components.Exists(c => c.Received == oldest.Received && c.Type == oldest.Type))
-                {
-                    components.FirstOrDefault(c => c.Received == oldest.Received && c.Type == oldest.Type)!
-                        .Amount += amount;
-                }
-                else
-                {
-                    components.Add(new ProductComponent
-                    {
-                        Amount = amount,
-                        Received = oldest.Received,
-                        Type = oldest.Type
-                    });
-                }
-
-                componentAmount += amount;
-                oldest.Amount -= amount;
-                componentRepository.UpdateComponent(oldest);
-            }
-        } while (componentAmount < demandAmount);
-
-        return components;
+        return await dataContext.Products
+            .Where(p => p.UserId == id && p.Type == type && p.Packed == DateTime.Today.AddDays(days))
+            .FirstOrDefaultAsync();
     }
 
     public async Task<Product?> GetProductById(int id)
     {
-        return await dataContext.Products!.FirstOrDefaultAsync(c => c.Id == id);
+        return await dataContext.Products.FirstOrDefaultAsync(p => p.Id == id);
     }
 
-    public void UpdateProduct(Product product)
+    public async Task CreateProductToUser(ProductRequest product, string id, IEnumerable<ProductIngredient> components,
+        int days)
+    {
+        dataContext.Add(new Product
+        {
+            Type = product.Type,
+            Packed = DateTime.Today.AddDays(days),
+            Amount = product.Amount,
+            Ingredients = components.Select(pc => new ProductIngredient
+            {
+                Type = pc.Type,
+                Received = pc.Received,
+                Amount = pc.Amount,
+            }).ToList(),
+            UserId = id
+        });
+        await dataContext.SaveChangesAsync();
+    }
+
+    public async Task ProductUpdateByRequestAmount(ProductType type, string id, int amount)
+    {
+        var demandAmount = amount;
+
+        while (demandAmount > 0)
+        {
+            var ownerProduct = await GetOwnerOldestProductByType(type);
+
+            if (ownerProduct!.Amount <= demandAmount)
+            {
+                demandAmount -= ownerProduct.Amount;
+                var userProduct = await GetProductByUserId_Type_PackedDate(type, id, ownerProduct.Packed);
+
+                if (userProduct == null)
+                {
+                    var ingredients =
+                        await productIngredientRepository.CreateProductIngredients(ownerProduct, ownerProduct.Amount);
+
+                    await CreateProductToUser(new ProductRequest
+                    {
+                        Type = type,
+                        Amount = ownerProduct.Amount
+                    }, id, ownerProduct.Packed, ingredients);
+                }
+                else
+                {
+                    userProduct.Amount += ownerProduct.Amount;
+                    userProduct.Ingredients =
+                        await productIngredientRepository.CreateProductIngredients(ownerProduct, demandAmount,
+                            userProduct);
+                    await UpdateProduct(userProduct);
+                }
+
+                await DeleteProduct(ownerProduct);
+            }
+            else
+            {
+                var userProduct = await GetProductByUserId_Type_PackedDate(type, id, ownerProduct.Packed);
+
+                if (userProduct == null)
+                {
+                    var ingredients =
+                        await productIngredientRepository.CreateProductIngredients(ownerProduct, demandAmount);
+
+                    await CreateProductToUser(new ProductRequest
+                    {
+                        Type = type,
+                        Amount = demandAmount
+                    }, id, ownerProduct.Packed, ingredients);
+                }
+                else
+                {
+                    userProduct.Amount += demandAmount;
+                    userProduct.Ingredients =
+                        await productIngredientRepository.CreateProductIngredients(ownerProduct, demandAmount,
+                            userProduct);
+                    await UpdateProduct(userProduct);
+                }
+
+                ownerProduct.Amount -= demandAmount;
+                await UpdateProduct(ownerProduct);
+                demandAmount = 0;
+            }
+        }
+    }
+
+    public async Task UpdateProduct(Product product)
     {
         dataContext.Update(product);
-        dataContext.SaveChanges();
+        await dataContext.SaveChangesAsync();
     }
 
-    public void DeleteProduct(Product product)
+    public async Task DeleteProduct(Product product)
     {
         dataContext.Remove(product);
-        dataContext.SaveChanges();
+        await dataContext.SaveChangesAsync();
     }
+
+    //Private methods
 
     private async Task<Product?> GetOwnerOldestProductByType(ProductType type)
     {
         var user = await dataContext.Users.FirstOrDefaultAsync(u => u.Role == Roles.Owner.ToString());
-        return await dataContext.Products!
-            .Where(c => c.UserId == user!.Id && c.Type == type)
-            .OrderBy(c => c.Packed)
+        return await dataContext.Products
+            .Where(p => p.UserId == user!.Id && p.Type == type)
+            .OrderBy(p => p.Packed)
             .FirstOrDefaultAsync();
+    }
+
+    private async Task<Product?> GetProductByUserId_Type_PackedDate(ProductType type, string id,
+        DateTime packed)
+    {
+        return await dataContext.Products
+            .Where(p => p.UserId == id && p.Type == type && p.Packed == packed)
+            .FirstOrDefaultAsync();
+    }
+
+    private async Task CreateProductToUser(ProductRequest product, string id, DateTime packed,
+        IEnumerable<ProductIngredient> components)
+    {
+        dataContext.Add(new Product
+        {
+            Type = product.Type,
+            Packed = packed,
+            Amount = product.Amount,
+            Ingredients = components.Select(pc => new ProductIngredient
+            {
+                Type = pc.Type,
+                Received = pc.Received,
+                Amount = pc.Amount,
+            }).ToList(),
+            UserId = id
+        });
+        await dataContext.SaveChangesAsync();
     }
 }

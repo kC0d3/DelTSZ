@@ -1,6 +1,6 @@
 using DelTSZ.Models.Addresses;
-using DelTSZ.Models.Components;
-using DelTSZ.Models.ProductComponents;
+using DelTSZ.Models.Ingredients;
+using DelTSZ.Models.ProductIngredients;
 using DelTSZ.Models.Products;
 using DelTSZ.Models.Users;
 using Microsoft.AspNetCore.Identity;
@@ -9,17 +9,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DelTSZ.Data;
 
-public class DataContext : IdentityDbContext<User, IdentityRole, string>
+public class DataContext(DbContextOptions<DataContext> options) : IdentityDbContext<User, IdentityRole, string>(options)
 {
-    public DbSet<Component>? Components { get; set; }
-    public DbSet<Product>? Products { get; set; }
-    public DbSet<ProductComponent>? ProductComponents { get; set; }
-    public DbSet<Address>? Addresses { get; set; }
-
-    public DataContext(DbContextOptions<DataContext> options)
-        : base(options)
-    {
-    }
+    public DbSet<Ingredient> Ingredients { get; init; }
+    public DbSet<Product> Products { get; init; }
+    public DbSet<ProductIngredient> ProductIngredients { get; init; }
+    public DbSet<Address> Addresses { get; init; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -32,28 +27,28 @@ public class DataContext : IdentityDbContext<User, IdentityRole, string>
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.Entity<Product>()
-            .HasMany(p => p.Components)
+            .HasMany(p => p.Ingredients)
             .WithOne(c => c.Product)
             .HasForeignKey(c => c.ProductId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.Entity<Component>()
+        builder.Entity<Ingredient>()
             .Property(c => c.Amount)
             .HasColumnType("decimal(18,2)");
 
-        builder.Entity<Component>()
+        builder.Entity<Ingredient>()
             .HasOne(c => c.User)
-            .WithMany(u => u.Components)
+            .WithMany(u => u.Ingredients)
             .HasForeignKey(c => c.UserId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.Entity<ProductComponent>()
+        builder.Entity<ProductIngredient>()
             .Property(c => c.Amount)
             .HasColumnType("decimal(18,2)");
 
-        builder.Entity<ProductComponent>()
+        builder.Entity<ProductIngredient>()
             .HasOne(c => c.Product)
-            .WithMany(p => p.Components)
+            .WithMany(p => p.Ingredients)
             .HasForeignKey(c => c.ProductId)
             .OnDelete(DeleteBehavior.Cascade);
 
@@ -70,7 +65,7 @@ public class DataContext : IdentityDbContext<User, IdentityRole, string>
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.Entity<User>()
-            .HasMany(u => u.Components)
+            .HasMany(u => u.Ingredients)
             .WithOne(c => c.User)
             .HasForeignKey(c => c.UserId)
             .OnDelete(DeleteBehavior.Cascade);

@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using DelTSZ.Models.Components;
 using DelTSZ.Models.Enums;
-using DelTSZ.Models.ProductComponents;
+using DelTSZ.Models.Ingredients;
+using DelTSZ.Models.ProductIngredients;
 using DelTSZ.Models.Products;
-using DelTSZ.Repositories.ComponentRepository;
+using DelTSZ.Repositories.IngredientRepository;
+using DelTSZ.Repositories.ProductIngredientRepository;
 using DelTSZ.Repositories.ProductRepository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,11 +13,14 @@ namespace DelTSZ.Controllers;
 
 [Route("api/products")]
 [ApiController]
-public class ProductController(IProductRepository productRepository, IComponentRepository componentRepository)
+public class ProductController(
+    IProductRepository productRepository,
+    IIngredientRepository ingredientRepository,
+    IProductIngredientRepository productIngredientRepository)
     : ControllerBase
 {
     [HttpGet, Authorize(Roles = "Costumer")]
-    public async Task<ActionResult<IEnumerable<ComponentRequest>>> GetAllOwnerProducts()
+    public async Task<ActionResult<IEnumerable<IngredientRequest>>> GetAllOwnerProducts()
     {
         try
         {
@@ -29,43 +33,80 @@ public class ProductController(IProductRepository productRepository, IComponentR
     }
 
     [HttpPost, Authorize(Roles = "Owner")]
-    public async Task<IActionResult> CreateProduct([Required] ProductRequest product)
+    public async Task<IActionResult> CreateProduct([Required] ProductRequest productRequest, int days)
     {
         try
         {
             var id = HttpContext.User.Claims.FirstOrDefault(c => c.Type.Contains("identifier"))?.Value;
 
-            if (id == null || !Enum.IsDefined(typeof(ProductType), product.Type))
+            if (id == null || !Enum.IsDefined(typeof(ProductType), productRequest.Type))
             {
                 return Conflict("Wrong user id or product type.");
             }
 
-            var productDetails = product.Type.GetProductDetails().ToList();
-            var components = new List<ProductComponent>();
+            var productDetails = productRequest.Type.GetProductDetails().ToList();
 
             foreach (var pd in productDetails)
             {
-                var demandAmount = pd.Item1 * product.Amount;
-                var ownerComponentsAmount = await componentRepository.GetAllOwnerComponentAmountsByType(pd.Item2);
+                var demandAmount = pd.Item1 * productRequest.Amount;
+                var ownerIngredientsAmount = await ingredientRepository.GetAllOwnerIngredientAmountsByType(pd.Item2);
 
-                if (ownerComponentsAmount < demandAmount)
+                if (ownerIngredientsAmount < demandAmount)
                 {
-                    return Conflict("Not enough components.");
+                    return Conflict("Not enough ingredients.");
                 }
             }
 
-            foreach (var pd in productDetails)
+            var product =
+                await productRepository.GetProductByUserId_Type_PackedDate(productRequest.Type, id, days);
+            var ingredients = new List<ProductIngredient>();
+
+            if (product == null)
             {
-                var demandAmount = pd.Item1 * product.Amount;
-                components.AddRange(await productRepository.CreateProductComponents(pd.Item2, pd.Item1, demandAmount));
+                ingredients.AddRange(await productIngredientRepository.CreateProductIngredients(productRequest));
+                await productRepository.CreateProductToUser(productRequest, id, ingredients, days);
+            }
+            else
+            {
+                product.Amount += productRequest.Amount;
+                await productIngredientRepository.IncreaseProductIngredientsFromOwnerIngredients(product,
+                    productRequest.Amount);
+                await productRepository.UpdateProduct(product);
             }
 
-            productRepository.CreateProductToUser(product, id, components);
             return Ok("Product create successful.");
         }
         catch (Exception)
         {
             return BadRequest("Error create product.");
+        }
+    }
+
+    [HttpPut("{type}"), Authorize(Roles = "Owner, Costumer")]
+    public async Task<IActionResult> UpdateProductByType(ProductType type, int amount)
+    {
+        try
+        {
+            var id = HttpContext.User.Claims.FirstOrDefault(c => c.Type.Contains("identifier"))?.Value;
+
+            if (id == null || !Enum.IsDefined(typeof(ProductType), type) || amount < 0)
+            {
+                return Conflict("Wrong user id, component type or amount.");
+            }
+
+            var ownerProductAmount = await productRepository.GetAllOwnerProductsAmountsByType(type);
+
+            if (ownerProductAmount < amount)
+            {
+                return Conflict(new { message = "Not enough products." });
+            }
+
+            await productRepository.ProductUpdateByRequestAmount(type, id, amount);
+            return Ok("Product update successful.");
+        }
+        catch (Exception)
+        {
+            return BadRequest("Error update component.");
         }
     }
 }
