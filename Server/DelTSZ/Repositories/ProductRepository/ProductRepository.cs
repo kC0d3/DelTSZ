@@ -2,12 +2,13 @@
 using DelTSZ.Models.Enums;
 using DelTSZ.Models.ProductIngredients;
 using DelTSZ.Models.Products;
-using DelTSZ.Repositories.IngredientRepository;
+using DelTSZ.Repositories.ProductIngredientRepository;
 using Microsoft.EntityFrameworkCore;
 
 namespace DelTSZ.Repositories.ProductRepository;
 
-public class ProductRepository(DataContext dataContext, IIngredientRepository ingredientRepository) : IProductRepository
+public class ProductRepository(DataContext dataContext, IProductIngredientRepository productIngredientRepository)
+    : IProductRepository
 {
     public async Task<IEnumerable<ProductResponse?>> GetAllOwnerProducts()
     {
@@ -51,7 +52,7 @@ public class ProductRepository(DataContext dataContext, IIngredientRepository in
             Type = product.Type,
             Packed = DateTime.Today.AddDays(days),
             Amount = product.Amount,
-            Components = components.Select(pc => new ProductIngredient
+            Ingredients = components.Select(pc => new ProductIngredient
             {
                 Type = pc.Type,
                 Received = pc.Received,
@@ -60,6 +61,72 @@ public class ProductRepository(DataContext dataContext, IIngredientRepository in
             UserId = id
         });
         await dataContext.SaveChangesAsync();
+    }
+
+    public async Task ProductUpdateByRequestAmount(ProductType type, string id, int amount)
+    {
+        var demandAmount = amount;
+
+        while (demandAmount > 0)
+        {
+            var ownerProduct = await GetOwnerOldestProductByType(type);
+
+            if (ownerProduct!.Amount <= demandAmount)
+            {
+                demandAmount -= ownerProduct.Amount;
+                var userProduct = await GetProductByUserId_Type_PackedDate(type, id, ownerProduct.Packed);
+
+                if (userProduct == null)
+                {
+                    var ingredients =
+                        await productIngredientRepository.CreateProductIngredients(ownerProduct, ownerProduct.Amount);
+
+                    await CreateProductToUser(new ProductRequest
+                    {
+                        Type = type,
+                        Amount = ownerProduct.Amount
+                    }, id, ownerProduct.Packed, ingredients);
+                }
+                else
+                {
+                    userProduct.Amount += ownerProduct.Amount;
+                    userProduct.Ingredients =
+                        await productIngredientRepository.CreateProductIngredients(ownerProduct, demandAmount,
+                            userProduct);
+                    await UpdateProduct(userProduct);
+                }
+
+                await DeleteProduct(ownerProduct);
+            }
+            else
+            {
+                var userProduct = await GetProductByUserId_Type_PackedDate(type, id, ownerProduct.Packed);
+
+                if (userProduct == null)
+                {
+                    var ingredients =
+                        await productIngredientRepository.CreateProductIngredients(ownerProduct, demandAmount);
+
+                    await CreateProductToUser(new ProductRequest
+                    {
+                        Type = type,
+                        Amount = demandAmount
+                    }, id, ownerProduct.Packed, ingredients);
+                }
+                else
+                {
+                    userProduct.Amount += demandAmount;
+                    userProduct.Ingredients =
+                        await productIngredientRepository.CreateProductIngredients(ownerProduct, demandAmount,
+                            userProduct);
+                    await UpdateProduct(userProduct);
+                }
+
+                ownerProduct.Amount -= demandAmount;
+                await UpdateProduct(ownerProduct);
+                demandAmount = 0;
+            }
+        }
     }
 
     public async Task UpdateProduct(Product product)
@@ -101,7 +168,7 @@ public class ProductRepository(DataContext dataContext, IIngredientRepository in
             Type = product.Type,
             Packed = packed,
             Amount = product.Amount,
-            Components = components.Select(pc => new ProductIngredient
+            Ingredients = components.Select(pc => new ProductIngredient
             {
                 Type = pc.Type,
                 Received = pc.Received,
