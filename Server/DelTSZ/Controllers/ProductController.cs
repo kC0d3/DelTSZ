@@ -82,7 +82,7 @@ public class ProductController(
         }
     }
 
-    [HttpPut("{type}"), Authorize(Roles = "Owner, Costumer")]
+    [HttpPut("{type}"), Authorize(Roles = "Costumer")]
     public async Task<IActionResult> UpdateProductByType(ProductType type, int amount)
     {
         try
@@ -91,7 +91,7 @@ public class ProductController(
 
             if (id == null || !Enum.IsDefined(typeof(ProductType), type) || amount < 0)
             {
-                return Conflict("Wrong user id, component type or amount.");
+                return Conflict("Wrong user id, product type or amount.");
             }
 
             var ownerProductAmount = await productRepository.GetAllOwnerProductsAmountsByType(type);
@@ -107,6 +107,27 @@ public class ProductController(
         catch (Exception)
         {
             return BadRequest("Error update component.");
+        }
+    }
+    
+    [HttpDelete("{id}"), Authorize(Roles = "Owner")]
+    public async Task<IActionResult> DeleteProductById(int id)
+    {
+        try
+        {
+            var product = await productRepository.GetProductById(id);
+
+            if (product == null)
+            {
+                return NotFound("Product not found.");
+            }
+
+            await productRepository.DeleteProduct(product!);
+            return Ok("Product delete successful.");
+        }
+        catch (Exception)
+        {
+            return NotFound("Error getting product.");
         }
     }
 }
