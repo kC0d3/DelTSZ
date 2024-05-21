@@ -352,7 +352,7 @@ namespace DelTSZ.Migrations
             modelBuilder.Entity("DelTSZ.Models.Ingredients.Ingredient", b =>
                 {
                     b.HasOne("DelTSZ.Models.Users.User", "User")
-                        .WithMany("Components")
+                        .WithMany("Ingredients")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
 
@@ -362,7 +362,7 @@ namespace DelTSZ.Migrations
             modelBuilder.Entity("DelTSZ.Models.ProductIngredients.ProductIngredient", b =>
                 {
                     b.HasOne("DelTSZ.Models.Products.Product", "Product")
-                        .WithMany("Components")
+                        .WithMany("Ingredients")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade);
 
@@ -432,14 +432,14 @@ namespace DelTSZ.Migrations
 
             modelBuilder.Entity("DelTSZ.Models.Products.Product", b =>
                 {
-                    b.Navigation("Components");
+                    b.Navigation("Ingredients");
                 });
 
             modelBuilder.Entity("DelTSZ.Models.Users.User", b =>
                 {
                     b.Navigation("Address");
 
-                    b.Navigation("Components");
+                    b.Navigation("Ingredients");
 
                     b.Navigation("Products");
                 });

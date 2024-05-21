@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DelTSZ.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240521082406_Initial")]
+    [Migration("20240521093758_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -355,7 +355,7 @@ namespace DelTSZ.Migrations
             modelBuilder.Entity("DelTSZ.Models.Ingredients.Ingredient", b =>
                 {
                     b.HasOne("DelTSZ.Models.Users.User", "User")
-                        .WithMany("Components")
+                        .WithMany("Ingredients")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
 
@@ -365,7 +365,7 @@ namespace DelTSZ.Migrations
             modelBuilder.Entity("DelTSZ.Models.ProductIngredients.ProductIngredient", b =>
                 {
                     b.HasOne("DelTSZ.Models.Products.Product", "Product")
-                        .WithMany("Components")
+                        .WithMany("Ingredients")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade);
 
@@ -435,14 +435,14 @@ namespace DelTSZ.Migrations
 
             modelBuilder.Entity("DelTSZ.Models.Products.Product", b =>
                 {
-                    b.Navigation("Components");
+                    b.Navigation("Ingredients");
                 });
 
             modelBuilder.Entity("DelTSZ.Models.Users.User", b =>
                 {
                     b.Navigation("Address");
 
-                    b.Navigation("Components");
+                    b.Navigation("Ingredients");
 
                     b.Navigation("Products");
                 });
