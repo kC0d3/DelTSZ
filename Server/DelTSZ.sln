@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DelTSZ", "DelTSZ\DelTSZ.csproj", "{AC1E3280-DDD3-472C-9AEF-A0CC48FFB45C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AC1E3280-DDD3-472C-9AEF-A0CC48FFB45C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC1E3280-DDD3-472C-9AEF-A0CC48FFB45C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC1E3280-DDD3-472C-9AEF-A0CC48FFB45C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC1E3280-DDD3-472C-9AEF-A0CC48FFB45C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
