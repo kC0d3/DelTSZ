@@ -69,7 +69,8 @@ public class ProductController(
             else
             {
                 product.Amount += productRequest.Amount;
-                await productIngredientRepository.IncreaseProductIngredientsFromOwnerIngredients(product, productRequest.Amount);
+                await productIngredientRepository.IncreaseProductIngredientsFromOwnerIngredients(product,
+                    productRequest.Amount);
                 await productRepository.UpdateProduct(product);
             }
 
@@ -78,6 +79,34 @@ public class ProductController(
         catch (Exception)
         {
             return BadRequest("Error create product.");
+        }
+    }
+
+    [HttpPut("{type}"), Authorize(Roles = "Owner, Costumer")]
+    public async Task<IActionResult> UpdateProductByType(ProductType type, int amount)
+    {
+        try
+        {
+            var id = HttpContext.User.Claims.FirstOrDefault(c => c.Type.Contains("identifier"))?.Value;
+
+            if (id == null || !Enum.IsDefined(typeof(ProductType), type) || amount < 0)
+            {
+                return Conflict("Wrong user id, component type or amount.");
+            }
+
+            var ownerProductAmount = await productRepository.GetAllOwnerProductsAmountsByType(type);
+
+            if (ownerProductAmount < amount)
+            {
+                return Conflict(new { message = "Not enough products." });
+            }
+
+            await productRepository.ProductUpdateByRequestAmount(type, id, amount);
+            return Ok("Product update successful.");
+        }
+        catch (Exception)
+        {
+            return BadRequest("Error update component.");
         }
     }
 }
