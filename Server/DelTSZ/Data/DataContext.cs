@@ -11,10 +11,10 @@ namespace DelTSZ.Data;
 
 public class DataContext(DbContextOptions<DataContext> options) : IdentityDbContext<User, IdentityRole, string>(options)
 {
-    public DbSet<Ingredient> Ingredients { get; set; }
-    public DbSet<Product> Products { get; set; }
-    public DbSet<ProductIngredient> ProductIngredients { get; set; }
-    public DbSet<Address> Addresses { get; set; }
+    public DbSet<Ingredient> Ingredients { get; init; }
+    public DbSet<Product> Products { get; init; }
+    public DbSet<ProductIngredient> ProductIngredients { get; init; }
+    public DbSet<Address> Addresses { get; init; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -27,7 +27,7 @@ public class DataContext(DbContextOptions<DataContext> options) : IdentityDbCont
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.Entity<Product>()
-            .HasMany(p => p.Components)
+            .HasMany(p => p.Ingredients)
             .WithOne(c => c.Product)
             .HasForeignKey(c => c.ProductId)
             .OnDelete(DeleteBehavior.Cascade);
@@ -48,7 +48,7 @@ public class DataContext(DbContextOptions<DataContext> options) : IdentityDbCont
 
         builder.Entity<ProductIngredient>()
             .HasOne(c => c.Product)
-            .WithMany(p => p.Components)
+            .WithMany(p => p.Ingredients)
             .HasForeignKey(c => c.ProductId)
             .OnDelete(DeleteBehavior.Cascade);
 

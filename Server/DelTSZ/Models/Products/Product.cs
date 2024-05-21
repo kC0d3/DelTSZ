@@ -11,7 +11,7 @@ public class Product
     public ProductType Type { get; init; }
     public DateTime Packed { get; init; }
     public int Amount { get; set; }
-    public ICollection<ProductIngredient>? Components { get; set; }
+    public ICollection<ProductIngredient>? Ingredients { get; set; }
 
     //Navigation properties
     public string? UserId { get; set; }
