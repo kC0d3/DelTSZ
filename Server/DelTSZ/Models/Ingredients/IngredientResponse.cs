@@ -1,12 +1,11 @@
 ﻿using DelTSZ.Models.Enums;
-using DelTSZ.Models.Products;
 
-namespace DelTSZ.Models.Components;
+namespace DelTSZ.Models.Ingredients;
 
-public class ComponentResponse
+public class IngredientResponse
 {
     public int Id { get; init; }
-    public ComponentType Type { get; init; }
+    public IngredientType Type { get; init; }
     public DateTime Received { get; init; }
     public decimal Amount { get; init; }
 }

@@ -1,6 +1,6 @@
 ﻿namespace DelTSZ.Models.Enums;
 
-public enum ComponentType
+public enum IngredientType
 {
     Carrot,
     Celery,

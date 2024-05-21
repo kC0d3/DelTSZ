@@ -1,18 +1,18 @@
 ﻿using DelTSZ.Data;
 using DelTSZ.Models.Enums;
-using DelTSZ.Models.ProductComponents;
+using DelTSZ.Models.ProductIngredients;
 using DelTSZ.Models.Products;
-using DelTSZ.Repositories.ComponentRepository;
+using DelTSZ.Repositories.IngredientRepository;
 using Microsoft.EntityFrameworkCore;
 
 namespace DelTSZ.Repositories.ProductRepository;
 
-public class ProductRepository(DataContext dataContext, IComponentRepository componentRepository) : IProductRepository
+public class ProductRepository(DataContext dataContext, IIngredientRepository ingredientRepository) : IProductRepository
 {
     public async Task<IEnumerable<ProductResponse?>> GetAllOwnerProducts()
     {
         var user = await dataContext.Users.FirstOrDefaultAsync(u => u.Role == Roles.Owner.ToString());
-        return await dataContext.Products?
+        return await dataContext.Products
             .Where(p => p.UserId == user!.Id)
             .Select(p => new ProductResponse
             {
@@ -20,113 +20,57 @@ public class ProductRepository(DataContext dataContext, IComponentRepository com
                 Type = p.Type,
                 Received = p.Packed,
                 Amount = p.Amount,
-            }).ToListAsync()!;
+            }).ToListAsync();
     }
 
-    public async Task<decimal> GetAllOwnerProductsAmountsByType(ProductType type)
+    public async Task<int> GetAllOwnerProductsAmountsByType(ProductType type)
     {
         var user = await dataContext.Users.FirstOrDefaultAsync(u => u.Role == Roles.Owner.ToString());
-        return await dataContext.Products?
+        return await dataContext.Products
             .Where(c => c.UserId == user!.Id && c.Type == type)
-            .SumAsync(c => c.Amount)!;
+            .SumAsync(c => c.Amount);
     }
 
-    public void CreateProductToUser(ProductRequest product, string id, IEnumerable<ProductComponent> components)
+    public async Task CreateProductToUser(ProductRequest product, string id, IEnumerable<ProductIngredient> components,
+        int days)
     {
         dataContext.Add(new Product
         {
             Type = product.Type,
-            Packed = DateTime.Today,
+            Packed = DateTime.Today.AddDays(days),
             Amount = product.Amount,
-            Components = components.Select(c => new ProductComponent
+            Components = components.Select(pc => new ProductIngredient
             {
-                Type = c.Type,
-                Received = c.Received,
-                Amount = c.Amount,
+                Type = pc.Type,
+                Received = pc.Received,
+                Amount = pc.Amount,
             }).ToList(),
             UserId = id
         });
-        dataContext.SaveChanges();
+        await dataContext.SaveChangesAsync();
     }
-
-    public async Task<List<ProductComponent>> CreateProductComponents(ComponentType type, decimal amount,
-        decimal demandAmount)
+    
+    public async Task<Product?> GetProductByUserId_Type_PackedDate(ProductType type, string id, int days)
     {
-        var componentAmount = 0m;
-        var components = new List<ProductComponent>();
-
-        do
-        {
-            var oldest = await componentRepository.GetOwnerOldestComponentByType(type);
-            if (oldest!.Amount - amount <= 0)
-            {
-                if (components.Exists(c => c.Received == oldest.Received && c.Type == oldest.Type))
-                {
-                    components.FirstOrDefault(c => c.Received == oldest.Received && c.Type == oldest.Type)!
-                        .Amount += amount;
-                }
-                else
-                {
-                    components.Add(new ProductComponent
-                    {
-                        Amount = oldest.Amount,
-                        Received = oldest.Received,
-                        Type = oldest.Type
-                    });
-                }
-
-                componentAmount += oldest.Amount;
-                componentRepository.DeleteComponent(oldest);
-            }
-            else
-            {
-                if (components.Exists(c => c.Received == oldest.Received && c.Type == oldest.Type))
-                {
-                    components.FirstOrDefault(c => c.Received == oldest.Received && c.Type == oldest.Type)!
-                        .Amount += amount;
-                }
-                else
-                {
-                    components.Add(new ProductComponent
-                    {
-                        Amount = amount,
-                        Received = oldest.Received,
-                        Type = oldest.Type
-                    });
-                }
-
-                componentAmount += amount;
-                oldest.Amount -= amount;
-                componentRepository.UpdateComponent(oldest);
-            }
-        } while (componentAmount < demandAmount);
-
-        return components;
+        return await dataContext.Products
+            .Where(p => p.UserId == id && p.Type == type && p.Packed == DateTime.Today.AddDays(days))
+            .FirstOrDefaultAsync();
     }
-
+    
     public async Task<Product?> GetProductById(int id)
     {
-        return await dataContext.Products!.FirstOrDefaultAsync(c => c.Id == id);
+        return await dataContext.Products.FirstOrDefaultAsync(p => p.Id == id);
     }
 
-    public void UpdateProduct(Product product)
+    public async Task UpdateProduct(Product product)
     {
         dataContext.Update(product);
-        dataContext.SaveChanges();
+        await dataContext.SaveChangesAsync();
     }
 
-    public void DeleteProduct(Product product)
+    public async Task DeleteProduct(Product product)
     {
         dataContext.Remove(product);
-        dataContext.SaveChanges();
-    }
-
-    private async Task<Product?> GetOwnerOldestProductByType(ProductType type)
-    {
-        var user = await dataContext.Users.FirstOrDefaultAsync(u => u.Role == Roles.Owner.ToString());
-        return await dataContext.Products!
-            .Where(c => c.UserId == user!.Id && c.Type == type)
-            .OrderBy(c => c.Packed)
-            .FirstOrDefaultAsync();
+        await dataContext.SaveChangesAsync();
     }
 }
