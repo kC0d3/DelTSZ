@@ -88,4 +88,10 @@ public class ProductIngredientRepository(DataContext dataContext, IIngredientRep
         dataContext.Add(productIngredient);
         await dataContext.SaveChangesAsync();
     }
+    
+    private async Task UpdateProductIngredient(ProductIngredient productIngredient)
+    {
+        dataContext.Update(productIngredient);
+        await dataContext.SaveChangesAsync();
+    }
 }
