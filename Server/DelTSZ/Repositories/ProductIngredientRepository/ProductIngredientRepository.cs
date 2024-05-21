@@ -169,7 +169,12 @@ public class ProductIngredientRepository(DataContext dataContext, IIngredientRep
             .OrderBy(pc => pc.Received)
             .ToListAsync();
     }
-
+    
+    private async Task<List<ProductIngredient>> GetProductIngredientsByProductId(int id)
+    {
+        return await dataContext.ProductIngredients.Where(pc => pc.ProductId == id).ToListAsync();
+    }
+    
     private async Task CreateProductIngredient(ProductIngredient productIngredient)
     {
         dataContext.Add(productIngredient);
