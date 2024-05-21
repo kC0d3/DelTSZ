@@ -12,6 +12,7 @@ public interface IIngredientRepository
     Task<Ingredient?> GetIngredientByUserId_Type_ReceivedDate(IngredientType type, string id, int days);
     Task CreateIngredientToUser(IngredientRequest ingredient, string id, int days);
     Task IngredientUpdateByRequestAmount(IngredientType type, string id, decimal amount);
+    Task IngredientUpdateById(int id, string userId);
     Task UpdateIngredient(Ingredient ingredient);
     Task DeleteIngredient(Ingredient ingredient);
 }

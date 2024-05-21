@@ -119,6 +119,25 @@ public class IngredientRepository(DataContext dataContext) : IIngredientReposito
         } while (demandAmount > 0);
     }
 
+    public async Task IngredientUpdateById(int id, string userId)
+    {
+        var ingredient = await GetIngredientById(id);
+        var userIngredient =
+            await GetIngredientByUserId_Type_ReceivedDate(ingredient!.Type, userId, ingredient.Received);
+
+        if (userIngredient == null)
+        {
+            ingredient.UserId = userId;
+            await UpdateIngredient(ingredient);
+        }
+        else
+        {
+            userIngredient.Amount += ingredient.Amount;
+            await UpdateIngredient(userIngredient);
+            await DeleteIngredient(ingredient);
+        }
+    }
+
     public async Task UpdateIngredient(Ingredient ingredient)
     {
         dataContext.Update(ingredient);
