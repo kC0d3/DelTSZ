@@ -74,6 +74,72 @@ public class ProductIngredientRepository(DataContext dataContext, IIngredientRep
         return ingredients;
     }
 
+    public async Task IncreaseProductIngredientsFromOwnerIngredients(Product product, int amount)
+    {
+        var productDetails = product.Type.GetProductDetails().ToList();
+
+        foreach (var pd in productDetails)
+        {
+            var demandAmount = pd.Item1 * amount;
+            var balance = 0m;
+
+            do
+            {
+                var oldestIngredient = await ingredientRepository.GetOwnerOldestIngredientByType(pd.Item2);
+                var productIngredient =
+                    await GetProductIngredientByProductId_Type_Received(product.Id, pd.Item2,
+                        oldestIngredient!.Received);
+
+                if (oldestIngredient.Amount - demandAmount <= 0)
+                {
+                    if (productIngredient != null)
+                    {
+                        productIngredient.Amount += oldestIngredient.Amount;
+                        await UpdateProductIngredient(productIngredient);
+                    }
+                    else
+                    {
+                        await CreateProductIngredient(new ProductIngredient
+                        {
+                            Amount = oldestIngredient.Amount,
+                            Received = oldestIngredient.Received,
+                            Type = oldestIngredient.Type,
+                            ProductId = product.Id
+                        });
+                    }
+
+                    balance += oldestIngredient.Amount;
+                    demandAmount -= balance;
+                    await ingredientRepository.DeleteIngredient(oldestIngredient);
+                }
+                else
+                {
+                    if (productIngredient != null)
+                    {
+                        productIngredient.Amount += demandAmount;
+                        await UpdateProductIngredient(productIngredient);
+                    }
+                    else
+                    {
+                        await CreateProductIngredient(new ProductIngredient
+                        {
+                            Amount = demandAmount,
+                            Received = oldestIngredient.Received,
+                            Type = oldestIngredient.Type,
+                            ProductId = product.Id
+                        });
+                    }
+
+                    oldestIngredient.Amount -= demandAmount;
+                    demandAmount = 0;
+
+                    await ingredientRepository.UpdateIngredient(oldestIngredient);
+                }
+            } while (demandAmount > 0);
+        }
+    }
+
+
     private async Task<ProductIngredient?> GetProductIngredientByProductId_Type_Received(int id, IngredientType type,
         DateTime received)
     {
@@ -82,13 +148,13 @@ public class ProductIngredientRepository(DataContext dataContext, IIngredientRep
             .Where(pi => pi.Type == type && pi.Received == received)
             .FirstOrDefaultAsync();
     }
-    
+
     private async Task CreateProductIngredient(ProductIngredient productIngredient)
     {
         dataContext.Add(productIngredient);
         await dataContext.SaveChangesAsync();
     }
-    
+
     private async Task UpdateProductIngredient(ProductIngredient productIngredient)
     {
         dataContext.Update(productIngredient);
