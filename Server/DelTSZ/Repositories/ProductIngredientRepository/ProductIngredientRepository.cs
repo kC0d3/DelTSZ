@@ -82,4 +82,10 @@ public class ProductIngredientRepository(DataContext dataContext, IIngredientRep
             .Where(pi => pi.Type == type && pi.Received == received)
             .FirstOrDefaultAsync();
     }
+    
+    private async Task CreateProductIngredient(ProductIngredient productIngredient)
+    {
+        dataContext.Add(productIngredient);
+        await dataContext.SaveChangesAsync();
+    }
 }
