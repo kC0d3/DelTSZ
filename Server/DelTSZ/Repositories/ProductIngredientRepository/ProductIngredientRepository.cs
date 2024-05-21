@@ -3,6 +3,7 @@ using DelTSZ.Models.Enums;
 using DelTSZ.Models.ProductIngredients;
 using DelTSZ.Models.Products;
 using DelTSZ.Repositories.IngredientRepository;
+using Microsoft.EntityFrameworkCore;
 
 namespace DelTSZ.Repositories.ProductIngredientRepository;
 
@@ -71,5 +72,14 @@ public class ProductIngredientRepository(DataContext dataContext, IIngredientRep
         }
 
         return ingredients;
+    }
+
+    private async Task<ProductIngredient?> GetProductIngredientByProductId_Type_Received(int id, IngredientType type,
+        DateTime received)
+    {
+        return await dataContext.ProductIngredients
+            .Where(pi => pi.ProductId == id)
+            .Where(pi => pi.Type == type && pi.Received == received)
+            .FirstOrDefaultAsync();
     }
 }
