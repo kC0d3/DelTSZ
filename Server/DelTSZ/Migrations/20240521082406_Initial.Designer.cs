@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DelTSZ.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240506072948_Initial")]
+    [Migration("20240521082406_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -57,7 +57,7 @@ namespace DelTSZ.Migrations
                     b.ToTable("Addresses");
                 });
 
-            modelBuilder.Entity("DelTSZ.Models.Components.Component", b =>
+            modelBuilder.Entity("DelTSZ.Models.Ingredients.Ingredient", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -81,10 +81,10 @@ namespace DelTSZ.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Components");
+                    b.ToTable("Ingredients");
                 });
 
-            modelBuilder.Entity("DelTSZ.Models.ProductComponents.ProductComponent", b =>
+            modelBuilder.Entity("DelTSZ.Models.ProductIngredients.ProductIngredient", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -108,7 +108,7 @@ namespace DelTSZ.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductComponents");
+                    b.ToTable("ProductIngredients");
                 });
 
             modelBuilder.Entity("DelTSZ.Models.Products.Product", b =>
@@ -352,7 +352,7 @@ namespace DelTSZ.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("DelTSZ.Models.Components.Component", b =>
+            modelBuilder.Entity("DelTSZ.Models.Ingredients.Ingredient", b =>
                 {
                     b.HasOne("DelTSZ.Models.Users.User", "User")
                         .WithMany("Components")
@@ -362,7 +362,7 @@ namespace DelTSZ.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("DelTSZ.Models.ProductComponents.ProductComponent", b =>
+            modelBuilder.Entity("DelTSZ.Models.ProductIngredients.ProductIngredient", b =>
                 {
                     b.HasOne("DelTSZ.Models.Products.Product", "Product")
                         .WithMany("Components")

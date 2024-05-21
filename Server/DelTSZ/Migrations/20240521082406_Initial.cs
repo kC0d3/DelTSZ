@@ -182,7 +182,7 @@ namespace DelTSZ.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Components",
+                name: "Ingredients",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -194,9 +194,9 @@ namespace DelTSZ.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Components", x => x.Id);
+                    table.PrimaryKey("PK_Ingredients", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Components_AspNetUsers_UserId",
+                        name: "FK_Ingredients_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -226,7 +226,7 @@ namespace DelTSZ.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProductComponents",
+                name: "ProductIngredients",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -238,9 +238,9 @@ namespace DelTSZ.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProductComponents", x => x.Id);
+                    table.PrimaryKey("PK_ProductIngredients", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ProductComponents_Products_ProductId",
+                        name: "FK_ProductIngredients_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
@@ -294,13 +294,13 @@ namespace DelTSZ.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Components_UserId",
-                table: "Components",
+                name: "IX_Ingredients_UserId",
+                table: "Ingredients",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProductComponents_ProductId",
-                table: "ProductComponents",
+                name: "IX_ProductIngredients_ProductId",
+                table: "ProductIngredients",
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
@@ -331,10 +331,10 @@ namespace DelTSZ.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Components");
+                name: "Ingredients");
 
             migrationBuilder.DropTable(
-                name: "ProductComponents");
+                name: "ProductIngredients");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
