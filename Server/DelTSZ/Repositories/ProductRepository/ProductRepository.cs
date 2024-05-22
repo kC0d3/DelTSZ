@@ -3,18 +3,22 @@ using DelTSZ.Models.Enums;
 using DelTSZ.Models.ProductIngredients;
 using DelTSZ.Models.Products;
 using DelTSZ.Repositories.ProductIngredientRepository;
+using DelTSZ.Repositories.UserRepository;
 using Microsoft.EntityFrameworkCore;
 
 namespace DelTSZ.Repositories.ProductRepository;
 
-public class ProductRepository(DataContext dataContext, IProductIngredientRepository productIngredientRepository)
+public class ProductRepository(
+    DataContext dataContext,
+    IProductIngredientRepository productIngredientRepository,
+    IUserRepository userRepository)
     : IProductRepository
 {
     public async Task<IEnumerable<ProductResponse?>> GetAllOwnerProducts()
     {
-        var user = await dataContext.Users.FirstOrDefaultAsync(u => u.Role == Roles.Owner.ToString());
+        var owner = await userRepository.GetOwner();
         return await dataContext.Products
-            .Where(p => p.UserId == user!.Id)
+            .Where(p => p.UserId == owner!.Id)
             .Select(p => new ProductResponse
             {
                 Id = p.Id,
@@ -26,9 +30,9 @@ public class ProductRepository(DataContext dataContext, IProductIngredientReposi
 
     public async Task<int> GetAllOwnerProductsAmountsByType(ProductType type)
     {
-        var user = await dataContext.Users.FirstOrDefaultAsync(u => u.Role == Roles.Owner.ToString());
+        var owner = await userRepository.GetOwner();
         return await dataContext.Products
-            .Where(c => c.UserId == user!.Id && c.Type == type)
+            .Where(c => c.UserId == owner!.Id && c.Type == type)
             .SumAsync(c => c.Amount);
     }
 
@@ -145,9 +149,9 @@ public class ProductRepository(DataContext dataContext, IProductIngredientReposi
 
     private async Task<Product?> GetOwnerOldestProductByType(ProductType type)
     {
-        var user = await dataContext.Users.FirstOrDefaultAsync(u => u.Role == Roles.Owner.ToString());
+        var owner = await userRepository.GetOwner();
         return await dataContext.Products
-            .Where(p => p.UserId == user!.Id && p.Type == type)
+            .Where(p => p.UserId == owner!.Id && p.Type == type)
             .OrderBy(p => p.Packed)
             .FirstOrDefaultAsync();
     }
