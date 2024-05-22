@@ -266,19 +266,19 @@ public class ProductIngredientRepository(DataContext dataContext, IIngredientRep
         }
     }
 
-    public async Task UpdateProductIngredient(ProductIngredient productIngredient)
+    //Private methods
+
+    private async Task UpdateProductIngredient(ProductIngredient productIngredient)
     {
         dataContext.Update(productIngredient);
         await dataContext.SaveChangesAsync();
     }
 
-    public async Task DeleteProductIngredient(ProductIngredient productIngredient)
+    private async Task DeleteProductIngredient(ProductIngredient productIngredient)
     {
         dataContext.Remove(productIngredient);
         await dataContext.SaveChangesAsync();
     }
-
-    //Private methods
 
     private async Task<ProductIngredient?> GetProductIngredientByProductId_Type_Received(int id, IngredientType type,
         DateTime received)
