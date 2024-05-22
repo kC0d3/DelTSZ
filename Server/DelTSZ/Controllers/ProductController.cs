@@ -24,7 +24,7 @@ public class ProductController(
     {
         try
         {
-            return Ok(await productRepository.GetAllOwnerProducts());
+            return Ok(await productRepository.GetAllOwnerProductsSumByType());
         }
         catch (Exception)
         {

@@ -14,18 +14,18 @@ public class ProductRepository(
     IUserRepository userRepository)
     : IProductRepository
 {
-    public async Task<IEnumerable<ProductResponse?>> GetAllOwnerProducts()
+    public async Task<IEnumerable<ProductSumResponse?>> GetAllOwnerProductsSumByType()
     {
         var owner = await userRepository.GetOwner();
         return await dataContext.Products
             .Where(p => p.UserId == owner!.Id)
-            .Select(p => new ProductResponse
+            .GroupBy(p => p.Type)
+            .Select(g => new ProductSumResponse
             {
-                Id = p.Id,
-                Type = p.Type,
-                Received = p.Packed,
-                Amount = p.Amount,
-            }).ToListAsync();
+                Type = g.Key,
+                Amount = g.Sum(p => p.Amount)
+            })
+            .ToListAsync();
     }
 
     public async Task<int> GetAllOwnerProductsAmountsByType(ProductType type)
