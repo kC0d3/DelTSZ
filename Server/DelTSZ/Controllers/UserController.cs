@@ -18,11 +18,15 @@ public class UserController(IUserRepository userRepository) : ControllerBase
             if (id == null)
                 return NotFound("User not found");
 
-            return Ok(await userRepository.GetUserById(id));
+            var user = await userRepository.GetUserById(id);
+            if (user == null)
+                return NotFound("User not found");
+
+            return Ok(user);
         }
         catch (Exception)
         {
-            return NotFound("Error getting user.");
+            return BadRequest("Error getting user.");
         }
     }
 
@@ -35,7 +39,20 @@ public class UserController(IUserRepository userRepository) : ControllerBase
         }
         catch (Exception)
         {
-            return NotFound("Error getting producers.");
+            return BadRequest("Error getting producers.");
+        }
+    }
+    
+    [HttpGet("costumers"), Authorize(Roles = "Owner")]
+    public async Task<ActionResult<IEnumerable<UserResponse>>> GetCostumers()
+    {
+        try
+        {
+            return Ok(await userRepository.GetCostumers());
+        }
+        catch (Exception)
+        {
+            return BadRequest("Error getting costumers.");
         }
     }
 }
