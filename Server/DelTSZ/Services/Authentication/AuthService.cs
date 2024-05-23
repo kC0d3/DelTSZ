@@ -35,6 +35,34 @@ public class AuthService(UserManager<User> userManager, SignInManager<User> sign
         return result;
     }
 
+    public async Task<IdentityResult> RegisterProducerAsync(Registration request)
+    {
+        var user = new User()
+        {
+            UserName = request.Username,
+            Email = request.Email,
+            CompanyName = request.Companyname,
+            Role = Roles.Producer.ToString(),
+            Address = new Address
+            {
+                ZipCode = request.Address.ZipCode,
+                City = request.Address.City,
+                Street = request.Address.Street,
+                HouseNumber = request.Address.HouseNumber
+            }
+        };
+
+        var result = await userManager.CreateAsync(user, request.Password);
+
+        if (!result.Succeeded)
+        {
+            return result;
+        }
+        
+        await userManager.AddToRoleAsync(user, user.Role);
+        return result;
+    }
+    
     public async Task<User?> FindUserByEmail(string email)
     {
         return await userManager.FindByEmailAsync(email);
@@ -45,7 +73,7 @@ public class AuthService(UserManager<User> userManager, SignInManager<User> sign
         return await signInManager.PasswordSignInAsync(user, password, false, false);
     }
 
-    public async void Logout()
+    public async Task Logout()
     {
         await signInManager.SignOutAsync();
     }

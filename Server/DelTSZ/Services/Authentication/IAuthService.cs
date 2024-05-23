@@ -5,8 +5,9 @@ namespace DelTSZ.Services.Authentication;
 
 public interface IAuthService
 {
-    public Task<IdentityResult> RegisterCostumerAsync(Registration request);
-    public Task<User?> FindUserByEmail(string email);
-    public Task<SignInResult> Login(User user, string password);
-    public void Logout();
+    Task<IdentityResult> RegisterCostumerAsync(Registration request);
+    Task<IdentityResult> RegisterProducerAsync(Registration request);
+    Task<User?> FindUserByEmail(string email);
+    Task<SignInResult> Login(User user, string password);
+    Task Logout();
 }
