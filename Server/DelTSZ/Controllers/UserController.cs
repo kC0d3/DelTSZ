@@ -1,5 +1,4 @@
-﻿using DelTSZ.Models.Ingredients;
-using DelTSZ.Models.Users;
+﻿using DelTSZ.Models.Users;
 using DelTSZ.Repositories.UserRepository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -24,6 +23,19 @@ public class UserController(IUserRepository userRepository) : ControllerBase
         catch (Exception)
         {
             return NotFound("Error getting user.");
+        }
+    }
+
+    [HttpGet("producers"), Authorize(Roles = "Owner")]
+    public async Task<ActionResult<IEnumerable<UserResponse>>> GetProducers()
+    {
+        try
+        {
+            return Ok(await userRepository.GetProducers());
+        }
+        catch (Exception)
+        {
+            return NotFound("Error getting producers.");
         }
     }
 }
