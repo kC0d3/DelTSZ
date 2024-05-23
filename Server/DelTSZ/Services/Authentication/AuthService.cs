@@ -7,7 +7,7 @@ namespace DelTSZ.Services.Authentication;
 
 public class AuthService(UserManager<User> userManager, SignInManager<User> signInManager) : IAuthService
 {
-    public async Task<IdentityResult> RegisterCostumerAsync(Registration request)
+    public async Task<IdentityResult> RegisterCostumer(Registration request)
     {
         var user = new User()
         {
@@ -35,7 +35,7 @@ public class AuthService(UserManager<User> userManager, SignInManager<User> sign
         return result;
     }
 
-    public async Task<IdentityResult> RegisterProducerAsync(Registration request)
+    public async Task<IdentityResult> RegisterProducer(Registration request)
     {
         var user = new User()
         {

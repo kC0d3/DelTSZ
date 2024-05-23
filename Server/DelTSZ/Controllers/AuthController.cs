@@ -17,7 +17,7 @@ public class AuthController(IAuthService authService) : ControllerBase
 
         try
         {
-            result = await authService.RegisterCostumerAsync(request);
+            result = await authService.RegisterCostumer(request);
 
             if (!result.Succeeded)
             {
@@ -39,7 +39,7 @@ public class AuthController(IAuthService authService) : ControllerBase
 
         try
         {
-            result = await authService.RegisterProducerAsync(request);
+            result = await authService.RegisterProducer(request);
 
             if (!result.Succeeded)
             {
