@@ -54,6 +54,34 @@ public class AuthController(IAuthService authService) : ControllerBase
         return Ok(new { message = "Register successfully.", result });
     }
 
+    [HttpDelete, Authorize(Roles = "Producer, Costumer")]
+    public async Task<IActionResult> DeleteUser()
+    {
+        try
+        {
+            var id = HttpContext.User.Claims.FirstOrDefault(c => c.Type.Contains("identifier"))?.Value;
+            if (id == null)
+                return Conflict("Wrong user id.");
+
+            var user = await authService.FindUserById(id);
+            if (user == null)
+                return NotFound("User not found.");
+
+            var result = await authService.DeleteUser(user);
+
+            if (!result.Succeeded)
+            {
+                return BadRequest(result);
+            }
+
+            return Ok(new { message = "Delete successful.", result });
+        }
+        catch (Exception)
+        {
+            return BadRequest("Something went wrong, please try again.");
+        }
+    }
+
     [HttpPost("login")]
     public async Task<IActionResult> Login(Login login)
     {
@@ -80,7 +108,7 @@ public class AuthController(IAuthService authService) : ControllerBase
 
         return Ok(new { message = "Login successful." });
     }
-    
+
     [HttpGet("logout"), Authorize]
     public async Task<IActionResult> Logout()
     {
