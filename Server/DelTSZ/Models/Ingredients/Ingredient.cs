@@ -1,4 +1,5 @@
-﻿using DelTSZ.Models.Enums;
+﻿using System.ComponentModel.DataAnnotations;
+using DelTSZ.Models.Enums;
 using DelTSZ.Models.Users;
 
 namespace DelTSZ.Models.Ingredients;
@@ -14,6 +15,6 @@ public class Ingredient
 
     //Navigation properties
 
-    public string? UserId { get; set; }
+    [StringLength(100)] public string? UserId { get; set; }
     public User? User { get; init; }
 }
