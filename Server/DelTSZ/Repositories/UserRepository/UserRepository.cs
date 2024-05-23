@@ -24,6 +24,7 @@ public class UserRepository(DataContext dataContext) : IUserRepository
             .Where(u => u.Id == id)
             .Select(u => new UserResponse
             {
+                Email = u.Email,
                 Username = u.UserName,
                 Companyname = u.CompanyName,
                 Role = u.Role,
@@ -50,8 +51,8 @@ public class UserRepository(DataContext dataContext) : IUserRepository
                 }).ToList()
             }).FirstOrDefaultAsync();
     }
-
-    public async Task<IEnumerable<UserResponse?>> GetProducers()
+    
+    public async Task<IEnumerable<UserResponse>> GetProducers()
     {
         return await dataContext.Users
             .Include(u => u.Ingredients)
@@ -59,6 +60,36 @@ public class UserRepository(DataContext dataContext) : IUserRepository
             .Where(u => u.Role == Roles.Producer.ToString())
             .Select(u => new UserResponse
             {
+                Email = u.Email,
+                Username = u.UserName,
+                Companyname = u.CompanyName,
+                Role = u.Role,
+                Address = new AddressResponse
+                {
+                    Zipcode = u.Address!.ZipCode,
+                    City = u.Address.City,
+                    Street = u.Address.Street,
+                    Housenumber = u.Address.HouseNumber
+                },
+                Ingredients = u.Ingredients!.Select(i => new IngredientResponse
+                {
+                    Id = i.Id,
+                    Type = i.Type,
+                    Received = i.Received,
+                    Amount = i.Amount
+                }).ToList(),
+            }).ToListAsync();
+    }
+    
+    public async Task<IEnumerable<UserResponse>> GetCostumers()
+    {
+        return await dataContext.Users
+            .Include(u => u.Ingredients)
+            .Include(u => u.Address)
+            .Where(u => u.Role == Roles.Costumer.ToString())
+            .Select(u => new UserResponse
+            {
+                Email = u.Email,
                 Username = u.UserName,
                 Companyname = u.CompanyName,
                 Role = u.Role,
