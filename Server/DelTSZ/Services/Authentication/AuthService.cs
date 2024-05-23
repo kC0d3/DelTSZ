@@ -58,11 +58,16 @@ public class AuthService(UserManager<User> userManager, SignInManager<User> sign
         {
             return result;
         }
-        
+
         await userManager.AddToRoleAsync(user, user.Role);
         return result;
     }
-    
+
+    public async Task<User?> FindUserById(string id)
+    {
+        return await userManager.FindByIdAsync(id);
+    }
+
     public async Task<User?> FindUserByEmail(string email)
     {
         return await userManager.FindByEmailAsync(email);
