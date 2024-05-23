@@ -19,7 +19,20 @@ public class ProductController(
     IProductIngredientRepository productIngredientRepository)
     : ControllerBase
 {
-    [HttpGet, Authorize(Roles = "Costumer")]
+    [HttpGet("types")]
+    public ActionResult<IEnumerable<EnumResponse>> GetProductTypes()
+    {
+        try
+        {
+            return Ok(ProductTypeExtensions.GetProductTypes());
+        }
+        catch (Exception)
+        {
+            return NotFound("Error getting product types.");
+        }
+    }
+
+    [HttpGet("sum"), Authorize(Roles = "Costumer")]
     public async Task<ActionResult<IEnumerable<IngredientRequest>>> GetAllOwnerProducts()
     {
         try
@@ -109,7 +122,7 @@ public class ProductController(
             return BadRequest("Error update component.");
         }
     }
-    
+
     [HttpDelete("{id}"), Authorize(Roles = "Owner")]
     public async Task<IActionResult> DeleteProductById(int id)
     {
@@ -122,7 +135,7 @@ public class ProductController(
                 return NotFound("Product not found.");
             }
 
-            await productRepository.DeleteProduct(product!);
+            await productRepository.DeleteProduct(product);
             return Ok("Product delete successful.");
         }
         catch (Exception)
