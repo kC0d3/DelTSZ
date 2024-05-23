@@ -5,4 +5,5 @@ namespace DelTSZ.Repositories.UserRepository;
 public interface IUserRepository
 {
     Task<User?> GetOwner();
+    Task<UserResponse?> GetUserById(string id);
 }
