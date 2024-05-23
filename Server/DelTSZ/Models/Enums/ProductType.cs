@@ -61,4 +61,15 @@ public static class ProductTypeExtensions
     {
         return ProductMap[type];
     }
+
+    public static IEnumerable<EnumResponse> GetProductTypes()
+    {
+        return Enum.GetValues(typeof(ProductType))
+            .Cast<ProductType>()
+            .Select(p => new EnumResponse
+            {
+                Index = (int)p,
+                Value = p.ToString()
+            }).ToList();
+    }
 }
