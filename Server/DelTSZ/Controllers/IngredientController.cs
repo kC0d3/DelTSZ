@@ -20,7 +20,7 @@ public class IngredientController(IIngredientRepository ingredientRepository) : 
         }
         catch (Exception)
         {
-            return NotFound("Error getting ingredient types.");
+            return BadRequest("Error getting ingredient types.");
         }
     }
 
@@ -33,7 +33,7 @@ public class IngredientController(IIngredientRepository ingredientRepository) : 
         }
         catch (Exception)
         {
-            return NotFound("Error getting ingredients.");
+            return BadRequest("Error getting ingredients.");
         }
     }
 
@@ -95,7 +95,7 @@ public class IngredientController(IIngredientRepository ingredientRepository) : 
         }
         catch (Exception)
         {
-            return NotFound("Error getting ingredient.");
+            return BadRequest("Error getting ingredient.");
         }
     }
 
@@ -144,7 +144,7 @@ public class IngredientController(IIngredientRepository ingredientRepository) : 
         }
         catch (Exception)
         {
-            return NotFound("Error getting ingredient.");
+            return BadRequest("Error getting ingredient.");
         }
     }
 }
