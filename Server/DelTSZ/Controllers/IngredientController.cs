@@ -11,7 +11,20 @@ namespace DelTSZ.Controllers;
 [ApiController]
 public class IngredientController(IIngredientRepository ingredientRepository) : ControllerBase
 {
-    [HttpGet, Authorize(Roles = "Costumer")]
+    [HttpGet("types")]
+    public ActionResult<IEnumerable<EnumResponse>> GetIngredientTypes()
+    {
+        try
+        {
+            return Ok(IngredientTypeExtensions.GetIngredientTypes());
+        }
+        catch (Exception)
+        {
+            return NotFound("Error getting ingredient types.");
+        }
+    }
+
+    [HttpGet("sum"), Authorize(Roles = "Costumer")]
     public async Task<ActionResult<IEnumerable<IngredientSumResponse>>> GetAllOwnerIngredients()
     {
         try
