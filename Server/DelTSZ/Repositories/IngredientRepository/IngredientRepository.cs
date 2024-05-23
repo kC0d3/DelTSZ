@@ -8,7 +8,7 @@ namespace DelTSZ.Repositories.IngredientRepository;
 
 public class IngredientRepository(DataContext dataContext, IUserRepository userRepository) : IIngredientRepository
 {
-    public async Task<IEnumerable<IngredientSumResponse?>> GetAllOwnerIngredientsSumByType()
+    public async Task<IEnumerable<IngredientSumResponse>> GetAllOwnerIngredientsSumByType()
     {
         var owner = await userRepository.GetOwner();
         return await dataContext.Ingredients

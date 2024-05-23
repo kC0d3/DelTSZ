@@ -5,7 +5,7 @@ namespace DelTSZ.Repositories.IngredientRepository;
 
 public interface IIngredientRepository
 {
-    Task<IEnumerable<IngredientSumResponse?>> GetAllOwnerIngredientsSumByType();
+    Task<IEnumerable<IngredientSumResponse>> GetAllOwnerIngredientsSumByType();
     Task<decimal> GetAllOwnerIngredientAmountsByType(IngredientType type);
     Task<Ingredient?> GetOwnerOldestIngredientByType(IngredientType type);
     Task<Ingredient?> GetIngredientById(int id);
