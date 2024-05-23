@@ -6,6 +6,7 @@ namespace DelTSZ.Models.Users;
 
 public class UserResponse
 {
+    public string? Email { get; init; }
     public string? Username { get; init; }
     public string? Companyname { get; init; }
     public string? Role { get; init; }
