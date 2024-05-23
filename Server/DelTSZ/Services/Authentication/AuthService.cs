@@ -62,6 +62,18 @@ public class AuthService(UserManager<User> userManager, SignInManager<User> sign
         await userManager.AddToRoleAsync(user, user.Role);
         return result;
     }
+    
+    public async Task<IdentityResult> DeleteUser(User user)
+    {
+        var result = await userManager.DeleteAsync(user);
+        if (!result.Succeeded)
+        {
+            return result;
+        }
+
+        await userManager.RemoveFromRoleAsync(user, user.Role!);
+        return result;
+    }
 
     public async Task<User?> FindUserById(string id)
     {
