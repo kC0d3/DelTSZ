@@ -11,7 +11,7 @@ namespace DelTSZ.Controllers;
 public class AuthController(IAuthService authService) : ControllerBase
 {
     [HttpPost("register")]
-    public async Task<ActionResult> Register(Registration request)
+    public async Task<IActionResult> Register(Registration request)
     {
         IdentityResult result;
 
@@ -32,8 +32,30 @@ public class AuthController(IAuthService authService) : ControllerBase
         return Ok(new { message = "Register successfully.", result });
     }
 
+    [HttpPost("register/producer"), Authorize(Roles = "Owner")]
+    public async Task<IActionResult> RegisterProducer(Registration request)
+    {
+        IdentityResult result;
+
+        try
+        {
+            result = await authService.RegisterProducerAsync(request);
+
+            if (!result.Succeeded)
+            {
+                return BadRequest(result);
+            }
+        }
+        catch (Exception)
+        {
+            return BadRequest("Something went wrong, please try again.");
+        }
+
+        return Ok(new { message = "Register successfully.", result });
+    }
+
     [HttpPost("login")]
-    public async Task<ActionResult> Login(Login login)
+    public async Task<IActionResult> Login(Login login)
     {
         try
         {
@@ -59,13 +81,12 @@ public class AuthController(IAuthService authService) : ControllerBase
         return Ok(new { message = "Login successful." });
     }
     
-    [Authorize]
-    [HttpGet("logout")]
-    public ActionResult Logout()
+    [HttpGet("logout"), Authorize]
+    public async Task<IActionResult> Logout()
     {
         try
         {
-            authService.Logout();
+            await authService.Logout();
         }
         catch (Exception)
         {
@@ -74,5 +95,4 @@ public class AuthController(IAuthService authService) : ControllerBase
 
         return Ok(new { message = "Logout successful." });
     }
-
 }
