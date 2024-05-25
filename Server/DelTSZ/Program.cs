@@ -5,6 +5,7 @@ using DelTSZ.Models.Users;
 using DelTSZ.Repositories.IngredientRepository;
 using DelTSZ.Repositories.ProductIngredientRepository;
 using DelTSZ.Repositories.ProductRepository;
+using DelTSZ.Repositories.UserRepository;
 using DelTSZ.Services.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -47,6 +48,7 @@ void AddServices()
     builder.Services.AddScoped<IIngredientRepository, IngredientRepository>();
     builder.Services.AddScoped<IProductRepository, ProductRepository>();
     builder.Services.AddScoped<IProductIngredientRepository, ProductIngredientRepository>();
+    builder.Services.AddScoped<IUserRepository, UserRepository>();
 }
 
 void AddDbContext()

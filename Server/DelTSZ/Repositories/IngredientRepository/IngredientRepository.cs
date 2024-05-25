@@ -1,17 +1,18 @@
 ﻿using DelTSZ.Data;
 using DelTSZ.Models.Enums;
 using DelTSZ.Models.Ingredients;
+using DelTSZ.Repositories.UserRepository;
 using Microsoft.EntityFrameworkCore;
 
 namespace DelTSZ.Repositories.IngredientRepository;
 
-public class IngredientRepository(DataContext dataContext) : IIngredientRepository
+public class IngredientRepository(DataContext dataContext, IUserRepository userRepository) : IIngredientRepository
 {
-    public async Task<IEnumerable<IngredientSumResponse?>> GetAllOwnerIngredientsSumByType()
+    public async Task<IEnumerable<IngredientSumResponse>> GetAllOwnerIngredientsSumByType()
     {
-        var user = await dataContext.Users.FirstOrDefaultAsync(u => u.Role == Roles.Owner.ToString());
+        var owner = await userRepository.GetOwner();
         return await dataContext.Ingredients
-            .Where(i => i.UserId == user!.Id)
+            .Where(i => i.UserId == owner!.Id)
             .GroupBy(i => i.Type)
             .Select(g => new IngredientSumResponse
             {
@@ -23,17 +24,17 @@ public class IngredientRepository(DataContext dataContext) : IIngredientReposito
 
     public async Task<decimal> GetAllOwnerIngredientAmountsByType(IngredientType type)
     {
-        var user = await dataContext.Users.FirstOrDefaultAsync(u => u.Role == Roles.Owner.ToString());
+        var owner = await userRepository.GetOwner();
         return await dataContext.Ingredients
-            .Where(i => i.UserId == user!.Id && i.Type == type)
+            .Where(i => i.UserId == owner!.Id && i.Type == type)
             .SumAsync(i => i.Amount);
     }
 
     public async Task<Ingredient?> GetOwnerOldestIngredientByType(IngredientType type)
     {
-        var user = await dataContext.Users.FirstOrDefaultAsync(u => u.Role == Roles.Owner.ToString());
+        var owner = await userRepository.GetOwner();
         return await dataContext.Ingredients
-            .Where(i => i.UserId == user!.Id && i.Type == type)
+            .Where(i => i.UserId == owner!.Id && i.Type == type)
             .OrderBy(i => i.Received)
             .FirstOrDefaultAsync();
     }
@@ -119,6 +120,25 @@ public class IngredientRepository(DataContext dataContext) : IIngredientReposito
         } while (demandAmount > 0);
     }
 
+    public async Task IngredientUpdateById(int id, string userId)
+    {
+        var ingredient = await GetIngredientById(id);
+        var userIngredient =
+            await GetIngredientByUserId_Type_ReceivedDate(ingredient!.Type, userId, ingredient.Received);
+
+        if (userIngredient == null)
+        {
+            ingredient.UserId = userId;
+            await UpdateIngredient(ingredient);
+        }
+        else
+        {
+            userIngredient.Amount += ingredient.Amount;
+            await UpdateIngredient(userIngredient);
+            await DeleteIngredient(ingredient);
+        }
+    }
+
     public async Task UpdateIngredient(Ingredient ingredient)
     {
         dataContext.Update(ingredient);
@@ -131,6 +151,8 @@ public class IngredientRepository(DataContext dataContext) : IIngredientReposito
         await dataContext.SaveChangesAsync();
     }
 
+    //Private methods
+    
     private async Task<Ingredient?> GetIngredientByUserId_Type_ReceivedDate(IngredientType type, string id,
         DateTime received)
     {

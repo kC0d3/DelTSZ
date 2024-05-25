@@ -11,7 +11,20 @@ namespace DelTSZ.Controllers;
 [ApiController]
 public class IngredientController(IIngredientRepository ingredientRepository) : ControllerBase
 {
-    [HttpGet, Authorize(Roles = "Costumer")]
+    [HttpGet("types")]
+    public ActionResult<IEnumerable<EnumResponse>> GetIngredientTypes()
+    {
+        try
+        {
+            return Ok(IngredientTypeExtensions.GetIngredientTypes());
+        }
+        catch (Exception)
+        {
+            return BadRequest("Error getting ingredient types.");
+        }
+    }
+
+    [HttpGet("sum"), Authorize(Roles = "Costumer")]
     public async Task<ActionResult<IEnumerable<IngredientSumResponse>>> GetAllOwnerIngredients()
     {
         try
@@ -20,11 +33,11 @@ public class IngredientController(IIngredientRepository ingredientRepository) : 
         }
         catch (Exception)
         {
-            return NotFound("Error getting ingredients.");
+            return BadRequest("Error getting ingredients.");
         }
     }
 
-    [HttpPost, Authorize(Roles = "Owner, Producer")]
+    [HttpPost, Authorize(Roles = "Producer")]
     public async Task<IActionResult> CreateIngredient([Required] IngredientRequest ingredientRequest,
         int days)
     {
@@ -58,7 +71,35 @@ public class IngredientController(IIngredientRepository ingredientRepository) : 
         }
     }
 
-    [HttpPut("{type}"), Authorize(Roles = "Owner, Costumer")]
+    [HttpPut("{id:int}"), Authorize(Roles = "Owner")]
+    public async Task<IActionResult> UpdateIngredientById(int id)
+    {
+        try
+        {
+            var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type.Contains("identifier"))?.Value;
+
+            if (userId == null)
+            {
+                return Conflict("Wrong user id.");
+            }
+
+            var ingredient = await ingredientRepository.GetIngredientById(id);
+
+            if (ingredient == null)
+            {
+                return NotFound("Ingredient not found.");
+            }
+
+            await ingredientRepository.IngredientUpdateById(id, userId);
+            return Ok("Ingredient update successful.");
+        }
+        catch (Exception)
+        {
+            return BadRequest("Error getting ingredient.");
+        }
+    }
+
+    [HttpPut("{type}"), Authorize(Roles = "Costumer")]
     public async Task<IActionResult> UpdateIngredientByType(IngredientType type, decimal amount)
     {
         try
@@ -86,7 +127,7 @@ public class IngredientController(IIngredientRepository ingredientRepository) : 
         }
     }
 
-    [HttpDelete("{id}"), Authorize(Roles = "Owner")]
+    [HttpDelete("{id:int}"), Authorize(Roles = "Owner")]
     public async Task<IActionResult> DeleteIngredientById(int id)
     {
         try
@@ -103,7 +144,7 @@ public class IngredientController(IIngredientRepository ingredientRepository) : 
         }
         catch (Exception)
         {
-            return NotFound("Error getting ingredient.");
+            return BadRequest("Error getting ingredient.");
         }
     }
 }

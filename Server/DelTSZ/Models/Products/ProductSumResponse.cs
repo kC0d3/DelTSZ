@@ -2,7 +2,7 @@
 
 namespace DelTSZ.Models.Products;
 
-public class ProductRequest
+public class ProductSumResponse
 {
     public ProductType Type { get; init; }
     public int Amount { get; init; }

@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 using DelTSZ.Models.Addresses;
 using DelTSZ.Models.Ingredients;
@@ -8,11 +9,11 @@ namespace DelTSZ.Models.Users;
 public class User : IdentityUser
 {
     //Properties
-    public string? CompanyName { get; init; }
-    public string? Role { get; init; }
+    [StringLength(100)] public string? CompanyName { get; init; }
+    [StringLength(50)] public string? Role { get; init; }
 
     //Navigation Properties
     public Address? Address { get; init; }
-    public ICollection<Ingredient>? Ingredients { get; init; }
-    public ICollection<Product>? Products { get; init; }
+    public IEnumerable<Ingredient>? Ingredients { get; init; }
+    public IEnumerable<Product>? Products { get; init; }
 }

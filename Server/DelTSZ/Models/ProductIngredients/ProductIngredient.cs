@@ -8,7 +8,7 @@ public class ProductIngredient
     //Properties
     
     public int Id { get; init; }
-    public IngredientType Type { get; set; }
+    public IngredientType Type { get; init; }
     public DateTime Received { get; init; }
     public decimal Amount { get; set; }
     
