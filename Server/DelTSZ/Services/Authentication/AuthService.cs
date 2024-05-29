@@ -7,69 +7,63 @@ namespace DelTSZ.Services.Authentication;
 
 public class AuthService(UserManager<User> userManager, SignInManager<User> signInManager) : IAuthService
 {
-    public async Task<IdentityResult> RegisterCostumer(Registration request)
+    public async Task<IdentityResult> RegisterCostumer(Registration registration)
     {
-        var user = new User()
+        var user = new User
         {
-            UserName = request.Username,
-            Email = request.Email,
-            CompanyName = request.Companyname,
+            UserName = registration.UserName,
+            Email = registration.Email,
+            CompanyName = registration.CompanyName,
             Role = Roles.Costumer.ToString(),
             Address = new Address
             {
-                ZipCode = request.Address.ZipCode,
-                City = request.Address.City,
-                Street = request.Address.Street,
-                HouseNumber = request.Address.HouseNumber
+                ZipCode = registration.Address!.ZipCode,
+                City = registration.Address.City,
+                Street = registration.Address.Street,
+                HouseNumber = registration.Address.HouseNumber
             }
         };
 
-        var result = await userManager.CreateAsync(user, request.Password);
+        var result = await userManager.CreateAsync(user, registration.Password!);
 
         if (!result.Succeeded)
-        {
             return result;
-        }
 
         await userManager.AddToRoleAsync(user, user.Role);
         return result;
     }
 
-    public async Task<IdentityResult> RegisterProducer(Registration request)
+    public async Task<IdentityResult> RegisterProducer(Registration registration)
     {
-        var user = new User()
+        var user = new User
         {
-            UserName = request.Username,
-            Email = request.Email,
-            CompanyName = request.Companyname,
+            UserName = registration.UserName,
+            Email = registration.Email,
+            CompanyName = registration.CompanyName,
             Role = Roles.Producer.ToString(),
             Address = new Address
             {
-                ZipCode = request.Address.ZipCode,
-                City = request.Address.City,
-                Street = request.Address.Street,
-                HouseNumber = request.Address.HouseNumber
+                ZipCode = registration.Address!.ZipCode,
+                City = registration.Address.City,
+                Street = registration.Address.Street,
+                HouseNumber = registration.Address.HouseNumber
             }
         };
 
-        var result = await userManager.CreateAsync(user, request.Password);
+        var result = await userManager.CreateAsync(user, registration.Password!);
 
         if (!result.Succeeded)
-        {
             return result;
-        }
 
         await userManager.AddToRoleAsync(user, user.Role);
         return result;
     }
-    
+
     public async Task<IdentityResult> DeleteUser(User user)
     {
         var result = await userManager.DeleteAsync(user);
         if (!result.Succeeded)
-        {
             return result;
-        }
 
         await userManager.RemoveFromRoleAsync(user, user.Role!);
         return result;
