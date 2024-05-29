@@ -100,6 +100,22 @@ public class IngredientRepository(DataContext dataContext, IUserRepository userR
             }
         } while (demandAmount > 0);
     }
+    
+    public async Task CreateOrUpdateIngredient(IngredientRequest ingredientRequest, string id, int days)
+    {
+        var ingredient =
+            await GetIngredientByUserId_Type_ReceivedDate(ingredientRequest.Type, id, days);
+
+        if (ingredient == null)
+        {
+            await CreateIngredientToUser(ingredientRequest, id, days);
+        }
+        else
+        {
+            ingredient.Amount += ingredientRequest.Amount;
+            await UpdateIngredient(ingredient);
+        }
+    }
 
     public async Task IngredientUpdateById(int id, string userId)
     {
