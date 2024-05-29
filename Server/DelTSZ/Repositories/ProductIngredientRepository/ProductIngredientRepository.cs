@@ -10,7 +10,7 @@ namespace DelTSZ.Repositories.ProductIngredientRepository;
 public class ProductIngredientRepository(DataContext dataContext, IIngredientRepository ingredientRepository)
     : IProductIngredientRepository
 {
-    public async Task<List<ProductIngredient>> CreateProductIngredients(ProductRequest productRequest)
+    public async Task<List<ProductIngredient>> CreateProductIngredientsFromOwnerIngredients(ProductRequest productRequest)
     {
         var productDetails = productRequest.Type.GetProductDetails().ToList();
         var ingredients = new List<ProductIngredient>();
@@ -74,7 +74,7 @@ public class ProductIngredientRepository(DataContext dataContext, IIngredientRep
         return ingredients;
     }
 
-    public async Task<List<ProductIngredient>> CreateProductIngredients(Product product, int amount)
+    public async Task<List<ProductIngredient>> CreateProductIngredientsFromProductIngredients(Product product, int amount)
     {
         var ingredients = new List<ProductIngredient>();
         var productDetails = product.Type.GetProductDetails().ToList();
@@ -137,7 +137,7 @@ public class ProductIngredientRepository(DataContext dataContext, IIngredientRep
         return ingredients;
     }
 
-    public async Task<List<ProductIngredient>> CreateProductIngredients(Product product, int amount,
+    public async Task<List<ProductIngredient>> UpgradeProductIngredientsFromProductIngredients(Product product, int amount,
         Product userProduct)
     {
         var ingredients = await GetProductIngredientsByProductId(userProduct.Id);
