@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using DelTSZ.Models.Users;
+using DelTSZ.Repositories.UserRepository;
 using DelTSZ.Services.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +9,7 @@ namespace DelTSZ.Controllers;
 
 [Route("api/auth")]
 [ApiController]
-public class AuthController(IAuthService authService) : ControllerBase
+public class AuthController(IAuthService authService, IUserRepository userRepository) : ControllerBase
 {
     [HttpPost("register")]
     public async Task<IActionResult> Register([Required] Registration registration)
@@ -39,6 +40,31 @@ public class AuthController(IAuthService authService) : ControllerBase
                 return Conflict(result);
 
             return Ok(new { message = "Register successfully.", result });
+        }
+        catch (Exception)
+        {
+            return BadRequest(new { message = "Something went wrong, please try again." });
+        }
+    }
+
+    [HttpPost("update"), Authorize]
+    public async Task<IActionResult> UpdateUser([Required] UserUpdateRequest userUpdateRequest)
+    {
+        try
+        {
+            var id = HttpContext.User.Claims.FirstOrDefault(c => c.Type.Contains("identifier"))?.Value;
+            if (id == null)
+                return Conflict(new { message = "Wrong user id." });
+
+            var user = await userRepository.GetUserWithAddressById(id);
+            if (user == null)
+                return NotFound(new { message = "User not found." });
+
+            var result = await authService.UpdateUser(userUpdateRequest, user);
+            if (!result.Succeeded)
+                return Conflict(result);
+
+            return Ok(new { message = "User update successful.", result });
         }
         catch (Exception)
         {
