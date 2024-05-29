@@ -44,61 +44,28 @@ public class IngredientRepository(DataContext dataContext, IUserRepository userR
         return await dataContext.Ingredients.FirstOrDefaultAsync(i => i.Id == id);
     }
 
-    public async Task IngredientUpdateByRequestAmount(IngredientType type, string id, decimal amount)
+    public async Task IngredientUpdateByRequestAmount(IngredientType type, string userId, decimal requestedAmount)
     {
-        var demandAmount = amount;
-        var balance = 0m;
+        var remainingAmount = requestedAmount;
 
-        do
+        while (remainingAmount > 0)
         {
-            var ownerIngredient = await GetOwnerOldestIngredientByType(type);
+            var oldestIngredient = await GetOwnerOldestIngredientByType(type);
+            var transferableAmount = Math.Min(oldestIngredient!.Amount, remainingAmount);
 
-            if (ownerIngredient!.Amount - demandAmount <= 0)
+            await TransferIngredient(type, userId, oldestIngredient, transferableAmount);
+
+            remainingAmount -= transferableAmount;
+
+            if (oldestIngredient.Amount == 0)
             {
-                demandAmount -= ownerIngredient.Amount;
-                balance += ownerIngredient.Amount;
-
-                var userIngredient =
-                    await GetIngredientByUserId_Type_ReceivedDate(type, id, ownerIngredient.Received);
-
-                if (userIngredient == null)
-                {
-                    await CreateIngredientToUser(
-                        new IngredientUpdateRequest
-                            { Type = type, Amount = ownerIngredient.Amount, Received = ownerIngredient.Received },
-                        id);
-                }
-                else
-                {
-                    userIngredient.Amount += balance;
-                    await UpdateIngredient(userIngredient);
-                }
-
-                await DeleteIngredient(ownerIngredient);
+                await DeleteIngredient(oldestIngredient);
             }
             else
             {
-                var userIngredient =
-                    await GetIngredientByUserId_Type_ReceivedDate(type, id, ownerIngredient.Received);
-
-                if (userIngredient == null)
-                {
-                    await CreateIngredientToUser(
-                        new IngredientUpdateRequest
-                            { Type = type, Amount = demandAmount, Received = ownerIngredient.Received },
-                        id);
-                }
-                else
-                {
-                    userIngredient.Amount += amount;
-                    await UpdateIngredient(userIngredient);
-                }
-
-                demandAmount -= amount - balance;
-                ownerIngredient.Amount -= amount - balance;
-                await UpdateIngredient(ownerIngredient);
+                await UpdateIngredient(oldestIngredient);
             }
-        } while (demandAmount > 0);
+        }
     }
     
     public async Task CreateOrUpdateIngredient(IngredientRequest ingredientRequest, string id, int days)
@@ -150,6 +117,29 @@ public class IngredientRepository(DataContext dataContext, IUserRepository userR
 
     //Private methods
 
+    private async Task TransferIngredient(IngredientType type, string userId, Ingredient ownerIngredient,
+        decimal amount)
+    {
+        var userIngredient = await GetIngredientByUserId_Type_ReceivedDate(type, userId, ownerIngredient.Received);
+
+        if (userIngredient == null)
+        {
+            await CreateIngredientToUser(new IngredientUpdateRequest
+            {
+                Type = type,
+                Amount = amount,
+                Received = ownerIngredient.Received
+            }, userId);
+        }
+        else
+        {
+            userIngredient.Amount += amount;
+            await UpdateIngredient(userIngredient);
+        }
+
+        ownerIngredient.Amount -= amount;
+    }
+    
     private async Task<Ingredient?> GetIngredientByUserId_Type_ReceivedDate(IngredientType type, string id,
         DateTime received)
     {
