@@ -16,17 +16,17 @@ public class UserController(IUserRepository userRepository) : ControllerBase
         {
             var id = HttpContext.User.Claims.FirstOrDefault(c => c.Type.Contains("identifier"))?.Value;
             if (id == null)
-                return NotFound("User not found");
+                return NotFound(new { message = "User not found." });
 
-            var user = await userRepository.GetUserById(id);
+            var user = await userRepository.GetUserAllDataById(id);
             if (user == null)
-                return NotFound("User not found");
+                return NotFound(new { message = "User not found." });
 
             return Ok(user);
         }
         catch (Exception)
         {
-            return BadRequest("Error getting user.");
+            return BadRequest(new { message = "Error getting user." });
         }
     }
 
@@ -39,10 +39,10 @@ public class UserController(IUserRepository userRepository) : ControllerBase
         }
         catch (Exception)
         {
-            return BadRequest("Error getting producers.");
+            return BadRequest(new { message = "Error getting producers." });
         }
     }
-    
+
     [HttpGet("costumers"), Authorize(Roles = "Owner")]
     public async Task<ActionResult<IEnumerable<UserResponse>>> GetCostumers()
     {
@@ -52,7 +52,7 @@ public class UserController(IUserRepository userRepository) : ControllerBase
         }
         catch (Exception)
         {
-            return BadRequest("Error getting costumers.");
+            return BadRequest(new { message = "Error getting costumers." });
         }
     }
 }
