@@ -111,6 +111,26 @@ public class ProductRepository(
         }
     }
 
+    public async Task CreateOrUpdateProduct(ProductRequest productRequest, string id, int days)
+    {
+        var product = await GetProductByUserId_Type_PackedDate(productRequest.Type, id, days);
+        var ingredients = new List<ProductIngredient>();
+
+        if (product == null)
+        {
+            ingredients.AddRange(
+                await productIngredientRepository.CreateProductIngredientsFromOwnerIngredients(productRequest));
+            await CreateProductToUser(productRequest, id, ingredients, days);
+        }
+        else
+        {
+            product.Amount += productRequest.Amount;
+            await productIngredientRepository.IncreaseProductIngredientsFromOwnerIngredients(product,
+                productRequest.Amount);
+            await UpdateProduct(product);
+        }
+    }
+
     public async Task DeleteProduct(Product product)
     {
         dataContext.Remove(product);

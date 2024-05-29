@@ -9,6 +9,7 @@ public interface IProductRepository
     Task<IEnumerable<ProductSumResponse?>> GetAllOwnerProductsSumByType();
     Task<int> GetAllOwnerProductsAmountsByType(ProductType type);
     Task ProductUpdateByRequestAmount(ProductType type, string id, int amount);
+    Task CreateOrUpdateProduct(ProductRequest productRequest, string id, int days);
     Task<Product?> GetProductById(int id);
     Task DeleteProduct(Product product);
 }
