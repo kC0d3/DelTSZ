@@ -52,6 +52,13 @@ public class UserRepository(DataContext dataContext) : IUserRepository
             }).FirstOrDefaultAsync();
     }
     
+    public async Task<User?> GetUserWithAddressById(string id)
+    {
+        return await dataContext.Users
+            .Include(u => u.Address)
+            .FirstOrDefaultAsync(u => u.Id == id);
+    }
+    
     public async Task<IEnumerable<UserResponse>> GetProducers()
     {
         return await dataContext.Users
