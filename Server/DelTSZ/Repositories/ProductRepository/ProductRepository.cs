@@ -36,35 +36,9 @@ public class ProductRepository(
             .SumAsync(c => c.Amount);
     }
 
-    public async Task<Product?> GetProductByUserId_Type_PackedDate(ProductType type, string id, int days)
-    {
-        return await dataContext.Products
-            .Where(p => p.UserId == id && p.Type == type && p.Packed == DateTime.Today.AddDays(days))
-            .FirstOrDefaultAsync();
-    }
-
     public async Task<Product?> GetProductById(int id)
     {
         return await dataContext.Products.FirstOrDefaultAsync(p => p.Id == id);
-    }
-
-    public async Task CreateProductToUser(ProductRequest product, string id, IEnumerable<ProductIngredient> components,
-        int days)
-    {
-        dataContext.Add(new Product
-        {
-            Type = product.Type,
-            Packed = DateTime.Today.AddDays(days),
-            Amount = product.Amount,
-            Ingredients = components.Select(pc => new ProductIngredient
-            {
-                Type = pc.Type,
-                Received = pc.Received,
-                Amount = pc.Amount,
-            }).ToList(),
-            UserId = id
-        });
-        await dataContext.SaveChangesAsync();
     }
 
     public async Task ProductUpdateByRequestAmount(ProductType type, string id, int amount)
@@ -83,7 +57,8 @@ public class ProductRepository(
                 if (userProduct == null)
                 {
                     var ingredients =
-                        await productIngredientRepository.CreateProductIngredients(ownerProduct, ownerProduct.Amount);
+                        await productIngredientRepository.CreateProductIngredientsFromProductIngredients(ownerProduct,
+                            ownerProduct.Amount);
 
                     await CreateProductToUser(new ProductRequest
                     {
@@ -95,7 +70,8 @@ public class ProductRepository(
                 {
                     userProduct.Amount += ownerProduct.Amount;
                     userProduct.Ingredients =
-                        await productIngredientRepository.CreateProductIngredients(ownerProduct, demandAmount,
+                        await productIngredientRepository.UpgradeProductIngredientsFromProductIngredients(ownerProduct,
+                            demandAmount,
                             userProduct);
                     await UpdateProduct(userProduct);
                 }
@@ -109,7 +85,8 @@ public class ProductRepository(
                 if (userProduct == null)
                 {
                     var ingredients =
-                        await productIngredientRepository.CreateProductIngredients(ownerProduct, demandAmount);
+                        await productIngredientRepository.CreateProductIngredientsFromProductIngredients(ownerProduct,
+                            demandAmount);
 
                     await CreateProductToUser(new ProductRequest
                     {
@@ -121,7 +98,8 @@ public class ProductRepository(
                 {
                     userProduct.Amount += demandAmount;
                     userProduct.Ingredients =
-                        await productIngredientRepository.CreateProductIngredients(ownerProduct, demandAmount,
+                        await productIngredientRepository.UpgradeProductIngredientsFromProductIngredients(ownerProduct,
+                            demandAmount,
                             userProduct);
                     await UpdateProduct(userProduct);
                 }
@@ -131,12 +109,6 @@ public class ProductRepository(
                 demandAmount = 0;
             }
         }
-    }
-
-    public async Task UpdateProduct(Product product)
-    {
-        dataContext.Update(product);
-        await dataContext.SaveChangesAsync();
     }
 
     public async Task DeleteProduct(Product product)
@@ -164,6 +136,32 @@ public class ProductRepository(
             .FirstOrDefaultAsync();
     }
 
+    private async Task<Product?> GetProductByUserId_Type_PackedDate(ProductType type, string id, int days)
+    {
+        return await dataContext.Products
+            .Where(p => p.UserId == id && p.Type == type && p.Packed == DateTime.Today.AddDays(days))
+            .FirstOrDefaultAsync();
+    }
+
+    private async Task CreateProductToUser(ProductRequest product, string id, IEnumerable<ProductIngredient> components,
+        int days)
+    {
+        dataContext.Add(new Product
+        {
+            Type = product.Type,
+            Packed = DateTime.Today.AddDays(days),
+            Amount = product.Amount,
+            Ingredients = components.Select(pc => new ProductIngredient
+            {
+                Type = pc.Type,
+                Received = pc.Received,
+                Amount = pc.Amount,
+            }).ToList(),
+            UserId = id
+        });
+        await dataContext.SaveChangesAsync();
+    }
+
     private async Task CreateProductToUser(ProductRequest product, string id, DateTime packed,
         IEnumerable<ProductIngredient> components)
     {
@@ -180,6 +178,12 @@ public class ProductRepository(
             }).ToList(),
             UserId = id
         });
+        await dataContext.SaveChangesAsync();
+    }
+
+    private async Task UpdateProduct(Product product)
+    {
+        dataContext.Update(product);
         await dataContext.SaveChangesAsync();
     }
 }
