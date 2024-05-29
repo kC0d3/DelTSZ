@@ -72,6 +72,33 @@ public class AuthController(IAuthService authService, IUserRepository userReposi
         }
     }
 
+
+    [HttpPost("change-password"), Authorize]
+    public async Task<IActionResult> ChangePassword([Required] PasswordChange passwordChange)
+    {
+        try
+        {
+            var id = HttpContext.User.Claims.FirstOrDefault(c => c.Type.Contains("identifier"))?.Value;
+            if (id == null)
+                return Conflict(new { message = "Wrong user id." });
+
+            var user = await authService.FindUserById(id);
+            if (user == null)
+                return NotFound(new { message = "User not found." });
+
+            var result =
+                await authService.ChangePassword(user, passwordChange.CurrentPassword, passwordChange.NewPassword);
+            if (!result.Succeeded)
+                return Conflict(result);
+
+            return Ok(new { message = "Password changed successfully.", result });
+        }
+        catch (Exception)
+        {
+            return BadRequest(new { message = "Something went wrong, please try again." });
+        }
+    }
+
     [HttpPost("delete"), Authorize(Roles = "Producer, Costumer")]
     public async Task<IActionResult> DeleteUser([FromBody] string password)
     {
