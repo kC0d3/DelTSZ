@@ -8,6 +8,7 @@ namespace DelTSZ.Models.Products;
 public class Product
 {
     //Properties
+    
     public int Id { get; init; }
     public ProductType Type { get; init; }
     public DateTime Packed { get; init; }
@@ -15,6 +16,7 @@ public class Product
     public ICollection<ProductIngredient>? Ingredients { get; set; }
 
     //Navigation properties
-    [StringLength(100)] public string? UserId { get; init; }
+    
+    [StringLength(450)] public string? UserId { get; init; }
     public User? User { get; init; }
 }
