@@ -20,7 +20,7 @@ public class IngredientController(IIngredientRepository ingredientRepository) : 
         }
         catch (Exception)
         {
-            return BadRequest("Error getting ingredient types.");
+            return BadRequest(new { message = "Error getting ingredient types." });
         }
     }
 
@@ -33,7 +33,7 @@ public class IngredientController(IIngredientRepository ingredientRepository) : 
         }
         catch (Exception)
         {
-            return BadRequest("Error getting ingredients.");
+            return BadRequest(new { message = "Error getting ingredients." });
         }
     }
 
@@ -47,27 +47,16 @@ public class IngredientController(IIngredientRepository ingredientRepository) : 
 
             if (id == null || !Enum.IsDefined(typeof(IngredientType), ingredientRequest.Type))
             {
-                return Conflict("Wrong user id or ingredient type.");
+                return Conflict(new { message = "Wrong user id or ingredient type." });
             }
 
-            var ingredient =
-                await ingredientRepository.GetIngredientByUserId_Type_ReceivedDate(ingredientRequest.Type, id, days);
+            await ingredientRepository.CreateOrUpdateIngredient(ingredientRequest, id, days);
 
-            if (ingredient == null)
-            {
-                await ingredientRepository.CreateIngredientToUser(ingredientRequest, id, days);
-            }
-            else
-            {
-                ingredient.Amount += ingredientRequest.Amount;
-                await ingredientRepository.UpdateIngredient(ingredient);
-            }
-
-            return Ok("Ingredient create successful.");
+            return Ok(new { message = "Ingredient create successful." });
         }
         catch (Exception)
         {
-            return BadRequest("Error create ingredient.");
+            return BadRequest(new { message = "Error create ingredient." });
         }
     }
 
@@ -80,26 +69,26 @@ public class IngredientController(IIngredientRepository ingredientRepository) : 
 
             if (userId == null)
             {
-                return Conflict("Wrong user id.");
+                return Conflict(new { message = "Wrong user id." });
             }
 
             var ingredient = await ingredientRepository.GetIngredientById(id);
 
             if (ingredient == null)
             {
-                return NotFound("Ingredient not found.");
+                return NotFound(new { message = "Ingredient not found." });
             }
 
             await ingredientRepository.IngredientUpdateById(id, userId);
-            return Ok("Ingredient update successful.");
+            return Ok(new { message = "Ingredient update successful." });
         }
         catch (Exception)
         {
-            return BadRequest("Error getting ingredient.");
+            return BadRequest(new { message = "Error getting ingredient." });
         }
     }
 
-    [HttpPut("{type}"), Authorize(Roles = "Costumer")]
+    [HttpPut("{type}/{amount:decimal}"), Authorize(Roles = "Costumer")]
     public async Task<IActionResult> UpdateIngredientByType(IngredientType type, decimal amount)
     {
         try
@@ -108,7 +97,7 @@ public class IngredientController(IIngredientRepository ingredientRepository) : 
 
             if (id == null || !Enum.IsDefined(typeof(IngredientType), type) || amount < 0)
             {
-                return Conflict("Wrong user id, ingredient type or amount.");
+                return Conflict(new { message = "Wrong user id, ingredient type or amount." });
             }
 
             var ownerIngredientAmount = await ingredientRepository.GetAllOwnerIngredientAmountsByType(type);
@@ -119,11 +108,11 @@ public class IngredientController(IIngredientRepository ingredientRepository) : 
             }
 
             await ingredientRepository.IngredientUpdateByRequestAmount(type, id, amount);
-            return Ok("Ingredient update successful.");
+            return Ok(new { message = "Ingredient update successful." });
         }
         catch (Exception)
         {
-            return BadRequest("Error update ingredient.");
+            return BadRequest(new { message = "Error update ingredient." });
         }
     }
 
@@ -136,15 +125,16 @@ public class IngredientController(IIngredientRepository ingredientRepository) : 
 
             if (ingredient == null)
             {
-                return NotFound("Ingredient not found.");
+                return NotFound(new { message = "Ingredient not found." });
             }
 
             await ingredientRepository.DeleteIngredient(ingredient);
-            return Ok("Ingredient delete successful.");
+
+            return Ok(new { message = "Ingredient delete successful." });
         }
         catch (Exception)
         {
-            return BadRequest("Error getting ingredient.");
+            return BadRequest(new { message = "Error getting ingredient." });
         }
     }
 }

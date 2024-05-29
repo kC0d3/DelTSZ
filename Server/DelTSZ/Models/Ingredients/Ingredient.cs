@@ -15,6 +15,6 @@ public class Ingredient
 
     //Navigation properties
 
-    [StringLength(100)] public string? UserId { get; set; }
+    [StringLength(450)] public string? UserId { get; set; }
     public User? User { get; init; }
 }

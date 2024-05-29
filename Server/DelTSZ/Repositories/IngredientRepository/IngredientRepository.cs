@@ -44,80 +44,44 @@ public class IngredientRepository(DataContext dataContext, IUserRepository userR
         return await dataContext.Ingredients.FirstOrDefaultAsync(i => i.Id == id);
     }
 
-    public async Task<Ingredient?> GetIngredientByUserId_Type_ReceivedDate(IngredientType type, string id, int days)
+    public async Task IngredientUpdateByRequestAmount(IngredientType type, string userId, decimal requestedAmount)
     {
-        return await dataContext.Ingredients
-            .Where(i => i.UserId == id && i.Type == type && i.Received == DateTime.Today.AddDays(days))
-            .FirstOrDefaultAsync();
-    }
+        var remainingAmount = requestedAmount;
 
-    public async Task CreateIngredientToUser(IngredientRequest ingredient, string id, int days)
-    {
-        dataContext.Add(new Ingredient
+        while (remainingAmount > 0)
         {
-            Type = ingredient.Type,
-            Amount = ingredient.Amount,
-            Received = DateTime.Today.AddDays(days),
-            UserId = id
-        });
-        await dataContext.SaveChangesAsync();
-    }
+            var oldestIngredient = await GetOwnerOldestIngredientByType(type);
+            var transferableAmount = Math.Min(oldestIngredient!.Amount, remainingAmount);
 
-    public async Task IngredientUpdateByRequestAmount(IngredientType type, string id, decimal amount)
-    {
-        var demandAmount = amount;
-        var balance = 0m;
+            await TransferIngredient(type, userId, oldestIngredient, transferableAmount);
 
-        do
-        {
-            var ownerIngredient = await GetOwnerOldestIngredientByType(type);
+            remainingAmount -= transferableAmount;
 
-            if (ownerIngredient!.Amount - demandAmount <= 0)
+            if (oldestIngredient.Amount == 0)
             {
-                demandAmount -= ownerIngredient.Amount;
-                balance += ownerIngredient.Amount;
-
-                var userIngredient =
-                    await GetIngredientByUserId_Type_ReceivedDate(type, id, ownerIngredient.Received);
-
-                if (userIngredient == null)
-                {
-                    await CreateIngredientToUser(
-                        new IngredientUpdateRequest
-                            { Type = type, Amount = ownerIngredient.Amount, Received = ownerIngredient.Received },
-                        id);
-                }
-                else
-                {
-                    userIngredient.Amount += balance;
-                    await UpdateIngredient(userIngredient);
-                }
-
-                await DeleteIngredient(ownerIngredient);
+                await DeleteIngredient(oldestIngredient);
             }
             else
             {
-                var userIngredient =
-                    await GetIngredientByUserId_Type_ReceivedDate(type, id, ownerIngredient.Received);
-
-                if (userIngredient == null)
-                {
-                    await CreateIngredientToUser(
-                        new IngredientUpdateRequest
-                            { Type = type, Amount = demandAmount, Received = ownerIngredient.Received },
-                        id);
-                }
-                else
-                {
-                    userIngredient.Amount += amount;
-                    await UpdateIngredient(userIngredient);
-                }
-
-                demandAmount -= amount - balance;
-                ownerIngredient.Amount -= amount - balance;
-                await UpdateIngredient(ownerIngredient);
+                await UpdateIngredient(oldestIngredient);
             }
-        } while (demandAmount > 0);
+        }
+    }
+    
+    public async Task CreateOrUpdateIngredient(IngredientRequest ingredientRequest, string id, int days)
+    {
+        var ingredient =
+            await GetIngredientByUserId_Type_ReceivedDate(ingredientRequest.Type, id, days);
+
+        if (ingredient == null)
+        {
+            await CreateIngredientToUser(ingredientRequest, id, days);
+        }
+        else
+        {
+            ingredient.Amount += ingredientRequest.Amount;
+            await UpdateIngredient(ingredient);
+        }
     }
 
     public async Task IngredientUpdateById(int id, string userId)
@@ -152,12 +116,42 @@ public class IngredientRepository(DataContext dataContext, IUserRepository userR
     }
 
     //Private methods
+
+    private async Task TransferIngredient(IngredientType type, string userId, Ingredient ownerIngredient,
+        decimal amount)
+    {
+        var userIngredient = await GetIngredientByUserId_Type_ReceivedDate(type, userId, ownerIngredient.Received);
+
+        if (userIngredient == null)
+        {
+            await CreateIngredientToUser(new IngredientUpdateRequest
+            {
+                Type = type,
+                Amount = amount,
+                Received = ownerIngredient.Received
+            }, userId);
+        }
+        else
+        {
+            userIngredient.Amount += amount;
+            await UpdateIngredient(userIngredient);
+        }
+
+        ownerIngredient.Amount -= amount;
+    }
     
     private async Task<Ingredient?> GetIngredientByUserId_Type_ReceivedDate(IngredientType type, string id,
         DateTime received)
     {
         return await dataContext.Ingredients
             .Where(i => i.UserId == id && i.Type == type && i.Received == received)
+            .FirstOrDefaultAsync();
+    }
+
+    private async Task<Ingredient?> GetIngredientByUserId_Type_ReceivedDate(IngredientType type, string id, int days)
+    {
+        return await dataContext.Ingredients
+            .Where(i => i.UserId == id && i.Type == type && i.Received == DateTime.Today.AddDays(days))
             .FirstOrDefaultAsync();
     }
 
@@ -168,6 +162,18 @@ public class IngredientRepository(DataContext dataContext, IUserRepository userR
             Type = ingredient.Type,
             Amount = ingredient.Amount,
             Received = ingredient.Received,
+            UserId = id
+        });
+        await dataContext.SaveChangesAsync();
+    }
+
+    private async Task CreateIngredientToUser(IngredientRequest ingredient, string id, int days)
+    {
+        dataContext.Add(new Ingredient
+        {
+            Type = ingredient.Type,
+            Amount = ingredient.Amount,
+            Received = DateTime.Today.AddDays(days),
             UserId = id
         });
         await dataContext.SaveChangesAsync();

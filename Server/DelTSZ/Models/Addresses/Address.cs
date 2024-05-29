@@ -6,6 +6,7 @@ namespace DelTSZ.Models.Addresses;
 public class Address
 {
     //Properties
+    
     public int Id { get; init; }
     [StringLength(10)] public string? ZipCode { get; set; }
     [StringLength(50)] public string? City { get; set; }
@@ -13,6 +14,7 @@ public class Address
     [StringLength(10)] public string? HouseNumber { get; set; }
 
     //Navigation Properties
-    [StringLength(100)] public string? UserId { get; init; }
+    
+    [StringLength(450)] public string? UserId { get; init; }
     public User? User { get; init; }
 }

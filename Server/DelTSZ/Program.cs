@@ -1,3 +1,4 @@
+using DelTSZ;
 using DelTSZ.Data;
 using DelTSZ.Models.Addresses;
 using DelTSZ.Models.Enums;
@@ -35,12 +36,15 @@ AddProducer();
 AddCostumer();
 
 app.Run();
+return;
 
 //Application methods
 
 void AddServices()
 {
-    builder.Services.AddControllers();
+    builder.Services.AddControllers()
+        .AddJsonOptions(
+            options => { options.JsonSerializerOptions.PropertyNamingPolicy = new LowerCaseNamingPolicy(); });
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
     builder.Services.AddScoped<IAuthService, AuthService>();
@@ -80,13 +84,11 @@ void AddRoles()
     using var scope = app.Services.CreateScope();
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-    if (roleManager.Roles.FirstOrDefault(r => r.Name == Roles.Owner.ToString()) == null)
+    if (roleManager.Roles.FirstOrDefault(r => r.Name == Roles.Owner.ToString()) != null) return;
+    foreach (Roles role in Enum.GetValues(typeof(Roles)))
     {
-        foreach (Roles role in Enum.GetValues(typeof(Roles)))
-        {
-            var tRole = CreateRole(roleManager, role);
-            tRole.Wait();
-        }
+        var tRole = CreateRole(roleManager, role);
+        tRole.Wait();
     }
 }
 

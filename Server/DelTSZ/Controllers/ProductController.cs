@@ -1,10 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using DelTSZ.Models.Enums;
 using DelTSZ.Models.Ingredients;
-using DelTSZ.Models.ProductIngredients;
 using DelTSZ.Models.Products;
 using DelTSZ.Repositories.IngredientRepository;
-using DelTSZ.Repositories.ProductIngredientRepository;
 using DelTSZ.Repositories.ProductRepository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,10 +11,7 @@ namespace DelTSZ.Controllers;
 
 [Route("api/products")]
 [ApiController]
-public class ProductController(
-    IProductRepository productRepository,
-    IIngredientRepository ingredientRepository,
-    IProductIngredientRepository productIngredientRepository)
+public class ProductController(IProductRepository productRepository, IIngredientRepository ingredientRepository)
     : ControllerBase
 {
     [HttpGet("types")]
@@ -28,7 +23,7 @@ public class ProductController(
         }
         catch (Exception)
         {
-            return NotFound("Error getting product types.");
+            return NotFound(new { message = "Error getting product types." });
         }
     }
 
@@ -41,7 +36,7 @@ public class ProductController(
         }
         catch (Exception)
         {
-            return NotFound("Error getting products.");
+            return NotFound(new { message = "Error getting products." });
         }
     }
 
@@ -54,7 +49,7 @@ public class ProductController(
 
             if (id == null || !Enum.IsDefined(typeof(ProductType), productRequest.Type))
             {
-                return Conflict("Wrong user id or product type.");
+                return Conflict(new { message = "Wrong user id or product type." });
             }
 
             var productDetails = productRequest.Type.GetProductDetails().ToList();
@@ -66,36 +61,21 @@ public class ProductController(
 
                 if (ownerIngredientsAmount < demandAmount)
                 {
-                    return Conflict("Not enough ingredients.");
+                    return Conflict(new { message = "Not enough ingredients." });
                 }
             }
 
-            var product =
-                await productRepository.GetProductByUserId_Type_PackedDate(productRequest.Type, id, days);
-            var ingredients = new List<ProductIngredient>();
+            await productRepository.CreateOrUpdateProduct(productRequest, id, days);
 
-            if (product == null)
-            {
-                ingredients.AddRange(await productIngredientRepository.CreateProductIngredients(productRequest));
-                await productRepository.CreateProductToUser(productRequest, id, ingredients, days);
-            }
-            else
-            {
-                product.Amount += productRequest.Amount;
-                await productIngredientRepository.IncreaseProductIngredientsFromOwnerIngredients(product,
-                    productRequest.Amount);
-                await productRepository.UpdateProduct(product);
-            }
-
-            return Ok("Product create successful.");
+            return Ok(new { message = "Product create successful." });
         }
         catch (Exception)
         {
-            return BadRequest("Error create product.");
+            return BadRequest(new { message = "Error create product." });
         }
     }
 
-    [HttpPut("{type}"), Authorize(Roles = "Costumer")]
+    [HttpPut("{type}/{amount:int}"), Authorize(Roles = "Costumer")]
     public async Task<IActionResult> UpdateProductByType(ProductType type, int amount)
     {
         try
@@ -104,7 +84,7 @@ public class ProductController(
 
             if (id == null || !Enum.IsDefined(typeof(ProductType), type) || amount < 0)
             {
-                return Conflict("Wrong user id, product type or amount.");
+                return Conflict(new { message = "Wrong user id, product type or amount." });
             }
 
             var ownerProductAmount = await productRepository.GetAllOwnerProductsAmountsByType(type);
@@ -115,15 +95,15 @@ public class ProductController(
             }
 
             await productRepository.ProductUpdateByRequestAmount(type, id, amount);
-            return Ok("Product update successful.");
+            return Ok(new { message = "Product update successful." });
         }
         catch (Exception)
         {
-            return BadRequest("Error update component.");
+            return BadRequest(new { message = "Error update component." });
         }
     }
 
-    [HttpDelete("{id}"), Authorize(Roles = "Owner")]
+    [HttpDelete("{id:int}"), Authorize(Roles = "Owner")]
     public async Task<IActionResult> DeleteProductById(int id)
     {
         try
@@ -132,15 +112,15 @@ public class ProductController(
 
             if (product == null)
             {
-                return NotFound("Product not found.");
+                return NotFound(new { message = "Product not found." });
             }
 
             await productRepository.DeleteProduct(product);
-            return Ok("Product delete successful.");
+            return Ok(new { message = "Product delete successful." });
         }
         catch (Exception)
         {
-            return NotFound("Error getting product.");
+            return NotFound(new { message = "Error getting product." });
         }
     }
 }
