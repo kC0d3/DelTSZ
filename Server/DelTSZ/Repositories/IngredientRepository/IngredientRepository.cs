@@ -44,25 +44,6 @@ public class IngredientRepository(DataContext dataContext, IUserRepository userR
         return await dataContext.Ingredients.FirstOrDefaultAsync(i => i.Id == id);
     }
 
-    public async Task<Ingredient?> GetIngredientByUserId_Type_ReceivedDate(IngredientType type, string id, int days)
-    {
-        return await dataContext.Ingredients
-            .Where(i => i.UserId == id && i.Type == type && i.Received == DateTime.Today.AddDays(days))
-            .FirstOrDefaultAsync();
-    }
-
-    public async Task CreateIngredientToUser(IngredientRequest ingredient, string id, int days)
-    {
-        dataContext.Add(new Ingredient
-        {
-            Type = ingredient.Type,
-            Amount = ingredient.Amount,
-            Received = DateTime.Today.AddDays(days),
-            UserId = id
-        });
-        await dataContext.SaveChangesAsync();
-    }
-
     public async Task IngredientUpdateByRequestAmount(IngredientType type, string id, decimal amount)
     {
         var demandAmount = amount;
@@ -152,12 +133,19 @@ public class IngredientRepository(DataContext dataContext, IUserRepository userR
     }
 
     //Private methods
-    
+
     private async Task<Ingredient?> GetIngredientByUserId_Type_ReceivedDate(IngredientType type, string id,
         DateTime received)
     {
         return await dataContext.Ingredients
             .Where(i => i.UserId == id && i.Type == type && i.Received == received)
+            .FirstOrDefaultAsync();
+    }
+
+    private async Task<Ingredient?> GetIngredientByUserId_Type_ReceivedDate(IngredientType type, string id, int days)
+    {
+        return await dataContext.Ingredients
+            .Where(i => i.UserId == id && i.Type == type && i.Received == DateTime.Today.AddDays(days))
             .FirstOrDefaultAsync();
     }
 
@@ -168,6 +156,18 @@ public class IngredientRepository(DataContext dataContext, IUserRepository userR
             Type = ingredient.Type,
             Amount = ingredient.Amount,
             Received = ingredient.Received,
+            UserId = id
+        });
+        await dataContext.SaveChangesAsync();
+    }
+
+    private async Task CreateIngredientToUser(IngredientRequest ingredient, string id, int days)
+    {
+        dataContext.Add(new Ingredient
+        {
+            Type = ingredient.Type,
+            Amount = ingredient.Amount,
+            Received = DateTime.Today.AddDays(days),
             UserId = id
         });
         await dataContext.SaveChangesAsync();
