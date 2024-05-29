@@ -82,6 +82,11 @@ public class AuthService(UserManager<User> userManager, SignInManager<User> sign
         return result;
     }
 
+    public async Task<IdentityResult> ChangePassword(User user, string? currentPassword, string? newPassword)
+    {
+        return await userManager.ChangePasswordAsync(user, currentPassword!, newPassword!);
+    }
+    
     public async Task<bool> CheckPassword(User user, string password)
     {
         return await userManager.CheckPasswordAsync(user, password);
