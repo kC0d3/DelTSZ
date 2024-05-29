@@ -5,7 +5,7 @@ namespace DelTSZ.Repositories.UserRepository;
 public interface IUserRepository
 {
     Task<User?> GetOwner();
-    Task<UserResponse?> GetUserById(string id);
+    Task<UserResponse?> GetUserAllDataById(string id);
     Task<IEnumerable<UserResponse>> GetProducers();
     Task<IEnumerable<UserResponse>> GetCostumers();
 }

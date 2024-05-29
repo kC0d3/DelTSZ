@@ -15,7 +15,7 @@ public class UserRepository(DataContext dataContext) : IUserRepository
         return await dataContext.Users.FirstOrDefaultAsync(u => u.Role == Roles.Owner.ToString());
     }
 
-    public async Task<UserResponse?> GetUserById(string id)
+    public async Task<UserResponse?> GetUserAllDataById(string id)
     {
         return await dataContext.Users
             .Include(u => u.Ingredients)
@@ -25,15 +25,15 @@ public class UserRepository(DataContext dataContext) : IUserRepository
             .Select(u => new UserResponse
             {
                 Email = u.Email,
-                Username = u.UserName,
-                Companyname = u.CompanyName,
+                UserName = u.UserName,
+                CompanyName = u.CompanyName,
                 Role = u.Role,
                 Address = new AddressResponse
                 {
-                    Zipcode = u.Address!.ZipCode,
+                    ZipCode = u.Address!.ZipCode,
                     City = u.Address.City,
                     Street = u.Address.Street,
-                    Housenumber = u.Address.HouseNumber
+                    HouseNumber = u.Address.HouseNumber
                 },
                 Ingredients = u.Ingredients!.Select(i => new IngredientResponse
                 {
@@ -61,15 +61,15 @@ public class UserRepository(DataContext dataContext) : IUserRepository
             .Select(u => new UserResponse
             {
                 Email = u.Email,
-                Username = u.UserName,
-                Companyname = u.CompanyName,
+                UserName = u.UserName,
+                CompanyName = u.CompanyName,
                 Role = u.Role,
                 Address = new AddressResponse
                 {
-                    Zipcode = u.Address!.ZipCode,
+                    ZipCode = u.Address!.ZipCode,
                     City = u.Address.City,
                     Street = u.Address.Street,
-                    Housenumber = u.Address.HouseNumber
+                    HouseNumber = u.Address.HouseNumber
                 },
                 Ingredients = u.Ingredients!.Select(i => new IngredientResponse
                 {
@@ -80,7 +80,7 @@ public class UserRepository(DataContext dataContext) : IUserRepository
                 }).ToList(),
             }).ToListAsync();
     }
-    
+
     public async Task<IEnumerable<UserResponse>> GetCostumers()
     {
         return await dataContext.Users
@@ -90,15 +90,15 @@ public class UserRepository(DataContext dataContext) : IUserRepository
             .Select(u => new UserResponse
             {
                 Email = u.Email,
-                Username = u.UserName,
-                Companyname = u.CompanyName,
+                UserName = u.UserName,
+                CompanyName = u.CompanyName,
                 Role = u.Role,
                 Address = new AddressResponse
                 {
-                    Zipcode = u.Address!.ZipCode,
+                    ZipCode = u.Address!.ZipCode,
                     City = u.Address.City,
                     Street = u.Address.Street,
-                    Housenumber = u.Address.HouseNumber
+                    HouseNumber = u.Address.HouseNumber
                 },
                 Ingredients = u.Ingredients!.Select(i => new IngredientResponse
                 {
