@@ -30,8 +30,8 @@ namespace DelTSZ.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    CompanyName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Role = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CompanyName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Role = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -79,11 +79,11 @@ namespace DelTSZ.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ZipCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    City = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Street = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    HouseNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    ZipCode = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: true),
+                    City = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Street = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    HouseNumber = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: true),
+                    UserId = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -190,7 +190,7 @@ namespace DelTSZ.Migrations
                     Type = table.Column<int>(type: "int", nullable: false),
                     Received = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    UserId = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -212,7 +212,7 @@ namespace DelTSZ.Migrations
                     Type = table.Column<int>(type: "int", nullable: false),
                     Packed = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Amount = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    UserId = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true)
                 },
                 constraints: table =>
                 {
