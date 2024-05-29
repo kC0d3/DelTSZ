@@ -59,6 +59,19 @@ public class AuthService(UserManager<User> userManager, SignInManager<User> sign
         return result;
     }
 
+    public async Task<IdentityResult> UpdateUser(UserUpdateRequest userUpdateRequest, User user)
+    {
+        user.Email = userUpdateRequest.Email;
+        user.UserName = userUpdateRequest.UserName;
+        user.CompanyName = userUpdateRequest.CompanyName;
+        user.Address!.ZipCode = userUpdateRequest.Address!.ZipCode;
+        user.Address.City = userUpdateRequest.Address.City;
+        user.Address.Street = userUpdateRequest.Address.Street;
+        user.Address.HouseNumber = userUpdateRequest.Address.HouseNumber;
+
+        return await userManager.UpdateAsync(user);
+    }
+    
     public async Task<IdentityResult> DeleteUser(User user)
     {
         var result = await userManager.DeleteAsync(user);

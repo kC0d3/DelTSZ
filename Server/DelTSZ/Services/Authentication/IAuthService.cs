@@ -7,6 +7,7 @@ public interface IAuthService
 {
     Task<IdentityResult> RegisterCostumer(Registration registration);
     Task<IdentityResult> RegisterProducer(Registration registration);
+    Task<IdentityResult> UpdateUser(UserUpdateRequest userUpdateRequest, User user);
     Task<IdentityResult> DeleteUser(User user);
     Task<bool> CheckPassword(User user, string password);
     Task<User?> FindUserById(string id);
