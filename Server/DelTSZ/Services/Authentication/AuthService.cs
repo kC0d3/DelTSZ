@@ -69,6 +69,11 @@ public class AuthService(UserManager<User> userManager, SignInManager<User> sign
         return result;
     }
 
+    public async Task<bool> CheckPassword(User user, string password)
+    {
+        return await userManager.CheckPasswordAsync(user, password);
+    }
+    
     public async Task<User?> FindUserById(string id)
     {
         return await userManager.FindByIdAsync(id);
