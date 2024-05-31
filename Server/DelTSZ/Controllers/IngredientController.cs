@@ -24,7 +24,7 @@ public class IngredientController(IIngredientRepository ingredientRepository) : 
         }
     }
 
-    [HttpGet("sum"), Authorize(Roles = "Costumer")]
+    [HttpGet("sum"), Authorize(Roles = "Customer")]
     public async Task<ActionResult<IEnumerable<IngredientSumResponse>>> GetAllOwnerIngredients()
     {
         try
@@ -88,7 +88,7 @@ public class IngredientController(IIngredientRepository ingredientRepository) : 
         }
     }
 
-    [HttpPut("{type}/{amount:decimal}"), Authorize(Roles = "Costumer")]
+    [HttpPut("{type}/{amount:decimal}"), Authorize(Roles = "Customer")]
     public async Task<IActionResult> UpdateIngredientByType(IngredientType type, decimal amount)
     {
         try

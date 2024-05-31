@@ -16,7 +16,7 @@ public class AuthController(IAuthService authService, IUserRepository userReposi
     {
         try
         {
-            var result = await authService.RegisterCostumer(registration);
+            var result = await authService.RegisterCustomer(registration);
 
             if (!result.Succeeded)
                 return Conflict(result);
@@ -72,7 +72,6 @@ public class AuthController(IAuthService authService, IUserRepository userReposi
         }
     }
 
-
     [HttpPost("change-password"), Authorize]
     public async Task<IActionResult> ChangePassword([Required] PasswordChange passwordChange)
     {
@@ -99,7 +98,7 @@ public class AuthController(IAuthService authService, IUserRepository userReposi
         }
     }
 
-    [HttpPost("delete"), Authorize(Roles = "Producer, Costumer")]
+    [HttpPost("delete"), Authorize(Roles = "Producer, Customer")]
     public async Task<IActionResult> DeleteUser([FromBody] string password)
     {
         try

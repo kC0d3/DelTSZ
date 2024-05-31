@@ -4,5 +4,5 @@ public enum Roles
 {
     Owner,
     Producer,
-    Costumer,
+    Customer
 }
