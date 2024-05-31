@@ -43,12 +43,12 @@ public class UserController(IUserRepository userRepository) : ControllerBase
         }
     }
 
-    [HttpGet("costumers"), Authorize(Roles = "Owner")]
-    public async Task<ActionResult<IEnumerable<UserResponse>>> GetCostumers()
+    [HttpGet("customers"), Authorize(Roles = "Owner")]
+    public async Task<ActionResult<IEnumerable<UserResponse>>> GetCustomers()
     {
         try
         {
-            return Ok(await userRepository.GetCostumers());
+            return Ok(await userRepository.GetCustomers());
         }
         catch (Exception)
         {

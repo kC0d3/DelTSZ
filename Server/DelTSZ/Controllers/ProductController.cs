@@ -27,7 +27,7 @@ public class ProductController(IProductRepository productRepository, IIngredient
         }
     }
 
-    [HttpGet("sum"), Authorize(Roles = "Costumer")]
+    [HttpGet("sum"), Authorize(Roles = "Customer")]
     public async Task<ActionResult<IEnumerable<IngredientRequest>>> GetAllOwnerProducts()
     {
         try
@@ -75,7 +75,7 @@ public class ProductController(IProductRepository productRepository, IIngredient
         }
     }
 
-    [HttpPut("{type}/{amount:int}"), Authorize(Roles = "Costumer")]
+    [HttpPut("{type}/{amount:int}"), Authorize(Roles = "Customer")]
     public async Task<IActionResult> UpdateProductByType(ProductType type, int amount)
     {
         try

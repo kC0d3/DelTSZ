@@ -88,12 +88,12 @@ public class UserRepository(DataContext dataContext) : IUserRepository
             }).ToListAsync();
     }
 
-    public async Task<IEnumerable<UserResponse>> GetCostumers()
+    public async Task<IEnumerable<UserResponse>> GetCustomers()
     {
         return await dataContext.Users
             .Include(u => u.Ingredients)
             .Include(u => u.Address)
-            .Where(u => u.Role == Roles.Costumer.ToString())
+            .Where(u => u.Role == Roles.Customer.ToString())
             .Select(u => new UserResponse
             {
                 Email = u.Email,

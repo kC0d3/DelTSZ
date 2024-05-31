@@ -7,14 +7,14 @@ namespace DelTSZ.Services.Authentication;
 
 public class AuthService(UserManager<User> userManager, SignInManager<User> signInManager) : IAuthService
 {
-    public async Task<IdentityResult> RegisterCostumer(Registration registration)
+    public async Task<IdentityResult> RegisterCustomer(Registration registration)
     {
         var user = new User
         {
             UserName = registration.UserName,
             Email = registration.Email,
             CompanyName = registration.CompanyName,
-            Role = Roles.Costumer.ToString(),
+            Role = Roles.Customer.ToString(),
             Address = new Address
             {
                 ZipCode = registration.Address!.ZipCode,

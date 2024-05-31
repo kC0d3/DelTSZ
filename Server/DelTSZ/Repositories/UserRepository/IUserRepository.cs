@@ -8,5 +8,5 @@ public interface IUserRepository
     Task<UserResponse?> GetUserAllDataById(string id);
     Task<User?> GetUserWithAddressById(string id);
     Task<IEnumerable<UserResponse>> GetProducers();
-    Task<IEnumerable<UserResponse>> GetCostumers();
+    Task<IEnumerable<UserResponse>> GetCustomers();
 }

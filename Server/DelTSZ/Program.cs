@@ -167,7 +167,7 @@ async Task CreateCostumerIfNotExists()
         var costumer = new User
         {
             UserName = "ALDI", Email = "aldi@aldi.com", CompanyName = "ALDI Magyarország Élelmiszer Bt.",
-            Role = Roles.Costumer.ToString(),
+            Role = Roles.Customer.ToString(),
             Address = new Address
                 { ZipCode = "2051", City = "Biatorbágy", Street = "Mészárosok útja", HouseNumber = "2" }
         };
@@ -175,7 +175,7 @@ async Task CreateCostumerIfNotExists()
 
         if (costumerCreated.Succeeded)
         {
-            await userManager.AddToRoleAsync(costumer, Roles.Costumer.ToString());
+            await userManager.AddToRoleAsync(costumer, Roles.Customer.ToString());
         }
     }
 }
