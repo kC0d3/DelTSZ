@@ -1,68 +1,85 @@
-:root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+@import "styles/components/header.css";
+@import "styles/components/navbar.css";
+@import "styles/components/slider.css";
+@import "styles/components/footer.css";
+@import "styles/pages/errorpage.css";
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+/*Global styles*/
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@media (min-width: 1200px) {
+  .header.homepage {
+    height: 100vh;
+  }
+
+  .header.errorpage {
+    height: 40vh;
+  }
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
+@media (min-width: 768px) and (max-width: 1199px) {
+  .header {
+    height: 80vh;
+  }
 }
-a:hover {
-  color: #535bf2;
+
+@media (max-width: 767px) {
+  .header {
+    height: 50vh;
+  }
+
+  .slide-bubble {
+    position: absolute;
+    width: 20vh;
+    margin-top: 0vh;
+    margin-left: 0vh;
+  }
 }
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  justify-content: center;
+  width: 100%;
+  font-family: "Roboto", sans-serif;
+}
+
+a {
+  display: inline;
+  font-size: 2vh;
+  text-decoration: none;
+  color: #FAFAFA;
+  padding: 0vh 1vh;
+  cursor: pointer;
+}
+
+a:hover {
+  font-weight: 800;
+  color: yellowgreen;
+  font-size: 2.2vh;
 }
 
 h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+  color: yellowgreen;
 }
 
 button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
+  border-radius: 3vh;
+  border: 0.3vh solid transparent;
+  padding: 1.5vh 2.5vh;
+  font-size: 2vh;
+  font-weight: 400;
   font-family: inherit;
-  background-color: #1a1a1a;
+  color: #FAFAFA;
+  background-color: yellowgreen;
   cursor: pointer;
   transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  margin-bottom: 0.5vh;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+button:hover {
+  border-color: #FAFAFA;
+  border: 0.4vh solid;
+  padding: 1.5vh 2.5vh;
+  font-size: 2.2vh;
+  font-weight: 600;
+  padding: 1.3vh 1.8vh;
 }
