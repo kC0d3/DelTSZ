@@ -1,0 +1,46 @@
+/*NavBar styles*/
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100vh;
+    height: 10vh;
+    border-radius: 10vh;
+    background-color: rgba(46, 49, 45, 0.8);
+    padding-right: 2vh;
+    margin-top: 5vh;
+    z-index: 1;
+}
+
+.navbar-logo {
+    max-width: 8vh;
+    height: auto;
+    margin-left: 1vh;
+}
+
+.navbar-logo:hover {
+    max-width: 9vh;
+    height: auto;
+    margin-left: 0.5vh;
+}
+
+.navbar-links {
+    display: flex;
+    align-items: center;
+}
+
+.about-us-link:hover {
+    padding-right: 0.5vh;
+    padding-left: 2vh;
+}
+
+.our-products-link:hover {
+    padding-right: 0.01vh;
+    padding-left: 0.55vh;
+}
+
+.login-register-link:hover {
+    padding-right: 0.015vh;
+    padding-left: 0.33vh;
+}
