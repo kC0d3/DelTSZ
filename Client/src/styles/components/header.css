@@ -6,6 +6,7 @@
     height: 33vh;
     display: flex;
     justify-content: center;
+    z-index: 0;
 }
 
 .header.homepage {
