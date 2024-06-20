@@ -6,9 +6,9 @@ import HomePage from './Pages/HomePage';
 export default function App() {
   const [loggedUser, setLoggedUser] = useState(undefined);
   const bgImagesAmount = 3;
-  const interval = 6500;
+  const slidesInterval = 6500;
   const slides = [{
-    img: '/images/bg1.jpg',
+    img: '/images/backgrounds/bg1.jpg',
     bubble: {
       h1: 'Local Champions',
       p1: 'Fresh, juicy and healthy',
@@ -17,7 +17,7 @@ export default function App() {
     }
   },
   {
-    img: '/images/bg2.jpg',
+    img: '/images/backgrounds/bg2.jpg',
     bubble: {
       h1: 'Local producers',
       p1: 'Our producers provide reliable',
@@ -26,7 +26,7 @@ export default function App() {
     }
   },
   {
-    img: '/images/bg3.jpg',
+    img: '/images/backgrounds/bg3.jpg',
     bubble: {
       h1: 'DelTSZ',
       p1: 'Our logistic center',
@@ -35,10 +35,35 @@ export default function App() {
     }
   }];
 
+  const achievementDuration = 2000;
+  const achievementStart = 0;
+  const achievementCounters = [
+    {
+      amount: 500,
+      achievement: 'Producer',
+      description: 'We operate together with that much local producer.'
+    },
+    {
+      amount: 53000,
+      achievement: 'Tons',
+      description: 'We can provide that much healty vegetables and support your health.'
+    },
+    {
+      amount: 150,
+      achievement: 'Hectar greenhouse',
+      description: 'Around that much area available for driven cultivation.'
+    },
+    {
+      amount: 96,
+      achievement: 'Biological plant protection',
+      description: 'We say yes to sustainability and environmental consciousness.'
+    }
+  ];
+
   return (
     <Router>
       <Routes>
-        <Route path='/' element={<HomePage {...{ loggedUser, setLoggedUser, slides, interval }} />} />
+        <Route path='/' element={<HomePage {...{ loggedUser, setLoggedUser, slides, slidesInterval, achievementCounters, achievementDuration, achievementStart }} />} />
         <Route path='*' element={<ErrorPage {...{ loggedUser, setLoggedUser, bgImagesAmount }} />} />
       </Routes>
     </Router>
