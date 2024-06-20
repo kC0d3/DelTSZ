@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
-export default function Slider({ slides, interval }) {
+export default function Slider({ slides, slidesInterval }) {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [previousIndex, setPreviousIndex] = useState(null);
 
@@ -11,13 +11,13 @@ export default function Slider({ slides, interval }) {
             setCurrentIndex((prevIndex) => (prevIndex + 1) % slides.length);
         }
 
-        const intervalId = setInterval(changeSlide, interval);
+        const intervalId = setInterval(changeSlide, slidesInterval);
 
         return () => clearInterval(intervalId);
-    }, [slides.length, interval, currentIndex]);
+    }, [slides.length, slidesInterval, currentIndex]);
 
     return (
-        <div className="slider">
+        <div className='slider'>
             {slides.map((slide, index) => {
                 let className = 'slide';
                 if (index === currentIndex) {
