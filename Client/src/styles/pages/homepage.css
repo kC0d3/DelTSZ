@@ -1,0 +1,57 @@
+/*HomePage styles*/
+
+.homepage-body {
+    position: relative;
+    margin-top: -5vh;
+    z-index: 1;
+    background-color: #f7fded;
+    padding-bottom: 5vh;
+}
+
+.homepage-body-top {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    h1 {
+        color: rgb(0, 51, 59);
+        font-weight: 800;
+        font-size: 5vh;
+    }
+
+    h3 {
+        margin-top: 1.5vh;
+        margin-bottom: 1vh;
+        color: yellowgreen;
+    }
+}
+
+.counter-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 3vh;
+}
+
+.counter-card {
+    width: 40vh;
+
+    h1 {
+        color: rgb(0, 51, 59);
+        font-size: 4vh;
+        font-weight: 800;
+        margin-bottom: 0.5vh;
+    }
+
+    h3 {
+        margin-top: 0.5vh;
+        color: yellowgreen;
+        font-weight: 800;
+    }
+
+    p {
+        width: 20vh;
+        color: rgb(70, 70, 70);
+    }
+}
