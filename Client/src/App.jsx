@@ -1,10 +1,13 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import ErrorPage from './Pages/ErrorPage';
 import HomePage from './Pages/HomePage';
+import OurProductsPage from './Pages/OurProductsPage';
 
 export default function App() {
   const [loggedUser, setLoggedUser] = useState(undefined);
+  const [productTypes, setProductTypes] = useState(undefined);
+
   const bgImagesAmount = 3;
   const slidesInterval = 6500;
   const slides = [{
@@ -46,7 +49,7 @@ export default function App() {
     {
       amount: 53000,
       achievement: 'Tons',
-      description: 'We can provide that much healty vegetables and support your health.'
+      description: 'We can provide that much healty vegetables and support your health every year.'
     },
     {
       amount: 150,
@@ -60,11 +63,49 @@ export default function App() {
     }
   ];
 
+  const productDescriptions = {
+    Paprika400G: { name: 'Paprika 400g', description: 'Best for sandwiches, ratatouille and raw consume.' },
+    Tomato200G: { name: 'Tomato 200g', description: 'Best for sandwiches, ratatouille and raw consume.' },
+    Tomato500G: { name: 'Tomato 500g', description: 'Best for sandwiches, ratatouille and raw consume.' },
+    RatatouilleMix500G: { name: 'Ratatouille mix 500g', description: 'Best for ratatouille bases.' },
+    SoupMix750G: { name: 'Soup mix 750g', description: 'Best for chicken soup bases.' },
+    Carrot: { name: 'Carrot', description: 'Best for Wild sauce and soups.' },
+    Celery: { name: 'Celery', description: 'Best for celery bisque and soups.' },
+    Cucumber: { name: 'Cucumber', description: 'Best for sandwiches and refreshing drinks.' },
+    Mushroom: { name: 'Mushroom', description: 'Best for stews and bisques.' },
+    Onion: { name: 'Onion', description: 'Most of the stewes bases and extra seasoning.' },
+    ParsleyRoot: { name: 'Parsley root', description: 'Best for chicken soups bases.' },
+    Paprika: { name: 'Paprika', description: 'Best for sandwiches, ratatouille and raw consume.' },
+    Potato: { name: 'Potato', description: 'Best for fried and mashed potato.' },
+    Radish: { name: 'Radish', description: 'Best for sandwiches and raw consume.' },
+    Tomato: { name: 'Tomato', description: 'Best for sandwiches, ratatouille and raw consume.' }
+  };
+
+  useEffect(() => {
+    fetchProductTypes();
+  }, []);
+
+  const fetchProductTypes = async () => {
+    try {
+      const prodRes = await fetch('/api/products/types');
+      const prodData = await prodRes.json();
+
+      const ingRes = await fetch('/api/ingredients/types');
+      const ingData = await ingRes.json();
+
+      const combinedData = [...prodData, ...ingData];
+      setProductTypes(combinedData);
+    } catch (error) {
+      console.log("Error fetching data:", error);
+    }
+  }
+
   return (
     <Router>
       <Routes>
         <Route path='/' element={<HomePage {...{ loggedUser, setLoggedUser, slides, slidesInterval, achievementCounters, achievementDuration, achievementStart }} />} />
         <Route path='*' element={<ErrorPage {...{ loggedUser, setLoggedUser, bgImagesAmount }} />} />
+        <Route path='our-products' element={<OurProductsPage {... { loggedUser, setLoggedUser, bgImagesAmount, productTypes, productDescriptions }} />} />
       </Routes>
     </Router>
   );

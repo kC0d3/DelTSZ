@@ -12,6 +12,7 @@
 }
 
 .errorpage-body {
+    background-color: #f7fded;
     display: flex;
     flex-direction: column;
     align-items: center;
