@@ -18,7 +18,7 @@ export default function NavBar({ loggedUser, setLoggedUser }) {
             <Link to='/'><img className='navbar-logo' src='/deltsz.ico' alt='logo' /></Link>
             <div className='navbar-links'>
                 <Link className='about-us-link' to='/about-us'>About us</Link>
-                <Link className='our-products-link' to='/products/types'>Our Products</Link>
+                <Link className='our-products-link' to='/our-products'>Our Products</Link>
                 {loggedUser ? (
                     <>
                         {loggedUser.role === 'Owner' ? (
