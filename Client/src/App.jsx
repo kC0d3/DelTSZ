@@ -63,6 +63,24 @@ export default function App() {
     }
   ];
 
+  const productDescriptions = {
+    Paprika400G: { name: 'Paprika 400g', description: 'Best for sandwiches, ratatouille and raw consume.' },
+    Tomato200G: { name: 'Tomato 200g', description: 'Best for sandwiches, ratatouille and raw consume.' },
+    Tomato500G: { name: 'Tomato 500g', description: 'Best for sandwiches, ratatouille and raw consume.' },
+    RatatouilleMix500G: { name: 'Ratatouille mix 500g', description: 'Best for ratatouille bases.' },
+    SoupMix750G: { name: 'Soup mix 750g', description: 'Best for chicken soup bases.' },
+    Carrot: { name: 'Carrot', description: 'Best for Wild sauce and soups.' },
+    Celery: { name: 'Celery', description: 'Best for celery bisque and soups.' },
+    Cucumber: { name: 'Cucumber', description: 'Best for sandwiches and refreshing drinks.' },
+    Mushroom: { name: 'Mushroom', description: 'Best for stews and bisques.' },
+    Onion: { name: 'Onion', description: 'Most of the stewes bases and extra seasoning.' },
+    ParsleyRoot: { name: 'Parsley root', description: 'Best for chicken soups bases.' },
+    Paprika: { name: 'Paprika', description: 'Best for sandwiches, ratatouille and raw consume.' },
+    Potato: { name: 'Potato', description: 'Best for fried and mashed potato.' },
+    Radish: { name: 'Radish', description: 'Best for sandwiches and raw consume.' },
+    Tomato: { name: 'Tomato', description: 'Best for sandwiches, ratatouille and raw consume.' }
+  };
+
   useEffect(() => {
     fetchProductTypes();
   }, []);
