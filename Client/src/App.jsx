@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import ErrorPage from './Pages/ErrorPage';
 import HomePage from './Pages/HomePage';
@@ -6,6 +6,7 @@ import OurProductsPage from './Pages/OurProductsPage';
 
 export default function App() {
   const [loggedUser, setLoggedUser] = useState(undefined);
+  const [productTypes, setProductTypes] = useState(undefined);
 
   const bgImagesAmount = 3;
   const slidesInterval = 6500;
@@ -61,6 +62,25 @@ export default function App() {
       description: 'We say yes to sustainability and environmental consciousness.'
     }
   ];
+
+  useEffect(() => {
+    fetchProductTypes();
+  }, []);
+
+  const fetchProductTypes = async () => {
+    try {
+      const prodRes = await fetch('/api/products/types');
+      const prodData = await prodRes.json();
+
+      const ingRes = await fetch('/api/ingredients/types');
+      const ingData = await ingRes.json();
+
+      const combinedData = [...prodData, ...ingData];
+      setProductTypes(combinedData);
+    } catch (error) {
+      console.log("Error fetching data:", error);
+    }
+  }
 
   return (
     <Router>
