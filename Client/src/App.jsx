@@ -2,9 +2,11 @@ import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import ErrorPage from './Pages/ErrorPage';
 import HomePage from './Pages/HomePage';
+import OurProductsPage from './Pages/OurProductsPage';
 
 export default function App() {
   const [loggedUser, setLoggedUser] = useState(undefined);
+
   const bgImagesAmount = 3;
   const slidesInterval = 6500;
   const slides = [{
@@ -46,7 +48,7 @@ export default function App() {
     {
       amount: 53000,
       achievement: 'Tons',
-      description: 'We can provide that much healty vegetables and support your health.'
+      description: 'We can provide that much healty vegetables and support your health every year.'
     },
     {
       amount: 150,
@@ -65,6 +67,7 @@ export default function App() {
       <Routes>
         <Route path='/' element={<HomePage {...{ loggedUser, setLoggedUser, slides, slidesInterval, achievementCounters, achievementDuration, achievementStart }} />} />
         <Route path='*' element={<ErrorPage {...{ loggedUser, setLoggedUser, bgImagesAmount }} />} />
+        <Route path='our-products' element={<OurProductsPage {... { loggedUser, setLoggedUser, bgImagesAmount, productTypes, productDescriptions }} />} />
       </Routes>
     </Router>
   );
