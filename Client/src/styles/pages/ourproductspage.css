@@ -1,0 +1,13 @@
+/*Our Products Page styles*/
+
+.our-products-body {
+    padding: 2rem 1rem 5rem;
+    padding-left: 2rem;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-color: #f7fded;
+}
