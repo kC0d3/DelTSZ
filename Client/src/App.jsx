@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import ErrorPage from './Pages/ErrorPage';
-import HomePage from './Pages/HomePage';
-import OurProductsPage from './Pages/OurProductsPage';
+import HomeBody from './Components/HomeBody';
+import ErrorBody from './Components/ErrorBody';
+import OurProductsBody from './Components/OurProductsBody';
 
 export default function App() {
   const [loggedUser, setLoggedUser] = useState(undefined);
@@ -103,9 +103,9 @@ export default function App() {
   return (
     <Router>
       <Routes>
-        <Route path='/' element={<HomePage {...{ loggedUser, setLoggedUser, slides, slidesInterval, achievementCounters, achievementDuration, achievementStart }} />} />
-        <Route path='*' element={<ErrorPage {...{ loggedUser, setLoggedUser, bgImagesAmount }} />} />
-        <Route path='our-products' element={<OurProductsPage {... { loggedUser, setLoggedUser, bgImagesAmount, productTypes, productDescriptions }} />} />
+        <Route path='/' element={<HomeBody {...{ achievementCounters, achievementDuration, achievementStart }} />} />
+        <Route path='*' element={<ErrorBody />} />
+        <Route path='our-products' element={<OurProductsBody {...{ productTypes, productDescriptions }} />} />
       </Routes>
     </Router>
   );
