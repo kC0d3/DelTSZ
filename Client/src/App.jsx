@@ -6,6 +6,7 @@ import OurProductsBody from './Components/OurProductsBody';
 import Header from './Components/Header';
 import Footer from './Components/Footer';
 import Login from './Components/Login';
+import Registration from './Components/Registration';
 
 export default function App() {
   const [loggedUser, setLoggedUser] = useState(undefined);
@@ -108,6 +109,7 @@ export default function App() {
   return (
     <Router>
       <Login {...{ setLoggedUser, showLogin, setShowLogin, setShowRegistration }} />
+      <Registration {...{ showRegistration, setShowRegistration, setShowLogin }} />
       <Header {...{ loggedUser, setLoggedUser, showLogin, setShowLogin, slides, slidesInterval, bgImagesAmount }} />
       <Routes>
         <Route path='/' element={<HomeBody {...{ achievementCounters, achievementDuration, achievementStart }} />} />
