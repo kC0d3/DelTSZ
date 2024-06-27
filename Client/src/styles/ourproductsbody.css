@@ -1,4 +1,4 @@
-/*Our Products Page styles*/
+/*OurProducts body styles*/
 
 .our-products-body {
     padding: 2rem 1rem 5rem;
@@ -9,5 +9,5 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    background-color: #f7fded;
+    background-color: rgb(247, 253, 237);
 }

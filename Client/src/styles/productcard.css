@@ -40,10 +40,10 @@
 }
 
 .product-card-front {
-    color: rgba(0, 51, 59);
+    color: rgb(0, 51, 59);
     border: 0.3rem solid rgb(0, 51, 59);
     background: linear-gradient(135deg, rgb(154, 205, 50) 50%, rgb(164, 215, 60) 93%,
-            rgb(174, 225, 70) 40%, rgba(0, 51, 59) 20%);
+            rgb(174, 225, 70) 40%, rgb(0, 51, 59) 20%);
 
     img {
         width: 15rem;
@@ -55,8 +55,8 @@
     transform: rotateY(180deg);
     color: rgb(154, 205, 50);
     border: 0.3rem solid rgb(154, 205, 50);
-    background: linear-gradient(135deg, rgba(20, 51, 59) 50%, rgba(30, 61, 69) 93%,
-            rgba(40, 71, 79) 40%, rgb(154, 205, 50) 20%);
+    background: linear-gradient(135deg, rgb(20, 51, 59) 50%, rgb(30, 61, 69) 93%,
+            rgb(40, 71, 79) 40%, rgb(154, 205, 50) 20%);
 
     img {
         width: 10rem;

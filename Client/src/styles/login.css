@@ -1,0 +1,123 @@
+/*Login styles*/
+
+.login {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+}
+
+.login.active {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.5s ease-in, visibility 0.5s ease-in;
+}
+
+.login-form {
+    width: 20rem;
+    height: 30rem;
+    flex-direction: column;
+    display: flex;
+    padding: 1rem 2rem 1rem;
+    border-radius: 1rem;
+    background-color: rgb(247, 253, 237);
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0.8);
+    transition: opacity 0.5s ease-out, visibility 0.5s ease-out, transform 0.5s ease-out;
+}
+
+.login-form.active {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1);
+    transition: opacity 0.5s ease-in, visibility 0.5s ease-in, transform 0.5s ease-in;
+}
+
+.login-close {
+    position: absolute;
+    height: 3rem;
+    width: 3rem;
+    margin-left: 20.5rem;
+    margin-top: -2.4rem;
+    border-radius: 5rem;
+    padding: 0.5rem 1rem 0.5rem;
+    font-weight: 600;
+    font-size: 1.2rem;
+}
+
+.login-close:hover {
+    border: 0.2rem solid rgb(0, 51, 59);
+    padding: 0.49rem 0.95rem 0.47rem;
+    border-radius: 3rem;
+    font-weight: 800;
+    font-size: 1.4rem;
+    margin-top: -2.4rem;
+    margin-left: 20.5rem;
+}
+
+.login-body {
+    margin-top: 3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    label {
+        margin-bottom: 1rem;
+    }
+
+    input {
+        margin-bottom: 1rem;
+        width: 10rem;
+        height: 2rem;
+        border-radius: 0.5rem;
+        border: 0.15rem solid rgb(0, 51, 59);
+        font-size: 1rem;
+        color: rgb(0, 51, 59);
+        transition: border-color 0.3s ease;
+    }
+
+    input:focus {
+        border: 0.15rem solid rgb(154, 205, 50);
+        outline: none;
+    }
+}
+
+.login-footer {
+    margin-top: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    .login-button {
+        margin-right: 1rem;
+        margin-left: 1rem;
+        margin-bottom: 1.2rem;
+        width: 10rem;
+    }
+
+    .login-button:hover {
+        border: 0.2rem solid rgb(0, 51, 59);
+        padding: 0.8rem 1.135rem 0.8rem;
+    }
+
+    .registration-button {
+        width: 10rem;
+    }
+
+    .registration-button:hover {
+        border: 0.2rem solid rgb(0, 51, 59);
+        padding: 0.9rem 1.135rem;
+        font-size: 1.25rem;
+    }
+}

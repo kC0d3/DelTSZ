@@ -1,11 +1,11 @@
-/*HomePage styles*/
+/*HomePage body styles*/
 
 .homepage-body {
     position: relative;
-    margin-top: -5vh;
+    margin-top: -3rem;
     z-index: 1;
-    background-color: #f7fded;
-    padding-bottom: 5vh;
+    background-color: rgb(247, 253, 237);
+    padding-bottom: 3rem;
 }
 
 .homepage-body-top {
@@ -17,13 +17,13 @@
     h1 {
         color: rgb(0, 51, 59);
         font-weight: 800;
-        font-size: 5vh;
+        font-size: 3rem;
     }
 
     h3 {
-        margin-top: 1.5vh;
-        margin-bottom: 1vh;
-        color: yellowgreen;
+        margin-top: 1rem;
+        margin-bottom: 0.8rem;
+        color: rgb(154, 205, 50);
     }
 }
 
@@ -31,27 +31,27 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 3vh;
+    margin-top: 2rem;
 }
 
 .counter-card {
-    width: 40vh;
+    width: 24rem;
 
     h1 {
         color: rgb(0, 51, 59);
-        font-size: 4vh;
+        font-size: 2.5rem;
         font-weight: 800;
-        margin-bottom: 0.5vh;
+        margin-bottom: 0.5rem;
     }
 
     h3 {
-        margin-top: 0.5vh;
-        color: yellowgreen;
+        margin-top: 0.5rem;
+        color: rgb(154, 205, 50);
         font-weight: 800;
     }
 
     p {
-        width: 20vh;
+        width: 15rem;
         color: rgb(70, 70, 70);
     }
 }
