@@ -1,0 +1,40 @@
+/*NavBar styles*/
+
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 60rem;
+    height: 6rem;
+    border-radius: 3rem;
+    background-color: rgba(46, 49, 45, 0.8);
+    padding-left: 0.5rem;
+    margin-top: 3rem;
+    z-index: 1;
+}
+
+.logo-link {
+    width: 6rem;
+    height: 6rem;
+}
+
+.navbar-logo {
+    width: 5rem;
+    height: auto;
+    margin-left: 2.5rem;
+    transition: all 0.3s ease;
+}
+
+.navbar-logo:hover {
+    width: 6rem;
+    height: auto;
+}
+
+.navbar-links {
+    display: flex;
+    justify-content: right;
+}
+
+.login-link {
+    margin-left: -1rem;
+}
