@@ -1,11 +1,11 @@
-@import "styles/components/header.css";
-@import "styles/components/navbar.css";
-@import "styles/components/slider.css";
-@import "styles/components/footer.css";
-@import "styles/components/productcard.css";
-@import "styles/pages/errorpage.css";
-@import "styles/pages/homepage.css";
-@import "styles/pages/ourproductspage.css";
+@import "styles/header.css";
+@import "styles/navbar.css";
+@import "styles/slider.css";
+@import "styles/footer.css";
+@import "styles/productcard.css";
+@import "styles/errorpagebody.css";
+@import "styles/homepagebody.css";
+@import "styles/ourproductsbody.css";
 
 /*Global styles*/
 
@@ -46,43 +46,52 @@ body {
 }
 
 a {
-  display: inline;
-  font-size: 2vh;
+  display: flex;
+  height: 2rem;
+  width: 8rem;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
   text-decoration: none;
-  color: #FAFAFA;
-  padding: 0vh 1vh;
+  color: rgb(250, 250, 250);
   cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 a:hover {
   font-weight: 800;
-  color: yellowgreen;
-  font-size: 2.2vh;
+  color: rgb(154, 205, 50);
+  font-size: 1.3rem;
 }
 
 h1 {
-  color: yellowgreen;
+  color: rgb(154, 205, 50);
+}
+
+p {
+  color: rgb(250, 250, 250);
 }
 
 button {
-  border-radius: 3vh;
-  border: 0.3vh solid transparent;
-  padding: 1.5vh 2.5vh;
-  font-size: 2vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 2rem;
+  border: 0.2rem solid transparent;
+  padding: 0.1rem 0.1rem 0.1rem;
+  font-size: 1.2rem;
   font-weight: 400;
   font-family: inherit;
-  color: #FAFAFA;
+  color: rgb(247, 253, 237);
   background-color: yellowgreen;
   cursor: pointer;
-  transition: border-color 0.25s;
-  margin-bottom: 0.5vh;
+  transition: all 0.3s ease;
+  height: 4rem;
+  width: 11rem;
 }
 
 button:hover {
-  border-color: #FAFAFA;
-  border: 0.4vh solid;
-  padding: 1.5vh 2.5vh;
-  font-size: 2.2vh;
+  border: 0.2rem solid rgb(247, 253, 237);
+  font-size: 1.3rem;
   font-weight: 600;
-  padding: 1.3vh 1.8vh;
 }
