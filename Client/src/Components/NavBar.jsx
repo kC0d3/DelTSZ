@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 
-export default function NavBar({ loggedUser, setLoggedUser }) {
+export default function NavBar({ loggedUser, setLoggedUser, setShowLogin }) {
 
     const handleLogout = async () => {
         try {
@@ -13,9 +13,13 @@ export default function NavBar({ loggedUser, setLoggedUser }) {
         }
     }
 
+    const handleShowLogin = () => {
+        setShowLogin(true);
+    }
+
     return (
         <div className='navbar'>
-            <Link to='/'><img className='navbar-logo' src='/deltsz.ico' alt='logo' /></Link>
+            <Link to='/' className='logo-link'><img className='navbar-logo' src='/deltsz.ico' alt='logo' /></Link>
             <div className='navbar-links'>
                 <Link className='about-us-link' to='/about-us'>About us</Link>
                 <Link className='our-products-link' to='/our-products'>Our Products</Link>
@@ -39,7 +43,7 @@ export default function NavBar({ loggedUser, setLoggedUser }) {
                         <Link to='/' onClick={handleLogout}>Logout</Link>
                     </>
                 ) : (
-                    <Link className='login-register-link' to='/login'>Login/Register</Link>
+                    <Link className='login-link' onClick={handleShowLogin}>Login</Link>
                 )}
             </div>
         </div>

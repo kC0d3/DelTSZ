@@ -3,10 +3,15 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import HomeBody from './Components/HomeBody';
 import ErrorBody from './Components/ErrorBody';
 import OurProductsBody from './Components/OurProductsBody';
+import Header from './Components/Header';
+import Footer from './Components/Footer';
+import Login from './Components/Login';
 
 export default function App() {
   const [loggedUser, setLoggedUser] = useState(undefined);
   const [productTypes, setProductTypes] = useState(undefined);
+  const [showLogin, setShowLogin] = useState(false);
+  const [showRegistration, setShowRegistration] = useState(false);
 
   const bgImagesAmount = 3;
   const slidesInterval = 6500;
@@ -102,11 +107,14 @@ export default function App() {
 
   return (
     <Router>
+      <Login {...{ setLoggedUser, showLogin, setShowLogin, setShowRegistration }} />
+      <Header {...{ loggedUser, setLoggedUser, showLogin, setShowLogin, slides, slidesInterval, bgImagesAmount }} />
       <Routes>
         <Route path='/' element={<HomeBody {...{ achievementCounters, achievementDuration, achievementStart }} />} />
         <Route path='*' element={<ErrorBody />} />
         <Route path='our-products' element={<OurProductsBody {...{ productTypes, productDescriptions }} />} />
       </Routes>
+      <Footer />
     </Router>
   );
 }
