@@ -7,11 +7,18 @@ export default function Login({ fetchUser, showLogin, setShowLogin, setShowRegis
     const handleOverlayClick = (e) => {
         if (e.target.classList.contains('login')) {
             setShowLogin(false);
+            setTimeout(() => {
+                setLogin({ email: '', password: '' });
+            }, 1000);
         }
     };
 
     const handleClose = () => {
         setShowLogin(false);
+        setTimeout(() => {
+            setLogin({ email: '', password: '' });
+        }, 1000);
+
     }
 
     const handleShowRegister = () => {
