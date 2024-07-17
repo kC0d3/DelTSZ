@@ -61,4 +61,51 @@ public class GlobalDataController : ControllerBase
             return BadRequest(new { message = "Something went wrong, please try again." });
         }
     }
+    
+    [HttpGet("achievements")]
+    public IActionResult AchievementsData()
+    {
+        try
+        {
+            return Ok(
+                new AchievementsData
+                {
+                    AchievementDuration = 2000,
+                    AchievementStart = 0,
+                    AchievementCounters =
+                    [
+                        new AchievementCounter
+                        {
+                            Amount = 500,
+                            Achievement = "Producer",
+                            Description = "We operate together with that much local producer."
+                        },
+                        new AchievementCounter
+                        {
+                            Amount = 53000,
+                            Achievement = "Tons",
+                            Description =
+                                "We can provide that much healthy vegetables and support your health every year."
+                        },
+                        new AchievementCounter
+                        {
+                            Amount = 150,
+                            Achievement = "Hectare greenhouse",
+                            Description = "Around that much area available for driven cultivation."
+                        },
+                        new AchievementCounter
+                        {
+                            Amount = 96,
+                            Achievement = "Biological plant protection",
+                            Description = "We say yes to sustainability and environmental consciousness."
+                        }
+                    ]
+                }
+            );
+        }
+        catch (Exception)
+        {
+            return BadRequest(new { message = "Something went wrong, please try again." });
+        }
+    }
 }
