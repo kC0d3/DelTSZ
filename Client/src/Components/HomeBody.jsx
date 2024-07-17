@@ -1,6 +1,6 @@
 import Counter from './Counter';
 
-export default function HomeBody({ achievementCounters, achievementDuration, achievementStart }) {
+export default function HomeBody({ achievementData }) {
     return (
         <div className='homepage-body'>
             <div className='homepage-body-top'>
@@ -8,9 +8,9 @@ export default function HomeBody({ achievementCounters, achievementDuration, ach
                 <h1>Which how much.</h1>
             </div>
             <div className='counter-body'>
-                {achievementCounters.map((counter, index) => (
+                {achievementData.achievementcounters.map((counter, index) => (
                     <div key={index} className='counter-card'>
-                        <Counter start={achievementStart} end={counter.amount} duration={achievementDuration} />
+                        <Counter start={achievementData.achievementstart} end={counter.amount} duration={achievementData.achievementduration} />
                         <h3>{counter.achievement}</h3>
                         <p>{counter.description}</p>
                     </div>
