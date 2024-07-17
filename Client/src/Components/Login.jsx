@@ -39,51 +39,55 @@ export default function Login({ fetchUser, showLogin, setShowLogin, setShowRegis
             });
 
             const loginData = await loginRes.json();
+            notifyAndActByResponse(loginRes, loginData);
 
-            if (loginRes.ok) {
-                setShowLogin(false);
-                fetchUser();
-                setTimeout(() => {
-                    setLogin({ email: '', password: '' });
-                }, 1000);
-
-                toast.success(loginData.message, {
-                    position: "top-right",
-                    autoClose: 3000,
-                    hideProgressBar: true,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "colored",
-                });
-            }
-            else if (loginRes.status === 401) {
-                toast.warn(loginData.message, {
-                    position: "top-right",
-                    autoClose: 4000,
-                    hideProgressBar: true,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "colored",
-                });
-            }
-            else {
-                toast.error(loginData.message, {
-                    position: "top-right",
-                    autoClose: 3000,
-                    hideProgressBar: true,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "colored",
-                });
-            }
         } catch (error) {
             console.log(error);
+        }
+    }
+
+    const notifyAndActByResponse = (loginRes, loginData) => {
+        if (loginRes.ok) {
+            setShowLogin(false);
+            fetchUser();
+            setTimeout(() => {
+                setLogin({ email: '', password: '' });
+            }, 1000);
+
+            toast.success(loginData.message, {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+            });
+        }
+        else if (loginRes.status === 401) {
+            toast.warn(loginData.message, {
+                position: "top-right",
+                autoClose: 4000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+            });
+        }
+        else {
+            toast.error(loginData.message, {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+            });
         }
     }
 
