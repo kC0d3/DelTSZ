@@ -41,7 +41,35 @@
     transition: opacity 0.5s ease-in, visibility 0.5s ease-in, transform 0.5s ease-in;
 }
 
-.registration-close {
+.registration-button,
+.registration-cancel-button,
+.registration-close-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 2rem;
+    border: 0.2rem solid transparent;
+    padding: 0.1rem 0.1rem 0.1rem;
+    font-size: 1.2rem;
+    font-weight: 400;
+    font-family: inherit;
+    color: rgb(247, 253, 237);
+    background-color: yellowgreen;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    height: 4rem;
+    width: 11rem;
+}
+
+.registration-button:hover,
+.registration-cancel-button:hover,
+.registration-close-button:hover {
+    border: 0.2rem solid rgb(247, 253, 237);
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.registration-close-button {
     position: absolute;
     height: 3rem;
     width: 3rem;
@@ -53,7 +81,7 @@
     font-size: 1.2rem;
 }
 
-.registration-close:hover {
+.registration-close-button:hover {
     border: 0.2rem solid rgb(0, 51, 59);
     padding: 0.5rem 1rem 0.5rem;
     border-radius: 3rem;
@@ -134,4 +162,12 @@
         border: 0.2rem solid rgb(0, 51, 59);
         padding: 0.9rem 1.135rem;
     }
+}
+
+.warning-message {
+    margin-bottom: 1rem;
+}
+
+.warning-messages .warning-message:last-child {
+    margin-bottom: 0rem;
 }

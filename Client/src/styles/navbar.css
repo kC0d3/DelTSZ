@@ -33,8 +33,37 @@
 .navbar-links {
     display: flex;
     justify-content: right;
+    padding-right: 2rem;
 }
 
-.login-link {
-    margin-left: -1rem;
+.about-us-link {
+    width: 6rem;
+}
+
+.our-products-link {
+    width: 8rem;
+}
+
+.provide-ingredient-link {
+    width: 12rem;
+}
+
+.order-products-link {
+    width: 9rem;
+}
+
+.create-product-link {
+    width: 9rem;
+}
+
+.login-link{
+    width: 4rem;
+}
+
+.logout-link{
+    width: 5rem;
+}
+
+.profile-link{
+    width: 4rem;
 }
