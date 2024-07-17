@@ -90,6 +90,7 @@ export default function App() {
 
   useEffect(() => {
     fetchProductTypes();
+    fetchUser();
   }, []);
 
   const fetchProductTypes = async () => {
@@ -102,6 +103,17 @@ export default function App() {
 
       const combinedData = [...prodData, ...ingData];
       setProductTypes(combinedData);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const fetchUser = async () => {
+    try {
+      const userRes = await fetch('/api/users');
+      const userData = await userRes.json();
+
+      setLoggedUser(userData);
     } catch (error) {
       console.log(error);
     }
