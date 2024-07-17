@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { toast } from 'react-toastify';
 
 export default function Registration({ showRegistration, setShowRegistration, setShowLogin }) {
     const [registration, setRegistration] = useState({
@@ -18,23 +19,70 @@ export default function Registration({ showRegistration, setShowRegistration, se
     const handleOverlayClick = (e) => {
         if (e.target.classList.contains('registration')) {
             setShowRegistration(false);
-            setUserLogin(false);
+            toast.dismiss();
+            setTimeout(() => {
+                setRegistration({
+                    email: '',
+                    username: '',
+                    companyname: '',
+                    address: {
+                        zipcode: '',
+                        city: '',
+                        street: '',
+                        housenumber: ''
+                    },
+                    password: '',
+                    confirmpassword: ''
+                });
+            }, 1000);
         }
     };
 
     const handleClose = () => {
         setShowRegistration(false);
+        toast.dismiss();
+        setTimeout(() => {
+            setRegistration({
+                email: '',
+                username: '',
+                companyname: '',
+                address: {
+                    zipcode: '',
+                    city: '',
+                    street: '',
+                    housenumber: ''
+                },
+                password: '',
+                confirmpassword: ''
+            });
+        }, 1000);
     }
 
     const handleCancel = () => {
         setShowRegistration(false);
         setShowLogin(true);
+        toast.dismiss();
+        setTimeout(() => {
+            setRegistration({
+                email: '',
+                username: '',
+                companyname: '',
+                address: {
+                    zipcode: '',
+                    city: '',
+                    street: '',
+                    housenumber: ''
+                },
+                password: '',
+                confirmpassword: ''
+            });
+        }, 1000);
     }
 
     return showRegistration ?
         (<div className='registration active' onClick={handleOverlayClick}>
             <div className={'registration-form active'}>
-                <button className='registration-close' onClick={handleClose}>&times;</button>
+                <button className='registration-close-button' onClick={handleClose}>&times;</button>
                 <div className='registration-header'>
                     <h1>Registration</h1>
                 </div>
@@ -60,7 +108,7 @@ export default function Registration({ showRegistration, setShowRegistration, se
                     </div>
                 </div>
                 <div className='registration-footer'>
-                    <button className='registration-button'>Registration</button>
+                    <button className='registration-button' onClick={handleRegistration}>Registration</button>
                     <button className='registration-cancel-button' onClick={handleCancel}>Cancel</button>
                 </div>
             </div>
@@ -68,7 +116,7 @@ export default function Registration({ showRegistration, setShowRegistration, se
         :
         (<div className='registration' onClick={handleOverlayClick}>
             <div className={'registration-form'}>
-                <button className='registration-close' onClick={handleClose}>x</button>
+                <button className='registration-close-button' onClick={handleClose}>x</button>
                 <div className='registration-header'>
                     <h1>Registration</h1>
                 </div>
@@ -94,7 +142,7 @@ export default function Registration({ showRegistration, setShowRegistration, se
                     </div>
                 </div>
                 <div className='registration-footer'>
-                    <button className='registration-button'>Registration</button>
+                    <button className='registration-button' onClick={handleRegistration}>Registration</button>
                     <button className='registration-cancel-button' onClick={handleCancel}>Cancel</button>
                 </div>
             </div>
