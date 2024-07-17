@@ -61,7 +61,7 @@ public class GlobalDataController : ControllerBase
             return BadRequest(new { message = "Something went wrong, please try again." });
         }
     }
-    
+
     [HttpGet("achievements")]
     public IActionResult AchievementsData()
     {
@@ -100,6 +100,128 @@ public class GlobalDataController : ControllerBase
                             Description = "We say yes to sustainability and environmental consciousness."
                         }
                     ]
+                }
+            );
+        }
+        catch (Exception)
+        {
+            return BadRequest(new { message = "Something went wrong, please try again." });
+        }
+    }
+
+    [HttpGet("product-descriptions")]
+    public IActionResult ProductDescriptionsData()
+    {
+        try
+        {
+            return Ok(
+                new Dictionary<string, Dictionary<string, string>>
+                {
+                    {
+                        "Paprika400G", new Dictionary<string, string>
+                        {
+                            { "name", "Paprika 400g" },
+                            { "description", "Best for sandwiches, ratatouille and raw consume." }
+                        }
+                    },
+                    {
+                        "Tomato200G", new Dictionary<string, string>
+                        {
+                            { "name", "Tomato 200g" },
+                            { "description", "Best for sandwiches, ratatouille and raw consume." }
+                        }
+                    },
+                    {
+                        "Tomato500G", new Dictionary<string, string>
+                        {
+                            { "name", "Tomato 500g" },
+                            { "description", "Best for sandwiches, ratatouille and raw consume." }
+                        }
+                    },
+                    {
+                        "RatatouilleMix500G", new Dictionary<string, string>
+                        {
+                            { "name", "Ratatouille mix 500g" },
+                            { "description", "Best for ratatouille bases." }
+                        }
+                    },
+                    {
+                        "SoupMix750G", new Dictionary<string, string>
+                        {
+                            { "name", "Soup mix 750g" },
+                            { "description", "Best for chicken soup bases." }
+                        }
+                    },
+                    {
+                        "Carrot", new Dictionary<string, string>
+                        {
+                            { "name", "Carrot" },
+                            { "description", "Best for Wild sauce and soups." }
+                        }
+                    },
+                    {
+                        "Celery", new Dictionary<string, string>
+                        {
+                            { "name", "Celery" },
+                            { "description", "Best for celery bisque and soups." }
+                        }
+                    },
+                    {
+                        "Cucumber", new Dictionary<string, string>
+                        {
+                            { "name", "Cucumber" },
+                            { "description", "Best for sandwiches and refreshing drinks." }
+                        }
+                    },
+                    {
+                        "Mushroom", new Dictionary<string, string>
+                        {
+                            { "name", "Mushroom" },
+                            { "description", "Best for stew and bisque." }
+                        }
+                    },
+                    {
+                        "Onion", new Dictionary<string, string>
+                        {
+                            { "name", "Onion" },
+                            { "description", "Most of the stews bases and extra seasoning." }
+                        }
+                    },
+                    {
+                        "ParsleyRoot", new Dictionary<string, string>
+                        {
+                            { "name", "Parsley root" },
+                            { "description", "Best for chicken soups bases." }
+                        }
+                    },
+                    {
+                        "Paprika", new Dictionary<string, string>
+                        {
+                            { "name", "Paprika" },
+                            { "description", "Best for sandwiches, ratatouille and raw consume." }
+                        }
+                    },
+                    {
+                        "Potato", new Dictionary<string, string>
+                        {
+                            { "name", "Potato" },
+                            { "description", "Best for fried and mashed potato." }
+                        }
+                    },
+                    {
+                        "Radish", new Dictionary<string, string>
+                        {
+                            { "name", "Radish" },
+                            { "description", "Best for sandwiches and raw consume." }
+                        }
+                    },
+                    {
+                        "Tomato", new Dictionary<string, string>
+                        {
+                            { "name", "Tomato" },
+                            { "description", "Best for sandwiches, ratatouille and raw consume." }
+                        }
+                    }
                 }
             );
         }
