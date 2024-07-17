@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
 import HomeBody from './Components/HomeBody';
 import ErrorBody from './Components/ErrorBody';
 import OurProductsBody from './Components/OurProductsBody';
@@ -15,7 +16,7 @@ export default function App() {
   const [showRegistration, setShowRegistration] = useState(false);
 
   const bgImagesAmount = 3;
-  const slidesInterval = 6500;
+  const slidesInterval = 7500;
   const slides = [{
     img: '/images/backgrounds/bg1.jpg',
     bubble: {
@@ -89,6 +90,7 @@ export default function App() {
 
   useEffect(() => {
     fetchProductTypes();
+    fetchUser();
   }, []);
 
   const fetchProductTypes = async () => {
@@ -102,13 +104,25 @@ export default function App() {
       const combinedData = [...prodData, ...ingData];
       setProductTypes(combinedData);
     } catch (error) {
-      console.log("Error fetching data:", error);
+      console.log(error);
+    }
+  }
+
+  const fetchUser = async () => {
+    try {
+      const userRes = await fetch('/api/users');
+      const userData = await userRes.json();
+
+      setLoggedUser(userData);
+    } catch (error) {
+      console.log(error);
     }
   }
 
   return (
     <Router>
-      <Login {...{ setLoggedUser, showLogin, setShowLogin, setShowRegistration }} />
+      <ToastContainer />
+      <Login {...{ fetchUser, showLogin, setShowLogin, setShowRegistration }} />
       <Registration {...{ showRegistration, setShowRegistration, setShowLogin }} />
       <Header {...{ loggedUser, setLoggedUser, showLogin, setShowLogin, slides, slidesInterval, bgImagesAmount }} />
       <Routes>

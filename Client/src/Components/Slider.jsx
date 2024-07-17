@@ -36,7 +36,7 @@ export default function Slider({ slides, slidesInterval }) {
                             <p>{slide.bubble.p1}</p>
                             <p>{slide.bubble.p2}</p>
                             <Link to='/our-products'>
-                                <button>{slide.bubble.button}</button>
+                                <button className='our-products-button'>{slide.bubble.button}</button>
                             </Link>
                         </div>
                     </div>

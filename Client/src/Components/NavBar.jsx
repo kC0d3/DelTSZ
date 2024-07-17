@@ -1,13 +1,28 @@
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 export default function NavBar({ loggedUser, setLoggedUser, setShowLogin }) {
 
     const handleLogout = async () => {
         try {
-            await fetch('/api/auth/logout', {
+            const logoutRes = await fetch('/api/auth/logout', {
                 method: 'GET'
             });
-            setLoggedUser(undefined);
+            const logoutData = await logoutRes.json();
+
+            if (logoutRes.ok) {
+                setLoggedUser(undefined);
+                toast.info(logoutData.message, {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored",
+                });
+            }
         } catch (error) {
             console.log(error);
         }
@@ -27,20 +42,19 @@ export default function NavBar({ loggedUser, setLoggedUser, setShowLogin }) {
                     <>
                         {loggedUser.role === 'Owner' ? (
                             <>
-                                <Link to='/products/create'>Create product</Link>
+                                <Link className='create-product-link' to='/products/create'>Create product</Link>
                             </>
                         ) : loggedUser.role === 'Producer' ? (
                             <>
-                                <Link to='/ingredients/create'>Provide ingredients</Link>
-                                <Link to='/profile'>Profile</Link>
+                                <Link className='provide-ingredient-link' to='/ingredients/create'>Provide ingredients</Link>
                             </>
                         ) : (
                             <>
-                                <Link to='/products'>Order Products</Link>
+                                <Link className='order-products-link' to='/products'>Order Products</Link>
                             </>
                         )}
-                        <Link to='/profile'>Profile</Link>
-                        <Link to='/' onClick={handleLogout}>Logout</Link>
+                        <Link className='profile-link' to='/profile'>{loggedUser.username}</Link>
+                        <Link className='logout-link' to='/' onClick={handleLogout}>Logout</Link>
                     </>
                 ) : (
                     <Link className='login-link' onClick={handleShowLogin}>Login</Link>
