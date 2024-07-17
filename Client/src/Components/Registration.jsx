@@ -79,6 +79,124 @@ export default function Registration({ showRegistration, setShowRegistration, se
         }, 1000);
     }
 
+    const handleRegistration = async () => {
+        try {
+
+            const regRes = await fetch('/api/auth/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: registration.email,
+                    username: registration.username,
+                    companyname: registration.companyname,
+                    address: {
+                        zipcode: registration.address.zipcode,
+                        city: registration.address.city,
+                        street: registration.address.street,
+                        housenumber: registration.address.housenumber
+                    },
+                    password: registration.password,
+                    confirmpassword: registration.confirmpassword
+                })
+            });
+
+            const regData = await regRes.json();
+            notifyAndActByResponse(regRes, regData);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
+    const notifyAndActByResponse = (regRes, regData) => {
+        if (regRes.ok) {
+            setShowRegistration(false);
+            setTimeout(() => {
+                setRegistration({
+                    email: '',
+                    username: '',
+                    companyname: '',
+                    address: {
+                        zipcode: '',
+                        city: '',
+                        street: '',
+                        housenumber: ''
+                    },
+                    password: '',
+                    confirmpassword: ''
+                });
+            }, 1000);
+
+            toast.dismiss();
+            setTimeout(() => {
+                toast.success(regData.message, {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored",
+                });
+            }, 600);
+        }
+        else if (regRes.status === 409) {
+            toast.dismiss();
+            setTimeout(() => {
+                toast.warn(
+                    <div className='warning-messages'>
+                        {regData.errors.map((error, index) => (
+                            <div className='warning-message' key={index}>{error.description}</div>
+                        ))}
+                    </div>, {
+                    position: "top-right",
+                    autoClose: false,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored",
+                });
+            }, 600);
+        }
+        else if (regRes.status === 400 && regData.errors) {
+            toast.dismiss();
+            setTimeout(() => {
+                toast.warn(
+                    regData.errors.ConfirmPassword[0], {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored",
+                });
+            }, 600);
+        }
+        else {
+            toast.dismiss();
+            setTimeout(() => {
+                toast.error(
+                    regData.message, {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored",
+                });
+            }, 600);
+        }
+    }
+
     return showRegistration ?
         (<div className='registration active' onClick={handleOverlayClick}>
             <div className={'registration-form active'}>
