@@ -16,7 +16,8 @@ export default function Registration({ showRegistration, setShowRegistration, se
         confirmpassword: ''
     });
 
-    const handleOverlayClick = (e) => {
+    const handleOverlayClick = e => {
+        e.preventDefault();
         if (e.target.classList.contains('registration')) {
             setShowRegistration(false);
             toast.dismiss();
@@ -38,7 +39,8 @@ export default function Registration({ showRegistration, setShowRegistration, se
         }
     };
 
-    const handleClose = () => {
+    const handleClose = e => {
+        e.preventDefault();
         setShowRegistration(false);
         toast.dismiss();
         setTimeout(() => {
@@ -58,7 +60,8 @@ export default function Registration({ showRegistration, setShowRegistration, se
         }, 1000);
     }
 
-    const handleCancel = () => {
+    const handleCancel = e => {
+        e.preventDefault();
         setShowRegistration(false);
         setShowLogin(true);
         toast.dismiss();
@@ -79,9 +82,10 @@ export default function Registration({ showRegistration, setShowRegistration, se
         }, 1000);
     }
 
-    const handleRegistration = async () => {
-        try {
+    const handleRegistration = async e => {
+        e.preventDefault();
 
+        try {
             const regRes = await fetch('/api/auth/register', {
                 method: 'POST',
                 headers: {
@@ -198,9 +202,9 @@ export default function Registration({ showRegistration, setShowRegistration, se
     }
 
     return showRegistration ?
-        (<div className='registration active' onClick={handleOverlayClick}>
+        (<form className='registration active' onClick={handleOverlayClick} onSubmit={handleRegistration}>
             <div className={'registration-form active'}>
-                <button className='registration-close-button' onClick={handleClose}>&times;</button>
+                <button type='button' className='registration-close-button' onClick={handleClose}>&times;</button>
                 <div className='registration-header'>
                     <h1>Registration</h1>
                 </div>
@@ -226,15 +230,15 @@ export default function Registration({ showRegistration, setShowRegistration, se
                     </div>
                 </div>
                 <div className='registration-footer'>
-                    <button className='registration-button' onClick={handleRegistration}>Registration</button>
-                    <button className='registration-cancel-button' onClick={handleCancel}>Cancel</button>
+                    <button type='submit' className='registration-button'>Registration</button>
+                    <button type='button' className='registration-cancel-button' onClick={handleCancel}>Cancel</button>
                 </div>
             </div>
-        </div>)
+        </form >)
         :
-        (<div className='registration' onClick={handleOverlayClick}>
+        (<form className='registration' onClick={handleOverlayClick} onSubmit={handleRegistration} >
             <div className={'registration-form'}>
-                <button className='registration-close-button' onClick={handleClose}>x</button>
+                <button type='button' className='registration-close-button' onClick={handleClose}>x</button>
                 <div className='registration-header'>
                     <h1>Registration</h1>
                 </div>
@@ -260,9 +264,9 @@ export default function Registration({ showRegistration, setShowRegistration, se
                     </div>
                 </div>
                 <div className='registration-footer'>
-                    <button className='registration-button' onClick={handleRegistration}>Registration</button>
-                    <button className='registration-cancel-button' onClick={handleCancel}>Cancel</button>
+                    <button type='submit' className='registration-button'>Registration</button>
+                    <button type='button' className='registration-cancel-button' onClick={handleCancel}>Cancel</button>
                 </div>
             </div>
-        </div>);
+        </form >);
 }
