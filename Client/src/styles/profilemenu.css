@@ -1,0 +1,30 @@
+/*ProfileMenu styles*/
+
+.profile-menu {
+    position: absolute;
+    margin-top: 8vh;
+    margin-left: -15vh;
+    background-color: rgba(46, 49, 45, 0.8);
+    border-radius: 3vh;
+    padding: 1.5vh 1.5vh 1.5vh;
+}
+
+.logout-link {
+    width: 5.5rem;
+}
+
+.profile-link {
+    width: 5rem;
+}
+
+.provide-ingredient-link {
+    width: 12rem;
+}
+
+.order-products-link {
+    width: 9rem;
+}
+
+.create-product-link {
+    width: 9rem;
+}

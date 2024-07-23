@@ -1,26 +1,20 @@
-/*ErrorPage body styles*/
+/*LoginError styles*/
 
-.errorpage-body {
-    background-color: rgb(247, 253, 237);
+.login-error {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     height: 31vh;
-    padding: 3vh 0vh 3vh;
+    padding: 3vh 1vh 3vh;
+    background-color: rgb(247, 253, 237);
 
     h1 {
-        font-size: 5rem;
-        margin: 0;
-    }
-
-    h2 {
-        margin: 1vh;
+        margin: 8vh 0 5vh;
     }
 }
 
-.errorpage-homebutton {
-    margin-top: 2vh;
+.login-button {
+    margin-top: 0.6vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -38,7 +32,7 @@
     width: 14vh;
 }
 
-.errorpage-homebutton:hover {
+.login-button:hover {
     border-color: rgb(0, 51, 59);
     font-size: 2.2vh;
     font-weight: 600;

@@ -35,7 +35,7 @@ public class UserController(IUserRepository userRepository) : ControllerBase
     {
         try
         {
-            return Ok(await userRepository.GetProducers());
+            return Ok(await userRepository.GetProducerUserResponses());
         }
         catch (Exception)
         {
@@ -48,7 +48,7 @@ public class UserController(IUserRepository userRepository) : ControllerBase
     {
         try
         {
-            return Ok(await userRepository.GetCustomers());
+            return Ok(await userRepository.GetCustomerUserResponses());
         }
         catch (Exception)
         {

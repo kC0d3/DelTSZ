@@ -44,26 +44,6 @@
     width: 8rem;
 }
 
-.provide-ingredient-link {
-    width: 12rem;
-}
-
-.order-products-link {
-    width: 9rem;
-}
-
-.create-product-link {
-    width: 9rem;
-}
-
-.login-link{
-    width: 4rem;
-}
-
-.logout-link{
-    width: 5rem;
-}
-
-.profile-link{
+.login-link {
     width: 4rem;
 }

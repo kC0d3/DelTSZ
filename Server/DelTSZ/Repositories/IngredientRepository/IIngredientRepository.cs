@@ -7,6 +7,7 @@ public interface IIngredientRepository
 {
     Task<IEnumerable<IngredientSumResponse>> GetAllOwnerIngredientsSumByType();
     Task<decimal> GetAllOwnerIngredientAmountsByType(IngredientType type);
+    Task<IEnumerable<IngredientResponse>> GetAllProducerIngredientAmountsByType();
     Task<Ingredient?> GetOwnerOldestIngredientByType(IngredientType type);
     Task<Ingredient?> GetIngredientById(int id);
     Task IngredientUpdateByRequestAmount(IngredientType type, string id, decimal amount);
