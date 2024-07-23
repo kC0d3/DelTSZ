@@ -6,7 +6,7 @@ export default function Footer() {
     return (
         <div className='footer'>
             <div className='footer-top'>
-                <Link to='/'><img className='footer-logo' src='/deltsz.ico' alt='logo' /></Link>
+                <Link to='/' reloadDocument={true}><img className='footer-logo' src='/deltsz.ico' alt='logo' /></Link>
                 <Contacts />
             </div>
             <Signature />
