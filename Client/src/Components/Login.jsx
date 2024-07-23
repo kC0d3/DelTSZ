@@ -4,16 +4,14 @@ import { toast } from 'react-toastify';
 export default function Login({ fetchUser, showLogin, setShowLogin, setShowRegistration }) {
     const [login, setLogin] = useState({ email: '', password: '' });
 
-    const handleOverlayClick = (e) => {
+    const handleOverlayClick = e => {
         if (e.target.classList.contains('login')) {
-            setShowLogin(false);
-            setTimeout(() => {
-                setLogin({ email: '', password: '' });
-            }, 1000);
+            handleClose(e);
         }
     };
 
-    const handleClose = () => {
+    const handleClose = e => {
+        e.preventDefault();
         setShowLogin(false);
         setTimeout(() => {
             setLogin({ email: '', password: '' });
@@ -21,7 +19,8 @@ export default function Login({ fetchUser, showLogin, setShowLogin, setShowRegis
 
     }
 
-    const handleShowRegister = () => {
+    const handleShowRegister = e => {
+        e.preventDefault();
         setShowRegistration(true);
         setShowLogin(false);
     }
@@ -92,26 +91,28 @@ export default function Login({ fetchUser, showLogin, setShowLogin, setShowRegis
     }
 
     return showLogin ?
-        (<div className={'login active'} onClick={handleOverlayClick}>
+        (<form className={'login active'} onClick={handleOverlayClick} onSubmit={handleLogin}>
             <div className={'login-form active'}>
-                <button className='login-close-button' onClick={handleClose}>&times;</button>
+                <button type='button' className='login-close-button' onClick={handleClose}>&times;</button>
                 <div className='login-header'>
                     <h1>Login</h1>
                 </div>
+
                 <div className='login-body'>
                     <input type="text" placeholder="Email" value={login.email} onChange={e => setLogin({ ...login, email: e.target.value })} />
                     <input type="password" placeholder="Password" value={login.password} onChange={(e) => setLogin({ ...login, password: e.target.value })} />
                 </div>
                 <div className='login-footer'>
-                    <button className='login-button' onClick={handleLogin}>Login</button>
-                    <button className='registration-button' onClick={handleShowRegister}>Registration</button>
+                    <button type='submit' className='login-button'>Login</button>
+                    <button type='button' className='registration-button' onClick={handleShowRegister}>Registration</button>
                 </div>
+
             </div>
-        </div>)
+        </form>)
         :
-        (<div className={'login'} onClick={handleOverlayClick}>
+        (<form className={'login'} onClick={handleOverlayClick} onSubmit={handleLogin}>
             <div className={'login-form'}>
-                <button className='login-close-button' onClick={handleClose}>x</button>
+                <button type='button' className='login-close-button' onClick={handleClose}>x</button>
                 <div className='login-header'>
                     <h1>Login</h1>
                 </div>
@@ -120,9 +121,9 @@ export default function Login({ fetchUser, showLogin, setShowLogin, setShowRegis
                     <input type="password" placeholder="Password" value={login.password} onChange={(e) => setLogin({ ...login, password: e.target.value })} />
                 </div>
                 <div className='login-footer'>
-                    <button className='login-button' onClick={handleLogin}>Login</button>
-                    <button className='registration-button' onClick={handleShowRegister}>Registration</button>
+                    <button type='submit' className='login-button'>Login</button>
+                    <button type='button' className='registration-button' onClick={handleShowRegister}>Registration</button>
                 </div>
             </div>
-        </div>);
+        </form>);
 }
