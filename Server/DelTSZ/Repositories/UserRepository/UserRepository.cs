@@ -15,6 +15,12 @@ public class UserRepository(DataContext dataContext) : IUserRepository
         return await dataContext.Users.FirstOrDefaultAsync(u => u.Role == Roles.Owner.ToString());
     }
 
+    public async Task<IEnumerable<User?>> GetProducers()
+    {
+        return await dataContext.Users
+            .Where(u => u.Role == Roles.Producer.ToString()).ToListAsync();
+    }
+
     public async Task<UserResponse?> GetUserAllDataById(string id)
     {
         return await dataContext.Users
@@ -51,15 +57,15 @@ public class UserRepository(DataContext dataContext) : IUserRepository
                 }).ToList()
             }).FirstOrDefaultAsync();
     }
-    
+
     public async Task<User?> GetUserWithAddressById(string id)
     {
         return await dataContext.Users
             .Include(u => u.Address)
             .FirstOrDefaultAsync(u => u.Id == id);
     }
-    
-    public async Task<IEnumerable<UserResponse>> GetProducers()
+
+    public async Task<IEnumerable<UserResponse>> GetProducerUserResponses()
     {
         return await dataContext.Users
             .Include(u => u.Ingredients)
@@ -88,7 +94,7 @@ public class UserRepository(DataContext dataContext) : IUserRepository
             }).ToListAsync();
     }
 
-    public async Task<IEnumerable<UserResponse>> GetCustomers()
+    public async Task<IEnumerable<UserResponse>> GetCustomerUserResponses()
     {
         return await dataContext.Users
             .Include(u => u.Ingredients)

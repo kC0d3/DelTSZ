@@ -24,7 +24,7 @@ public class IngredientController(IIngredientRepository ingredientRepository) : 
         }
     }
 
-    [HttpGet("sum"), Authorize(Roles = "Customer")]
+    [HttpGet("owner"), Authorize(Roles = "Customer")]
     public async Task<ActionResult<IEnumerable<IngredientSumResponse>>> GetAllOwnerIngredients()
     {
         try
@@ -37,8 +37,21 @@ public class IngredientController(IIngredientRepository ingredientRepository) : 
         }
     }
 
+    [HttpGet("producers"), Authorize(Roles = "Owner")]
+    public async Task<ActionResult<Dictionary<IngredientType, decimal>>> GetAllProducerIngredients()
+    {
+        try
+        {
+            return Ok(await ingredientRepository.GetAllProducerIngredientAmountsByType());
+        }
+        catch (Exception)
+        {
+            return BadRequest(new { message = "Error getting ingredients." });
+        }
+    }
+
     [HttpPost, Authorize(Roles = "Producer")]
-    public async Task<IActionResult> CreateIngredient([Required] IngredientRequest ingredientRequest,
+    public async Task<IActionResult> ProvideIngredient([Required] IngredientRequest ingredientRequest,
         int days)
     {
         try
@@ -52,7 +65,7 @@ public class IngredientController(IIngredientRepository ingredientRepository) : 
 
             await ingredientRepository.CreateOrUpdateIngredient(ingredientRequest, id, days);
 
-            return Ok(new { message = "Ingredient create successful." });
+            return Ok(new { message = "Ingredient provide successful." });
         }
         catch (Exception)
         {

@@ -30,6 +30,23 @@ public class IngredientRepository(DataContext dataContext, IUserRepository userR
             .SumAsync(i => i.Amount);
     }
 
+    public async Task<IEnumerable<IngredientResponse>> GetAllProducerIngredientAmountsByType()
+    {
+        var producers = await userRepository.GetProducers();
+        var producerIds = producers.Select(u => u!.Id).ToList();
+
+        return await dataContext.Ingredients
+            .Where(i => producerIds.Contains(i.UserId!))
+            .Select(i => new IngredientResponse
+            {
+                Id = i.Id,
+                Amount = i.Amount,
+                Received = i.Received,
+                Type = i.Type
+            })
+            .ToListAsync();
+    }
+
     public async Task<Ingredient?> GetOwnerOldestIngredientByType(IngredientType type)
     {
         var owner = await userRepository.GetOwner();
@@ -67,7 +84,7 @@ public class IngredientRepository(DataContext dataContext, IUserRepository userR
             }
         }
     }
-    
+
     public async Task CreateOrUpdateIngredient(IngredientRequest ingredientRequest, string id, int days)
     {
         var ingredient =
@@ -139,7 +156,7 @@ public class IngredientRepository(DataContext dataContext, IUserRepository userR
 
         ownerIngredient.Amount -= amount;
     }
-    
+
     private async Task<Ingredient?> GetIngredientByUserId_Type_ReceivedDate(IngredientType type, string id,
         DateTime received)
     {
