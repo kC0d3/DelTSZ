@@ -7,24 +7,36 @@
     background-color: rgba(46, 49, 45, 0.8);
     border-radius: 3vh;
     padding: 1.5vh 1.5vh 1.5vh;
+    opacity: 0;
+    transform: translateY(-4vh);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.profile-menu.open {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .logout-link {
-    width: 5.5rem;
+    width: 9vh;
 }
 
 .profile-link {
-    width: 5rem;
+    width: 8.5vh;
 }
 
 .provide-ingredient-link {
-    width: 12rem;
+    width: 20vh;
 }
 
 .order-products-link {
-    width: 9rem;
+    width: 16vh;
+}
+
+.receive-ingredient-link {
+    width: 19vh;
 }
 
 .create-product-link {
-    width: 9rem;
+    width: 16vh;
 }
