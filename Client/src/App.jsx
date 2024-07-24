@@ -9,6 +9,7 @@ import Footer from './Components/Footer';
 import Login from './Components/Login';
 import Registration from './Components/Registration';
 import ProvideIngredient from './Components/ProvideIngredient';
+import ReceiveIngredient from './Components/ReceiveIngredient';
 
 export default function App() {
   const [loggedUser, setLoggedUser] = useState(undefined);
@@ -130,6 +131,7 @@ export default function App() {
         <Route path='*' element={<ErrorBody />} />
         <Route path='our-products' element={<OurProducts {...{ productAndIngredientTypes, productDescriptions }} />} />
         <Route path='/ingredients/provide' element={<ProvideIngredient {...{ ingredientTypes, loggedUser, setShowLogin }} />} />
+        <Route path='/ingredients/receive' element={<ReceiveIngredient {...{ ingredientTypes, loggedUser, setShowLogin }} />} />
       </Routes>
       <Footer />
     </Router>
