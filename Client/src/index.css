@@ -13,6 +13,7 @@
 @import "styles/profilemenu.css";
 @import "styles/receiveingredient.css";
 @import "styles/ingredientcard.css";
+@import "styles/createproduct.css";
 @import "react-toastify/dist/ReactToastify.css";
 
 /*Global styles*/
