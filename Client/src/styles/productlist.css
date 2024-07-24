@@ -1,0 +1,16 @@
+/*ProductList styles*/
+
+.product-list {
+    padding: 8vh 0vh 8vh;
+    background-color: rgb(247, 253, 237);
+    display: grid;
+    gap: 8vh;
+    grid-template-columns: repeat(auto-fit, minmax(30vh, 40vh));
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.product-list-none {
+    height: 21vh;
+}
