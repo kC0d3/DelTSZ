@@ -1,0 +1,65 @@
+/*OurProductCard styles*/
+
+.our-product-card {
+    display: inline-block;
+    width: 20rem;
+    height: 20rem;
+    padding: 0.3rem 0.3rem 0.3rem;
+    margin: 2rem 1rem 3rem;
+    text-align: center;
+    cursor: pointer;
+    transition: ease-in-out 0.3s;
+    perspective: 100rem;
+}
+
+.our-product-card-details {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+}
+
+.our-product-card:hover .our-product-card-details {
+    transform: rotateY(180deg);
+}
+
+.our-product-card-front,
+.our-product-card-back {
+    display: block;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: 4rem;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    border-radius: 1rem;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    box-shadow: 0 8px 14px 0 rgba(0, 0, 0, 0.2);
+}
+
+.our-product-card-front {
+    color: rgb(0, 51, 59);
+    border: 0.3rem solid rgb(0, 51, 59);
+    background: linear-gradient(135deg, rgb(154, 205, 50) 50%, rgb(164, 215, 60) 93%,
+            rgb(174, 225, 70) 40%, rgb(0, 51, 59) 20%);
+
+    img {
+        width: 15rem;
+        height: auto;
+    }
+}
+
+.our-product-card-back {
+    transform: rotateY(180deg);
+    color: rgb(154, 205, 50);
+    border: 0.3rem solid rgb(154, 205, 50);
+    background: linear-gradient(135deg, rgb(20, 51, 59) 50%, rgb(30, 61, 69) 93%,
+            rgb(40, 71, 79) 40%, rgb(154, 205, 50) 20%);
+
+    img {
+        width: 10rem;
+        height: auto;
+    }
+}
