@@ -38,7 +38,7 @@
     justify-content: center;
 }
 
-.ingredient-receive-button {
+.ingredient-order-button {
     margin-top: 0.6vh;
     display: flex;
     justify-content: center;
@@ -57,8 +57,38 @@
     width: 14vh;
 }
 
-.ingredient-receive-button:hover {
+.ingredient-order-button:hover {
     border-color: rgb(0, 51, 59);
     font-size: 2.2vh;
     font-weight: 600;
+}
+
+.ingredient-card-input-container {
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 2vh;
+    height: 5vh;
+    width: 12vh;
+
+    input {
+        padding-right: 1.5vh;
+        margin-left: 1vh;
+        text-align: center;
+        font-size: 2vh;
+        height: 3vh;
+        width: 9vh;
+        border-radius: 1vh;
+        border: 0.2vh solid rgb(0, 51, 59);
+        color: rgb(0, 51, 59);
+        transition: border-color 0.3s ease;
+    }
+
+    input:focus {
+        border: 0.3vh solid rgb(154, 205, 50);
+        outline: none;
+    }
+}
+
+.ingredient-card-unit-label {
+    margin-left: -2.8vh;
 }
