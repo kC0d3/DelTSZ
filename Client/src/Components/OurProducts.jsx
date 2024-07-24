@@ -4,7 +4,7 @@ export default function OurProductsBody({ productAndIngredientTypes, productDesc
     return (
         <div className='our-products-body'>
             {productAndIngredientTypes.map((product, index) => (
-                <ProductCard key={index}{...{ product }} description={productDescriptions[product.value]} />
+                <ProductCard key={index} {...{ product }} description={productDescriptions[product.value]} />
             ))}
         </div>
     );

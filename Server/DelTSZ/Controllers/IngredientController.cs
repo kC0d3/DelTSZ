@@ -38,7 +38,7 @@ public class IngredientController(IIngredientRepository ingredientRepository) : 
     }
 
     [HttpGet("producers"), Authorize(Roles = "Owner")]
-    public async Task<ActionResult<Dictionary<IngredientType, decimal>>> GetAllProducerIngredients()
+    public async Task<ActionResult<IEnumerable<IngredientResponse>>> GetAllProducerIngredients()
     {
         try
         {
@@ -74,7 +74,7 @@ public class IngredientController(IIngredientRepository ingredientRepository) : 
     }
 
     [HttpPut("{id:int}"), Authorize(Roles = "Owner")]
-    public async Task<IActionResult> UpdateIngredientById(int id)
+    public async Task<IActionResult> ReceiveIngredientById(int id)
     {
         try
         {
@@ -93,7 +93,7 @@ public class IngredientController(IIngredientRepository ingredientRepository) : 
             }
 
             await ingredientRepository.IngredientUpdateById(id, userId);
-            return Ok(new { message = "Ingredient update successful." });
+            return Ok(new { message = "Ingredient receive successful." });
         }
         catch (Exception)
         {
@@ -121,7 +121,7 @@ public class IngredientController(IIngredientRepository ingredientRepository) : 
             }
 
             await ingredientRepository.IngredientUpdateByRequestAmount(type, id, amount);
-            return Ok(new { message = "Ingredient update successful." });
+            return Ok(new { message = "Ingredient order successful." });
         }
         catch (Exception)
         {

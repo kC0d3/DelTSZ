@@ -37,11 +37,11 @@
 
     input {
         padding-right: 1.5vh;
-        margin-left: 0.5vh;
+        margin-left: 1vh;
         text-align: center;
         font-size: 2vh;
         height: 3vh;
-        width: 9vh;
+        width: 8vh;
         border-radius: 1vh;
         border: 0.2vh solid rgb(0, 51, 59);
         color: rgb(0, 51, 59);

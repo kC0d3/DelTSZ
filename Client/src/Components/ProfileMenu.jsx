@@ -46,11 +46,36 @@ export default function ProfileMenu({ loggedUser, setLoggedUser }) {
     return (
         <>
             <Link onClick={handleOpen} onBlur={handleBlur} ref={menuRef} tabIndex={0}>{loggedUser.username}</Link >
-            {open &&
+            {open ?
+                <div className='profile-menu open' onBlur={handleBlur} ref={menuRef} tabIndex={0}>
+                    {
+                        loggedUser.role === 'Owner' &&
+                        <>
+                            <Link className='receive-ingredient-link' to='/ingredients/receive' onClick={handleOpen}>Receive ingredient</Link>
+                            <Link className='create-product-link' to='/products/create' onClick={handleOpen}>Create product</Link>
+                        </>
+
+                    }
+                    {
+                        loggedUser.role === 'Producer' &&
+                        <Link className='provide-ingredient-link' to='/ingredients/provide' onClick={handleOpen}>Provide ingredients</Link>
+                    }
+                    {
+                        loggedUser.role === 'Customer' &&
+                        <Link className='order-products-link' to='/products' onClick={handleOpen}>Order Products</Link>
+                    }
+                    <Link className='profile-link' to='/profile' onClick={handleOpen}>Profile</Link>
+                    <Link className='logout-link' to='/' onClick={handleLogout}>Logout</Link>
+                </div>
+                :
                 <div className='profile-menu' onBlur={handleBlur} ref={menuRef} tabIndex={0}>
                     {
                         loggedUser.role === 'Owner' &&
-                        <Link className='create-product-link' to='/products/create' onClick={handleOpen}>Create product</Link>
+                        <>
+                            <Link className='receive-ingredient-link' to='/ingredients/receive' onClick={handleOpen}>Receive ingredient</Link>
+                            <Link className='create-product-link' to='/products/create' onClick={handleOpen}>Create product</Link>
+                        </>
+
                     }
                     {
                         loggedUser.role === 'Producer' &&

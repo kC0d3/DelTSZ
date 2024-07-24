@@ -17,7 +17,7 @@ export default function ProvideIngredient({ ingredientTypes, loggedUser, setShow
                 },
                 body: JSON.stringify({
                     type: Number(ingredient.type),
-                    amount: Number(ingredient.amount)
+                    amount: Number(ingredient.amount.replace(',', '.'))
                 })
             });
 
@@ -54,18 +54,21 @@ export default function ProvideIngredient({ ingredientTypes, loggedUser, setShow
         }
     }
 
-    return (loggedUser ?
-        <form className='provide-ingredient' onSubmit={handleProvide}>
-            <h1>Provide Ingredient</h1>
-            <select className='ingredients' value={ingredient.type} onChange={e => setIngredient({ ...ingredient, type: e.target.value })}>
-                <option value='' disabled hidden>Select ingredient</option>
-                {ingredientTypes.map((ingredient, index) => (<option key={index} value={ingredient.index}>{ingredient.value}</option>))}
-            </select>
-            <div className='input-container'>
-                <input type='number' step='0.001' aria-label='Quantity' value={ingredient.amount} onChange={e => setIngredient({ ...ingredient, amount: e.target.value })} />
-                <label className='unit-label'>kg</label>
-            </div>
-            <button type='submit' className='provide-button'>Provide</button>
-        </form> : <LoginError {...{ setShowLogin }} />
+    return (
+        loggedUser ?
+            <form className='provide-ingredient' onSubmit={handleProvide}>
+                <h1>Provide Ingredient</h1>
+                <select className='ingredients' value={ingredient.type} onChange={e => setIngredient({ ...ingredient, type: e.target.value })}>
+                    <option value='' disabled hidden>Select ingredient</option>
+                    {ingredientTypes.map((ingredient, index) => (<option key={index} value={ingredient.index}>{ingredient.value}</option>))}
+                </select>
+                <div className='input-container'>
+                    <input type='number' step='0.01' aria-label='Quantity' placeholder='0.00' value={ingredient.amount} onChange={e => setIngredient({ ...ingredient, amount: e.target.value })} />
+                    <label className='unit-label'>kg</label>
+                </div>
+                <button type='submit' className='provide-button'>Provide</button>
+            </form>
+            :
+            <LoginError {...{ setShowLogin }} />
     );
 }
