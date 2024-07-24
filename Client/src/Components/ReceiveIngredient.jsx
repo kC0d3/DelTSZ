@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import IngredientCard from "./IngredientCard";
+import ReceiveIngredientCard from "./ReceiveIngredientCard";
 import LoginError from "./LoginError";
 
 export default function ReceiveIngredient({ ingredientTypes, loggedUser, setShowLogin }) {
@@ -26,8 +26,8 @@ export default function ReceiveIngredient({ ingredientTypes, loggedUser, setShow
             <div className='receive-ingredient'>
                 {
                     producerIngredients &&
-                        producerIngredients.length > 1 ? producerIngredients.map((ingredient, index) => (
-                            <IngredientCard key={index} {...{ ingredient, ingredientTypes, fetchProducerIngredients }} />
+                        producerIngredients.length > 0 ? producerIngredients.map((ingredient, index) => (
+                            <ReceiveIngredientCard key={index} {...{ ingredient, ingredientTypes, fetchProducerIngredients }} />
                         ))
                         :
                         <div className='receive-ingredient-none'>
