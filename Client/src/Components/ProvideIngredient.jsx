@@ -62,9 +62,9 @@ export default function ProvideIngredient({ ingredientTypes, loggedUser, setShow
                     <option value='' disabled hidden>Select ingredient</option>
                     {ingredientTypes.map((ingredient, index) => (<option key={index} value={ingredient.index}>{ingredient.value}</option>))}
                 </select>
-                <div className='input-container'>
+                <div className='provide-input-container'>
                     <input type='number' step='0.01' aria-label='Quantity' placeholder='0.00' value={ingredient.amount} onChange={e => setIngredient({ ...ingredient, amount: e.target.value })} />
-                    <label className='unit-label'>kg</label>
+                    <label className='provide-unit-label'>kg</label>
                 </div>
                 <button type='submit' className='provide-button'>Provide</button>
             </form>
