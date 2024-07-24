@@ -2,9 +2,9 @@
 @import "styles/navbar.css";
 @import "styles/slider.css";
 @import "styles/footer.css";
-@import "styles/productcard.css";
 @import "styles/errorpagebody.css";
 @import "styles/homepagebody.css";
+@import "styles/ourproductcard.css";
 @import "styles/ourproducts.css";
 @import "styles/login.css";
 @import "styles/registration.css";
@@ -12,8 +12,11 @@
 @import "styles/loginerror.css";
 @import "styles/profilemenu.css";
 @import "styles/receiveingredient.css";
-@import "styles/ingredientcard.css";
+@import "styles/receiveingredientcard.css";
 @import "styles/createproduct.css";
+@import "styles/productlist.css";
+@import "styles/productcard.css";
+@import "styles/ingredientcard.css";
 @import "react-toastify/dist/ReactToastify.css";
 
 /*Global styles*/

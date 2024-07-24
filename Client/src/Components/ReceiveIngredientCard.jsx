@@ -1,15 +1,14 @@
-import { useState } from 'react';
 import { toast } from 'react-toastify';
 
-export default function IngredientCard({ ingredient, ingredientTypes, fetchOwnerProductsAndIngredients }) {
-    const [amount, setAmount] = useState('');
+export default function ReceiveIngredientCard({ ingredient, ingredientTypes, fetchProducerIngredients }) {
+
     const ingredientType = ingredientTypes.find(type => type.index === ingredient.type);
 
-    const handleOrder = async e => {
+    const handleReceive = async e => {
         e.preventDefault();
 
         try {
-            const recRes = await fetch(`/api/ingredients/${e.target.parentNode.parentNode.id}/${Number(amount.replace(',', '.'))}`, {
+            const recRes = await fetch(`/api/ingredients/${e.target.parentNode.parentNode.id}`, {
                 method: 'PUT'
             });
             const recData = await recRes.json();
@@ -25,7 +24,7 @@ export default function IngredientCard({ ingredient, ingredientTypes, fetchOwner
                     progress: undefined,
                     theme: "colored",
                 });
-                fetchOwnerProductsAndIngredients();
+                fetchProducerIngredients();
             } else {
                 toast.error(recData.message, {
                     position: "top-right",
@@ -44,22 +43,19 @@ export default function IngredientCard({ ingredient, ingredientTypes, fetchOwner
     }
 
     return (
-        <div className='ingredient-card' id={ingredient.type}>
-            <div className='ingredient-card-top'>
-                <div className='ingredient-card-left'>
+        <div className='receive-ingredient-card' id={ingredient.id}>
+            <div className='receive-ingredient-card-top'>
+                <div className='receive-ingredient-card-left'>
                     <img src={`/images/products/${ingredientType.value}.png`} alt={`${ingredientType.value}.png`} />
                 </div>
-                <div className='ingredient-card-right'>
+                <div className='receive-ingredient-card-right'>
                     <h2>{ingredientType.value}</h2>
-                    <h3>Avaiable: {ingredient.amount} kg</h3>
-                    <div className='ingredient-card-input-container'>
-                        <input type='number' step='0.01' aria-label='Quantity' placeholder='0.00' value={amount} onChange={e => setAmount(e.target.value)} />
-                        <label className='ingredient-card-unit-label'>kg</label>
-                    </div>
+                    <h3>{ingredient.received.slice(0, 10)}</h3>
+                    <h3>{ingredient.amount} kg</h3>
                 </div>
             </div>
-            <div className='ingredient-card-bottom'>
-                <button className='ingredient-order-button' onClick={handleOrder}>Order</button>
+            <div className='receive-ingredient-card-bottom'>
+                <button className='ingredient-receive-button' onClick={handleReceive}>Receive</button>
             </div>
         </div>
     );

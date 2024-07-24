@@ -27,7 +27,7 @@ public class ProductController(IProductRepository productRepository, IIngredient
         }
     }
 
-    [HttpGet("sum"), Authorize(Roles = "Customer")]
+    [HttpGet("owner"), Authorize(Roles = "Customer")]
     public async Task<ActionResult<IEnumerable<IngredientRequest>>> GetAllOwnerProducts()
     {
         try
