@@ -3,7 +3,7 @@ import LoginError from "./LoginError";
 import ProductCard from "./ProductCard";
 import IngredientCard from "./IngredientCard";
 
-export default function Products({ productTypes, ingredientTypes, loggedUser, setShowLogin }) {
+export default function ProductList({ productTypes, ingredientTypes, loggedUser, setShowLogin }) {
 
     const [ownerProducts, setOwnerProducts] = useState(undefined);
     const [ownerIngredients, setOwnerIngredients] = useState(undefined);
