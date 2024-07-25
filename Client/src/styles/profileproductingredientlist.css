@@ -1,0 +1,43 @@
+/*ProfileProductIngredientList styles*/
+
+.profile-product-ingredient-list {
+    margin: 2vh 0vh 2vh;
+}
+
+.profile-ingredient-list {
+    margin: 2vh 0vh 2vh;
+
+    h1 {
+        text-align: center;
+    }
+}
+
+.profile-product-list {
+    margin: 3vh 0vh 5vh;
+
+    h1 {
+        text-align: center;
+    }
+}
+
+.profile-products {
+    padding: 2vh 0vh 2vh;
+    background-color: rgb(247, 253, 237);
+    display: grid;
+    gap: 8vh;
+    grid-template-columns: repeat(auto-fit, minmax(30vh, 40vh));
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.profile-ingredients {
+    padding: 2vh 0vh 2vh;
+    background-color: rgb(247, 253, 237);
+    display: grid;
+    gap: 8vh;
+    grid-template-columns: repeat(auto-fit, minmax(30vh, 40vh));
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}

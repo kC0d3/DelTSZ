@@ -26,9 +26,17 @@ export default function ReceiveIngredient({ ingredientTypes, loggedUser, setShow
             <div className='receive-ingredient'>
                 {
                     producerIngredients &&
-                        producerIngredients.length > 0 ? producerIngredients.map((ingredient, index) => (
-                            <ReceiveIngredientCard key={index} {...{ ingredient, ingredientTypes, fetchProducerIngredients }} />
-                        ))
+                        producerIngredients.length > 0 ?
+                        <>
+                            <h1>Receive ingredients</h1>
+                            <div className='receive-ingredient-list'>
+                                {
+                                    producerIngredients.map((ingredient, index) => (
+                                        <ReceiveIngredientCard key={index} {...{ ingredient, ingredientTypes, fetchProducerIngredients }} />
+                                    ))
+                                }
+                            </div>
+                        </>
                         :
                         <div className='receive-ingredient-none'>
                             <h1>There are no more ingredients to receive at this moment.</h1>

@@ -1,8 +1,17 @@
 /*ReceiveIngredient styles*/
 
 .receive-ingredient {
-    padding: 8vh 0vh 8vh;
     background-color: rgb(247, 253, 237);
+    padding: 3vh;
+
+    h1 {
+        margin: 0;
+        text-align: center;
+    }
+}
+
+.receive-ingredient-list {
+    padding: 8vh 0vh 8vh;
     display: grid;
     gap: 8vh;
     grid-template-columns: repeat(auto-fit, minmax(30vh, 35vh));
@@ -12,5 +21,8 @@
 }
 
 .receive-ingredient-none {
-    height: 21vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 37vh;
 }

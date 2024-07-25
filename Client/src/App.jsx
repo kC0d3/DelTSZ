@@ -12,6 +12,7 @@ import ProvideIngredient from './Components/ProvideIngredient';
 import ReceiveIngredient from './Components/ReceiveIngredient';
 import CreateProduct from './Components/CreateProduct';
 import ProductList from './Components/ProductList';
+import Profile from './Components/Profile';
 
 export default function App() {
   const [loggedUser, setLoggedUser] = useState(undefined);
@@ -136,6 +137,7 @@ export default function App() {
         <Route path='/ingredients/receive' element={<ReceiveIngredient {...{ ingredientTypes, loggedUser, setShowLogin }} />} />
         <Route path='/products/create' element={<CreateProduct {...{ productTypes, loggedUser, setShowLogin }} />} />
         <Route path='/products' element={<ProductList {...{ productTypes, ingredientTypes, loggedUser, setShowLogin }} />} />
+        <Route path='/profile' element={<Profile {...{ loggedUser, productTypes, ingredientTypes, setShowLogin, fetchUser }} />} />
       </Routes>
       <Footer />
     </Router>

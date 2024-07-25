@@ -112,7 +112,8 @@ async Task CreateOwnerIfNotExists()
     {
         var owner = new User
         {
-            UserName = "DelTSZ", Email = "deltsz@deltsz.com", CompanyName = "DelTSZ", Role = Roles.Owner.ToString(),
+            UserName = "DelTSZ", Email = "deltsz@deltsz.com", CompanyName = "Dél Termelői Szövetkezet",
+            Role = Roles.Owner.ToString(),
             Address = new Address { ZipCode = "6600", City = "Szentes", Street = "Szarvasi út", HouseNumber = "3" }
         };
         var ownerCreated = await userManager.CreateAsync(owner, "DelTSZ!123");
