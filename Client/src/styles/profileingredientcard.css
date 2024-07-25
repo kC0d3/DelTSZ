@@ -1,0 +1,45 @@
+/*ProfileIngredientCard styles*/
+
+.profile-ingredient-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: solid 0.4vh rgb(0, 51, 59);
+    border-radius: 3vh;
+    padding: 3vh 2vh 3vh;
+    min-height: 17vh;
+    min-width: 38vh;
+
+    img {
+        width: 15vh;
+        height: auto;
+    }
+
+    h2 {
+        color: rgb(154, 205, 50);
+        margin: 0vh 0vh 1vh;
+    }
+
+    h3 {
+        color: rgb(0, 51, 59);
+        margin: 0;
+    }
+
+}
+
+.profile-ingredient-card-top {
+    display: flex;
+    flex-direction: row;
+    padding-bottom: 2vh;
+}
+
+.profile-ingredient-card-left {
+    padding-right: 2vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-ingredient-card-rigth-top {
+    margin-bottom: 1vh;
+}

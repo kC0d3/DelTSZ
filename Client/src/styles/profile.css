@@ -1,0 +1,21 @@
+/*Profile styles*/
+
+.profile {
+    background-color: rgb(247, 253, 237);
+    padding: 3vh 10vh 3vh;
+    min-height: 29vh;
+
+    h2 {
+        margin: 0;
+        color: rgb(0, 51, 59);
+    }
+
+    h1 {
+        margin: 0;
+        margin-bottom: 2vh;
+    }
+
+    span {
+        color: rgb(154, 205, 50);
+    }
+}
