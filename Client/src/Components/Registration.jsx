@@ -17,7 +17,6 @@ export default function Registration({ showRegistration, setShowRegistration, se
     });
 
     const handleOverlayClick = e => {
-        e.preventDefault();
         if (e.target.classList.contains('registration')) {
             setShowRegistration(false);
             toast.dismiss();
