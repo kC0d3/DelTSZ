@@ -9,7 +9,7 @@ export default function IngredientCard({ ingredient, ingredientTypes, fetchOwner
         e.preventDefault();
 
         try {
-            const recRes = await fetch(`/api/ingredients/${e.target.parentNode.parentNode.id}/${Number(amount.replace(',', '.'))}`, {
+            const recRes = await fetch(`/api/ingredients/${e.target.id}/${Number(amount.replace(',', '.'))}`, {
                 method: 'PUT'
             });
             const recData = await recRes.json();
@@ -25,6 +25,7 @@ export default function IngredientCard({ ingredient, ingredientTypes, fetchOwner
                     progress: undefined,
                     theme: "colored",
                 });
+                setAmount('');
                 fetchOwnerProductsAndIngredients();
             } else {
                 toast.error(recData.message, {
@@ -44,7 +45,7 @@ export default function IngredientCard({ ingredient, ingredientTypes, fetchOwner
     }
 
     return (
-        <div className='ingredient-card' id={ingredient.type}>
+        <form className='ingredient-card' id={ingredient.type} onSubmit={handleOrder}>
             <div className='ingredient-card-top'>
                 <div className='ingredient-card-left'>
                     <img src={`/images/products/${ingredientType.value}.png`} alt={`${ingredientType.value}.png`} />
@@ -59,8 +60,8 @@ export default function IngredientCard({ ingredient, ingredientTypes, fetchOwner
                 </div>
             </div>
             <div className='ingredient-card-bottom'>
-                <button className='ingredient-order-button' onClick={handleOrder}>Order</button>
+                <button type='submit' className='ingredient-order-button'>Order</button>
             </div>
-        </div>
+        </form>
     );
 }

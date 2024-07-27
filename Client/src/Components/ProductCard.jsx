@@ -9,7 +9,7 @@ export default function ProductCard({ product, productTypes, fetchOwnerProductsA
         e.preventDefault();
 
         try {
-            const orderRes = await fetch(`/api/products/${e.target.parentNode.parentNode.id}/${Number(amount)}`, {
+            const orderRes = await fetch(`/api/products/${e.target.id}/${Number(amount)}`, {
                 method: 'PUT'
             });
             const orderData = await orderRes.json();
@@ -25,6 +25,7 @@ export default function ProductCard({ product, productTypes, fetchOwnerProductsA
                     progress: undefined,
                     theme: "colored",
                 });
+                setAmount('');
                 fetchOwnerProductsAndIngredients();
             } else {
                 toast.error(orderData.message, {
@@ -44,7 +45,7 @@ export default function ProductCard({ product, productTypes, fetchOwnerProductsA
     }
 
     return (
-        <div className='product-card' id={product.type}>
+        <form className='product-card' id={product.type} onSubmit={handleOrder}>
             <div className='product-card-top'>
                 <div className='product-card-left'>
                     <img src={`/images/products/${productType.value}.png`} alt={`${productType.value}.png`} />
@@ -59,8 +60,8 @@ export default function ProductCard({ product, productTypes, fetchOwnerProductsA
                 </div>
             </div>
             <div className='product-card-bottom'>
-                <button className='product-order-button' onClick={handleOrder}>Order</button>
+                <button type='submit' className='product-order-button'>Order</button>
             </div>
-        </div>
+        </form>
     );
 }

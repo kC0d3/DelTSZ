@@ -17,6 +17,11 @@
 @import "styles/productlist.css";
 @import "styles/productcard.css";
 @import "styles/ingredientcard.css";
+@import "styles/profile.css";
+@import "styles/profiledata.css";
+@import "styles/profileproductingredientlist.css";
+@import "styles/profileproductcard.css";
+@import "styles/profileingredientcard.css";
 @import "react-toastify/dist/ReactToastify.css";
 
 /*Global styles*/
