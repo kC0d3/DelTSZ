@@ -47,8 +47,7 @@
 
 ## About The Project
 
-This project try to represent a gardeners organization web application which able receive producers ingredients (
-vegetables) and customers can order from the owner ingredients or products which one is made by the owner.
+This project represents a web application developed for a gardeners' organization. It allows local producers to register and submit their fresh vegetables or other ingredients. Customers can browse and place orders either for these raw ingredients or for ready-made products that are crafted by the application owner using the submitted produce. The platform promotes local food distribution, sustainability, and fosters a direct link between growers and consumers.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
